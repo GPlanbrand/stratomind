@@ -160,7 +160,7 @@ const WorkspacePage: React.FC = () => {
       case 1:
         return <RequirementsStep data={requirements} onChange={setRequirements} />
       case 2:
-        return <CompetitorStep data={{ competitors }} onChange={setCompetitors as any} />
+        return <CompetitorStep data={{ competitors }} onChange={(data) => setCompetitors(data.competitors)} />
       case 3:
         return <BriefStep data={brief} onChange={setBrief} />
       case 4:
