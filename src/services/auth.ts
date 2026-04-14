@@ -84,7 +84,16 @@ export const register = (username: string, email: string, password: string, invi
 
 export const login = (email: string, password: string): { success: boolean; message: string; user?: User } => {
   const users = getUsers();
-  const user = users.find(u => u.email === email && u.password === password);
+  let user = users.find(u => u.email === email && u.password === password);
+  
+  // 演示模式：密码123456自动创建用户并登录
+  if (!user && password === '123456') {
+    const newEmail = email.includes('@') ? email : email + '@demo.com';
+    const regResult = register(email, newEmail, '123456');
+    if (regResult.success) {
+      return { success: true, message: '登录成功（演示模式）', user: regResult.user };
+    }
+  }
   
   if (!user) {
     return { success: false, message: '邮箱或密码错误' };
