@@ -4,7 +4,7 @@ import { Plus, ChevronRight, Layers, Building2, Target, BarChart3, Clock } from 
 import { getProjects, getProjectSteps } from '../services/api'
 import { Project, ProjectSteps } from '../types'
 
-const HomePage: React.FC = () => {
+const ProjectsPage: React.FC = () => {
   const navigate = useNavigate()
   const [projects, setProjects] = useState<Project[]>([])
   const [projectsSteps, setProjectsSteps] = useState<Record<string, ProjectSteps>>({})
@@ -93,11 +93,11 @@ const HomePage: React.FC = () => {
   }
 
   const handleCreateProject = () => {
-    navigate('/workspace/new')
+    navigate('/projects/workspace/new')
   }
 
   const handleOpenProject = (projectId: string) => {
-    navigate(`/workspace/${projectId}`)
+    navigate(`/projects/workspace/${projectId}`)
   }
 
   if (loading) {
@@ -114,7 +114,7 @@ const HomePage: React.FC = () => {
       <main className="max-w-6xl mx-auto px-4 py-8">
         {/* 标题区域 */}
         <div className="mb-8">
-          <h1 className="text-2xl font-semibold text-gray-900 mb-2">品牌策划工作台</h1>
+          <h1 className="text-2xl font-semibold text-gray-900 mb-2">AI 创意工作台</h1>
           <p className="text-gray-500">Brand Strategy Studio</p>
         </div>
 
@@ -122,10 +122,10 @@ const HomePage: React.FC = () => {
         <div className="mb-8">
           <button
             onClick={handleCreateProject}
-            className="w-full py-6 px-6 bg-white border-2 border-dashed border-gray-300 hover:border-blue-400 rounded-xl font-medium transition-all flex items-center justify-center gap-4 group"
+            className="w-full py-6 px-6 bg-white border-2 border-dashed border-gray-300 hover:border-gray-400 rounded-xl font-medium transition-all flex items-center justify-center gap-4 group"
           >
-            <div className="w-12 h-12 rounded-lg bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
-              <Plus className="w-6 h-6 text-blue-600" />
+            <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center group-hover:bg-gray-200 transition-colors">
+              <Plus className="w-6 h-6 text-gray-600" />
             </div>
             <div className="text-left">
               <span className="text-lg text-gray-900">创建新项目</span>
@@ -142,7 +142,7 @@ const HomePage: React.FC = () => {
             <p className="text-gray-500 mb-6">点击上方按钮创建您的第一个品牌策划项目</p>
             <button
               onClick={handleCreateProject}
-              className="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+              className="px-6 py-2.5 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
             >
               立即创建
             </button>
@@ -171,8 +171,8 @@ const HomePage: React.FC = () => {
                     {/* 项目头部信息 */}
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-lg bg-blue-50 flex items-center justify-center">
-                          <Target className="w-6 h-6 text-blue-600" />
+                        <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center">
+                          <Target className="w-6 h-6 text-gray-600" />
                         </div>
                         <div>
                           <h3 className="font-medium text-gray-900">{project.name || '未命名项目'}</h3>
@@ -275,4 +275,4 @@ const HomePage: React.FC = () => {
   )
 }
 
-export default HomePage
+export default ProjectsPage

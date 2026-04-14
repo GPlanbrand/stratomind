@@ -1,6 +1,7 @@
 import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
-import HomePage from './pages/HomePage'
+import HomeLoginPage from './pages/HomeLoginPage'
+import ProjectsPage from './pages/ProjectsPage'
 import WorkspacePage from './pages/WorkspacePage'
 import AnalysisChartsPage from './pages/AnalysisChartsPage'
 import LoginPage from './pages/LoginPage'
@@ -11,15 +12,16 @@ import Layout from './components/Layout'
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<HomePage />} />
+      <Route path="/" element={<HomeLoginPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/projects" element={<Layout />}>
+        <Route index element={<ProjectsPage />} />
         <Route path="workspace/:projectId?" element={<WorkspacePage />} />
         <Route path="analysis-charts" element={<AnalysisChartsPage />} />
         <Route path="member" element={<MemberPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/projects" replace />} />
       </Route>
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
     </Routes>
   )
 }

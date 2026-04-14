@@ -34,7 +34,7 @@ const LoginPage: React.FC = () => {
     setLoading(false);
 
     if (result.success) {
-      navigate('/');
+      navigate('/projects');
     } else {
       setError(result.message);
     }
@@ -43,11 +43,14 @@ const LoginPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-        {/* Logo */}
+        {/* Logo + 名称 */}
         <div className="text-center mb-8">
-          <img src="/logo.svg" alt="StratoMind" className="h-12 mx-auto mb-4" />
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <img src="/logo.svg" alt="AI 创意工作台" className="h-10 w-auto" />
+            <span className="text-lg font-semibold text-gray-900">AI 创意工作台</span>
+          </div>
           <h1 className="text-2xl font-semibold text-gray-900">欢迎回来</h1>
-          <p className="text-gray-500 mt-2">登录您的 StratoMind 账号</p>
+          <p className="text-gray-500 mt-2">登录您的账号</p>
         </div>
 
         {/* 表单卡片 */}
@@ -63,7 +66,7 @@ const LoginPage: React.FC = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
                 placeholder="请输入邮箱"
               />
             </div>
@@ -78,14 +81,14 @@ const LoginPage: React.FC = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
                 placeholder="请输入密码"
               />
             </div>
 
             {/* 忘记密码 */}
             <div className="text-right">
-              <span className="text-blue-600 hover:text-blue-700 text-sm cursor-pointer">
+              <span className="text-gray-600 hover:text-gray-900 text-sm cursor-pointer">
                 忘记密码？
               </span>
             </div>
@@ -101,7 +104,7 @@ const LoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-2.5 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? '登录中...' : '登录'}
             </button>
@@ -110,7 +113,7 @@ const LoginPage: React.FC = () => {
           {/* 注册链接 */}
           <div className="mt-6 text-center">
             <span className="text-gray-500 text-sm">没有账号？</span>
-            <Link to="/register" className="text-blue-600 hover:text-blue-700 text-sm font-medium ml-1">
+            <Link to="/register" className="text-gray-900 hover:text-gray-700 text-sm font-medium ml-1">
               立即注册
             </Link>
           </div>

@@ -40,7 +40,6 @@ const RegisterPage: React.FC = () => {
 
     setLoading(true);
     
-    // 模拟网络延迟
     await new Promise(resolve => setTimeout(resolve, 500));
     
     const result = register(formData.username, formData.email, formData.password, formData.inviteCode || undefined);
@@ -58,11 +57,14 @@ const RegisterPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-        {/* Logo */}
+        {/* Logo + 名称 */}
         <div className="text-center mb-8">
-          <img src="/logo.svg" alt="StratoMind" className="h-12 mx-auto mb-4" />
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <img src="/logo.svg" alt="AI 创意工作台" className="h-10 w-auto" />
+            <span className="text-lg font-semibold text-gray-900">AI 创意工作台</span>
+          </div>
           <h1 className="text-2xl font-semibold text-gray-900">创建账号</h1>
-          <p className="text-gray-500 mt-2">加入 StratoMind，开启创意之旅</p>
+          <p className="text-gray-500 mt-2">加入 AI 创意工作台，开启创意之旅</p>
         </div>
 
         {/* 表单卡片 */}
@@ -78,7 +80,7 @@ const RegisterPage: React.FC = () => {
                 name="username"
                 value={formData.username}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
                 placeholder="请输入用户名"
               />
             </div>
@@ -93,7 +95,7 @@ const RegisterPage: React.FC = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
                 placeholder="请输入邮箱"
               />
             </div>
@@ -108,7 +110,7 @@ const RegisterPage: React.FC = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
                 placeholder="请输入密码（至少6位）"
               />
             </div>
@@ -123,7 +125,7 @@ const RegisterPage: React.FC = () => {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
                 placeholder="请再次输入密码"
               />
             </div>
@@ -138,7 +140,7 @@ const RegisterPage: React.FC = () => {
                 name="inviteCode"
                 value={formData.inviteCode}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
                 placeholder="如有邀请码请填写"
               />
             </div>
@@ -154,7 +156,7 @@ const RegisterPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-2.5 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? '注册中...' : '注册'}
             </button>
@@ -163,7 +165,7 @@ const RegisterPage: React.FC = () => {
           {/* 登录链接 */}
           <div className="mt-6 text-center">
             <span className="text-gray-500 text-sm">已有账号？</span>
-            <Link to="/login" className="text-blue-600 hover:text-blue-700 text-sm font-medium ml-1">
+            <Link to="/login" className="text-gray-900 hover:text-gray-700 text-sm font-medium ml-1">
               立即登录
             </Link>
           </div>
