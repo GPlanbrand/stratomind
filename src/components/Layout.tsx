@@ -1,70 +1,125 @@
-import React from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import { Outlet, useNavigate, Link } from 'react-router-dom';
+import { refreshCurrentUser } from '../services/auth';
+import { User, MEMBER_LEVELS } from '../types/user';
 
 const Layout: React.FC = () => {
-  const navigate = useNavigate()
-  
+  const navigate = useNavigate();
+  const [user, setUser] = useState<User | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const currentUser = refreshCurrentUser();
+    setUser(currentUser);
+  }, []);
+
+  const memberInfo = user ? MEMBER_LEVELS[user.memberLevel] : null;
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 relative overflow-hidden">
-      {/* 动态背景装饰球体 - 增强版 */}
-      <div className="bg-orb bg-orb-lg bg-purple-400 top-0 left-0 -translate-x-1/3 -translate-y-1/3 fixed animate-orb-1"></div>
-      <div className="bg-orb bg-orb-lg bg-blue-400 bottom-0 right-0 translate-x-1/3 translate-y-1/3 fixed animate-orb-2"></div>
-      <div className="bg-orb bg-orb-lg bg-pink-400 top-1/3 right-1/4 fixed animate-orb-3"></div>
-      <div className="bg-orb bg-orb-sm bg-cyan-400 bottom-1/4 left-1/6 fixed animate-float-slow"></div>
-      <div className="bg-orb bg-orb-sm bg-yellow-400 top-1/4 left-1/3 fixed animate-float" style={{animationDelay: '1s'}}></div>
-      
-      {/* 网格背景 */}
-      <div className="absolute inset-0 bg-grid opacity-20"></div>
-      
-      {/* 顶部导航栏 - 玻璃态增强 */}
-      <nav className="glass-strong rounded-b-2xl mx-4 mt-0 fixed top-0 left-0 right-0 z-50 transition-all duration-300">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          {/* Logo区域 */}
-          <div className="flex items-center gap-4 cursor-pointer logo-hover group" onClick={() => navigate('/')}>
-            <div className="relative">
+    <div className="min-h-screen bg-white">
+      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            <div 
+              className="flex items-center gap-3 cursor-pointer"
+              onClick={() => navigate('/')}
+            >
               <img 
                 src="/logo.svg" 
-                alt="灵思StratoMind" 
-                className="h-10 w-auto transition-transform duration-300 group-hover:scale-105" 
+                alt="StratoMind" 
+                className="h-8 w-auto" 
               />
-              {/* Logo光效 */}
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-400/20 to-pink-400/20 rounded-lg blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <span className="text-gray-900 font-medium whitespace-nowrap">品牌策划工作台</span>
             </div>
-          </div>
-          
-          {/* 右侧操作区 */}
-          <div className="flex items-center gap-4">
-            {/* 返回首页按钮 - 优化样式 */}
-            <button 
-              onClick={() => navigate('/')}
-              className="group flex items-center gap-2.5 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 hover:border-white/25 transition-all duration-300 backdrop-blur-md hover-glow"
-            >
-              <svg className="w-5 h-5 text-white transition-transform duration-300 group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-              </svg>
-              <span className="text-white font-medium text-sm">返回首页</span>
-            </button>
+
+            <div className="flex items-center gap-4">
+              {user && (
+                <div 
+                  className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+                  onClick={() => navigate('/member')}
+                >
+                  <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="text-gray-900 font-medium">{user.points}</span>
+                </div>
+              )}
+
+              {user ? (
+                <div className="relative">
+                  <button
+                    onClick={() => setMenuOpen(!menuOpen)}
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-sm font-medium text-gray-600">
+                      {user.username.charAt(0).toUpperCase()}
+                    </div>
+                    <span className="text-gray-700 text-sm hidden sm:inline">{user.username}</span>
+                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  {menuOpen && (
+                    <>
+                      <div 
+                        className="fixed inset-0 z-10" 
+                        onClick={() => setMenuOpen(false)}
+                      />
+                      <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl border border-gray-200 shadow-lg z-20 py-2">
+                        <div className="px-4 py-3 border-b border-gray-100">
+                          <p className="text-gray-900 font-medium">{user.username}</p>
+                          <p className="text-gray-500 text-sm">{user.email}</p>
+                          {memberInfo && (
+                            <span className="inline-block mt-1 px-2 py-0.5 text-xs rounded-full">
+                              {memberInfo.icon} {memberInfo.name}
+                            </span>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => { navigate('/member'); setMenuOpen(false); }}
+                          className="w-full px-4 py-2.5 text-left text-gray-700 hover:bg-gray-50"
+                        >
+                          会员中心
+                        </button>
+                        <button
+                          onClick={() => navigate('/')}
+                          className="w-full px-4 py-2.5 text-left text-gray-700 hover:bg-gray-50"
+                        >
+                          返回首页
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <Link to="/login" className="px-4 py-2 text-gray-700 hover:text-gray-900 text-sm font-medium">
+                    登录
+                  </Link>
+                  <Link to="/register" className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+                    注册
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </nav>
-      
-      {/* 主内容区域 */}
-      <div className="pt-20 pb-16 relative z-10">
+
+      <main className="pb-16">
         <Outlet />
-      </div>
-      
-      {/* 底部版权 - 增强样式 */}
-      <footer className="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-r from-gray-900/90 via-gray-900/95 to-gray-900/90 backdrop-blur-xl border-t border-white/10 py-4">
-        <div className="max-w-7xl mx-auto px-4 flex items-center justify-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 animate-pulse"></div>
-          <p className="text-gray-400 text-sm font-medium tracking-wide">
-            © 2024 <span className="text-white/80">StratoMind</span>. All Rights Reserved.
+      </main>
+
+      <footer className="bg-white border-t border-gray-200 py-4">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <p className="text-gray-400 text-sm">
+            © 2024 StratoMind. All Rights Reserved.
           </p>
-          <div className="w-2 h-2 rounded-full bg-gradient-to-r from-pink-400 to-purple-400 animate-pulse" style={{animationDelay: '0.5s'}}></div>
         </div>
       </footer>
     </div>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;

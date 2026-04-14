@@ -1,5 +1,5 @@
 import React from 'react'
-import { Lightbulb, Sparkles } from 'lucide-react'
+import { Lightbulb, Wand2, Copy } from 'lucide-react'
 import { Strategy } from '../types'
 
 interface Props {
@@ -8,81 +8,113 @@ interface Props {
 }
 
 const StrategyStep: React.FC<Props> = ({ data, onChange }) => {
+  const copyPrompt = () => {
+    const prompt = `品牌策略分析任务：
+核心策略主张：${data.overallStrategy || ''}
+传播主轴：${data.differentiation || ''}
+创意方向：${data.contentStrategy || ''}
+执行建议：${data.mediaStrategy || ''}`
+    navigator.clipboard.writeText(prompt)
+    alert('Prompt已复制到剪贴板')
+  }
+
   return (
-    <div className="space-y-6">
-      {/* 标题区域 */}
-      <div className="flex items-center gap-4 mb-8">
-        <div className="relative">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-500 to-rose-500 flex items-center justify-center shadow-xl animate-pulse-glow">
-            <Lightbulb className="w-7 h-7 text-white" />
+    <div className="max-w-2xl mx-auto">
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center">
+            <Lightbulb className="w-5 h-5 text-red-600" />
           </div>
-          <div className="absolute -inset-1 bg-gradient-to-br from-red-500/50 to-rose-500/50 rounded-2xl blur-lg -z-10"></div>
+          <h2 className="text-xl font-semibold text-gray-900">创意策略</h2>
         </div>
-        <div>
-          <h2 className="text-2xl font-bold text-white">创意策略</h2>
-          <p className="text-sm text-white/60">制定品牌的整体策略和差异化方向</p>
-        </div>
+        <p className="text-gray-500 text-sm">制定品牌的整体策略和差异化方向</p>
       </div>
 
-      <div className="grid gap-6">
-        {/* 整体策略 */}
+      <div className="space-y-5">
+        {/* 核心策略主张 */}
         <div>
-          <label className="block text-sm font-medium text-white/80 mb-2">整体策略</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">核心策略主张</label>
           <textarea
             value={data.overallStrategy || ''}
             onChange={(e) => onChange({ ...data, overallStrategy: e.target.value })}
-            placeholder="描述品牌的整体战略方向和核心主张"
-            rows={4}
-            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-red-400 focus:ring-2 focus:ring-red-400/30 outline-none transition-all resize-none text-white placeholder-white/40 backdrop-blur input-glow-orange"
+            placeholder="品牌最核心的价值主张是什么？希望传达给消费者什么样的信息？"
+            rows={3}
+            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
           />
         </div>
 
-        {/* 差异化定位 */}
+        {/* 传播主轴 */}
         <div>
-          <label className="block text-sm font-medium text-white/80 mb-2">差异化定位</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">传播主轴</label>
           <textarea
             value={data.differentiation || ''}
             onChange={(e) => onChange({ ...data, differentiation: e.target.value })}
-            placeholder="说明品牌与竞品的差异化优势和独特卖点"
-            rows={4}
-            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-red-400 focus:ring-2 focus:ring-red-400/30 outline-none transition-all resize-none text-white placeholder-white/40 backdrop-blur input-glow-orange"
+            placeholder="贯穿整个传播活动的主线是什么？如何保持信息的一致性？"
+            rows={3}
+            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
           />
         </div>
 
-        {/* 内容策略 */}
+        {/* 创意方向 */}
         <div>
-          <label className="block text-sm font-medium text-white/80 mb-2">内容策略</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">创意方向</label>
           <textarea
             value={data.contentStrategy || ''}
             onChange={(e) => onChange({ ...data, contentStrategy: e.target.value })}
-            placeholder="规划内容创作的方向、风格和发布节奏"
-            rows={4}
-            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-red-400 focus:ring-2 focus:ring-red-400/30 outline-none transition-all resize-none text-white placeholder-white/40 backdrop-blur input-glow-orange"
+            placeholder="创意表现的风格、调性、视觉语言等有什么要求？"
+            rows={3}
+            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
           />
         </div>
 
-        {/* 媒体策略 */}
+        {/* 执行建议 */}
         <div>
-          <label className="block text-sm font-medium text-white/80 mb-2">媒体策略</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">执行建议</label>
           <textarea
             value={data.mediaStrategy || ''}
             onChange={(e) => onChange({ ...data, mediaStrategy: e.target.value })}
-            placeholder="规划媒体渠道的选择和投放策略"
-            rows={4}
-            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-red-400 focus:ring-2 focus:ring-red-400/30 outline-none transition-all resize-none text-white placeholder-white/40 backdrop-blur input-glow-orange"
+            placeholder="在执行层面有什么特别的建议或注意事项？"
+            rows={3}
+            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
           />
+        </div>
+
+        {/* Prompt生成 */}
+        <div className="bg-gray-50 rounded-xl border border-gray-200 p-4">
+          <div className="flex items-center justify-between mb-3">
+            <label className="text-sm font-medium text-gray-700">生成Prompt</label>
+            <button
+              onClick={copyPrompt}
+              className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
+            >
+              <Copy className="w-4 h-4" />
+              复制
+            </button>
+          </div>
+          <div className="text-sm text-gray-600 bg-white rounded-lg p-3 border border-gray-200">
+            {data.overallStrategy || data.differentiation || data.contentStrategy || data.mediaStrategy 
+              ? `${data.overallStrategy || ''}\n\n${data.differentiation || ''}\n\n${data.contentStrategy || ''}\n\n${data.mediaStrategy || ''}`
+              : '填写上方内容后将自动生成可复制的Prompt'}
+          </div>
+        </div>
+
+        {/* 操作按钮 */}
+        <div className="flex gap-3 pt-4">
+          <button className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+            <Wand2 className="w-4 h-4" />
+            AI生成策略
+          </button>
         </div>
       </div>
 
-      {/* 完成卡片 */}
-      <div className="mt-8 p-5 bg-gradient-to-r from-red-500/20 to-rose-500/20 rounded-2xl border border-red-500/30 backdrop-blur-xl">
+      <div className="mt-8 p-4 bg-green-50 rounded-xl border border-green-200">
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500/30 to-rose-500/30 flex items-center justify-center flex-shrink-0">
-            <Sparkles className="w-5 h-5 text-red-300" />
+          <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
+            <Lightbulb className="w-4 h-4 text-green-600" />
           </div>
-          <div className="text-sm text-red-100">
-            <p className="font-semibold text-red-200">🎉 恭喜完成！</p>
-            <p className="mt-2 text-white/80">您已完成所有步骤！可以导出简报或策略文档，也可以返回修改任何步骤。</p>
+          <div className="text-sm text-green-800">
+            <p className="font-medium">🎉 恭喜完成！</p>
+            <p className="mt-1 text-green-700">您已完成所有步骤！可以导出简报或策略文档，也可以返回修改任何步骤。</p>
           </div>
         </div>
       </div>

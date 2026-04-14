@@ -1,5 +1,5 @@
 import React from 'react'
-import { Target, Sparkles } from 'lucide-react'
+import { Target } from 'lucide-react'
 import { Requirements } from '../types'
 
 interface Props {
@@ -8,145 +8,130 @@ interface Props {
 }
 
 const RequirementsStep: React.FC<Props> = ({ data, onChange }) => {
-  const projectTypes = [
-    '品牌定位', '品牌设计', '品牌推广', '品牌升级', 
-    '营销策划', '活动策划', '内容营销', '全案策划'
-  ]
-
-  const budgets = ['5万以下', '5-15万', '15-30万', '30-50万', '50万以上']
-  const timelines = ['1个月内', '1-3个月', '3-6个月', '6个月以上']
-  const tones = ['专业严谨', '活泼年轻', '高端奢华', '简约自然', '幽默风趣', '温暖亲切']
+  const serviceTypes = ['年度全案', '单项campaign', '专项服务']
+  const budgets = ['10万以下', '10-30万', '30-60万', '60-100万', '100万以上']
+  const timelines = ['1个月内', '1-3个月', '3-6个月', '6-12个月', '12个月以上']
+  const channels = ['社交媒体', '搜索引擎', '短视频平台', '传统媒体', '户外广告', 'KOL/KOC合作', '电商直播', '线下活动']
 
   return (
-    <div className="space-y-6">
-      {/* 标题区域 */}
-      <div className="flex items-center gap-4 mb-8">
-        <div className="relative">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-xl animate-pulse-glow">
-            <Target className="w-7 h-7 text-white" />
+    <div className="max-w-2xl mx-auto">
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
+            <Target className="w-5 h-5 text-blue-600" />
           </div>
-          <div className="absolute -inset-1 bg-gradient-to-br from-blue-500/50 to-cyan-500/50 rounded-2xl blur-lg -z-10"></div>
+          <h2 className="text-xl font-semibold text-gray-900">项目需求</h2>
         </div>
-        <div>
-          <h2 className="text-2xl font-bold text-white">项目需求</h2>
-          <p className="text-sm text-white/60">明确项目的核心需求和目标</p>
-        </div>
+        <p className="text-gray-500 text-sm">明确项目的核心需求和目标</p>
       </div>
 
-      <div className="grid gap-6">
-        {/* 项目类型和预算 */}
+      <div className="space-y-5">
+        {/* 服务类型和预算 */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-white/80 mb-2">项目类型</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">服务类型</label>
             <select
               value={data.projectType || ''}
               onChange={(e) => onChange({ ...data, projectType: e.target.value })}
-              className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 outline-none transition-all text-white backdrop-blur input-glow-blue"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
             >
-              <option value="" className="bg-gray-800">请选择类型</option>
-              {projectTypes.map(type => (
-                <option key={type} value={type} className="bg-gray-800">{type}</option>
+              <option value="">请选择服务类型</option>
+              {serviceTypes.map(type => (
+                <option key={type} value={type}>{type}</option>
               ))}
             </select>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-white/80 mb-2">预算范围</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">预算范围</label>
             <select
               value={data.budget || ''}
               onChange={(e) => onChange({ ...data, budget: e.target.value })}
-              className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 outline-none transition-all text-white backdrop-blur input-glow-blue"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
             >
-              <option value="" className="bg-gray-800">请选择预算</option>
+              <option value="">请选择预算范围</option>
               {budgets.map(b => (
-                <option key={b} value={b} className="bg-gray-800">{b}</option>
+                <option key={b} value={b}>{b}</option>
               ))}
             </select>
           </div>
         </div>
 
-        {/* 项目周期 */}
+        {/* 时间节点 */}
         <div>
-          <label className="block text-sm font-medium text-white/80 mb-2">项目周期</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">时间节点</label>
           <select
             value={data.timeline || ''}
             onChange={(e) => onChange({ ...data, timeline: e.target.value })}
-            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 outline-none transition-all text-white backdrop-blur input-glow-blue"
+            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
           >
-            <option value="" className="bg-gray-800">请选择周期</option>
+            <option value="">请选择项目周期</option>
             {timelines.map(t => (
-              <option key={t} value={t} className="bg-gray-800">{t}</option>
+              <option key={t} value={t}>{t}</option>
             ))}
           </select>
         </div>
 
-        {/* 目标受众 */}
+        {/* 项目目标 */}
         <div>
-          <label className="block text-sm font-medium text-white/80 mb-2">目标受众</label>
-          <textarea
-            value={data.targetAudience || ''}
-            onChange={(e) => onChange({ ...data, targetAudience: e.target.value })}
-            placeholder="描述目标人群的特征：年龄、职业、消费习惯等"
-            rows={3}
-            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 outline-none transition-all resize-none text-white placeholder-white/40 backdrop-blur input-glow-blue"
-          />
-        </div>
-
-        {/* 核心信息 */}
-        <div>
-          <label className="block text-sm font-medium text-white/80 mb-2">核心信息</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">项目目标</label>
           <textarea
             value={data.keyMessage || ''}
             onChange={(e) => onChange({ ...data, keyMessage: e.target.value })}
-            placeholder="品牌需要传达给受众的核心信息是什么"
+            placeholder="描述项目的核心目标和预期成果"
             rows={3}
-            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 outline-none transition-all resize-none text-white placeholder-white/40 backdrop-blur input-glow-blue"
+            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
           />
         </div>
 
-        {/* 预期交付物 */}
+        {/* 核心KPI */}
         <div>
-          <label className="block text-sm font-medium text-white/80 mb-2">预期交付物</label>
-          <input
-            type="text"
-            value={data.deliverables?.join('、') || ''}
-            onChange={(e) => onChange({ ...data, deliverables: e.target.value.split('、').filter(Boolean) })}
-            placeholder="如：品牌手册、VI设计、营销方案等，用顿号分隔"
-            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 outline-none transition-all text-white placeholder-white/40 backdrop-blur input-glow-blue"
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">核心KPI</label>
+          <textarea
+            value={data.targetAudience || ''}
+            onChange={(e) => onChange({ ...data, targetAudience: e.target.value })}
+            placeholder="列出需要考核的核心指标，如：曝光量、点击率、转化率、销售额等"
+            rows={2}
+            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
           />
         </div>
 
-        {/* 品牌调性 */}
+        {/* 主要传播渠道 */}
         <div>
-          <label className="block text-sm font-medium text-white/80 mb-3">品牌调性</label>
-          <div className="flex flex-wrap gap-3">
-            {tones.map(tone => (
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">主要传播渠道</label>
+          <div className="flex flex-wrap gap-2">
+            {channels.map(channel => (
               <button
-                key={tone}
-                onClick={() => onChange({ ...data, tone })}
-                className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ${
-                  data.tone === tone
-                    ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/30 hover-glow-blue'
-                    : 'bg-white/10 text-white/70 hover:bg-white/20 border border-white/10 hover:border-blue-400/30'
+                key={channel}
+                onClick={() => {
+                  const currentChannels = (data as any).channels || []
+                  const newChannels = currentChannels.includes(channel)
+                    ? currentChannels.filter((c: string) => c !== channel)
+                    : [...currentChannels, channel]
+                  onChange({ ...data, channels: newChannels } as any)
+                }}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                  (data as any).channels?.includes(channel)
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
-                {tone}
+                {channel}
               </button>
             ))}
           </div>
         </div>
-      </div>
 
-      {/* 提示卡片 */}
-      <div className="mt-8 p-5 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-2xl border border-blue-500/30 backdrop-blur-xl">
-        <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/30 to-cyan-500/30 flex items-center justify-center flex-shrink-0">
-            <Sparkles className="w-5 h-5 text-blue-300" />
-          </div>
-          <div className="text-sm text-blue-100">
-            <p className="font-semibold text-blue-200">💡 提示</p>
-            <p className="mt-2 text-white/80">清晰的需求描述有助于AI更准确地生成创意策略。</p>
-          </div>
+        {/* 特殊要求 */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">特殊要求</label>
+          <textarea
+            value={data.additionalRequirements || ''}
+            onChange={(e) => onChange({ ...data, additionalRequirements: e.target.value })}
+            placeholder="补充任何特殊需求或注意事项"
+            rows={3}
+            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+          />
         </div>
       </div>
     </div>

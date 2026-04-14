@@ -1,5 +1,5 @@
 import React from 'react'
-import { FileText, Sparkles, Plus, Trash2 } from 'lucide-react'
+import { FileText, Plus, Trash2, Wand2, Download } from 'lucide-react'
 import { Brief } from '../types'
 
 interface Props {
@@ -9,50 +9,46 @@ interface Props {
 
 const BriefStep: React.FC<Props> = ({ data, onChange }) => {
   return (
-    <div className="space-y-6">
-      {/* 标题区域 */}
-      <div className="flex items-center gap-4 mb-8">
-        <div className="relative">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-yellow-500 flex items-center justify-center shadow-xl animate-pulse-glow">
-            <FileText className="w-7 h-7 text-white" />
+    <div className="max-w-2xl mx-auto">
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center">
+            <FileText className="w-5 h-5 text-orange-600" />
           </div>
-          <div className="absolute -inset-1 bg-gradient-to-br from-orange-500/50 to-yellow-500/50 rounded-2xl blur-lg -z-10"></div>
+          <h2 className="text-xl font-semibold text-gray-900">创意简报</h2>
         </div>
-        <div>
-          <h2 className="text-2xl font-bold text-white">创意简报</h2>
-          <p className="text-sm text-white/60">明确项目的创意方向和核心洞察</p>
-        </div>
+        <p className="text-gray-500 text-sm">明确项目的创意方向和核心洞察</p>
       </div>
 
-      <div className="grid gap-6">
+      <div className="space-y-5">
         {/* 项目概述 */}
         <div>
-          <label className="block text-sm font-medium text-white/80 mb-2">项目概述</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">项目概述</label>
           <textarea
             value={data.projectOverview || ''}
             onChange={(e) => onChange({ ...data, projectOverview: e.target.value })}
             placeholder="用一段话概括整个项目的背景、目标和预期成果"
-            rows={4}
-            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-orange-400 focus:ring-2 focus:ring-orange-400/30 outline-none transition-all resize-none text-white placeholder-white/40 backdrop-blur input-glow-orange"
+            rows={3}
+            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
           />
         </div>
 
         {/* 创意方向 */}
         <div>
-          <label className="block text-sm font-medium text-white/80 mb-2">创意方向</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">创意方向</label>
           <textarea
             value={data.creativeDirection || ''}
             onChange={(e) => onChange({ ...data, creativeDirection: e.target.value })}
             placeholder="描述您期望的创意风格、表达方式或创意亮点"
-            rows={4}
-            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-orange-400 focus:ring-2 focus:ring-orange-400/30 outline-none transition-all resize-none text-white placeholder-white/40 backdrop-blur input-glow-orange"
+            rows={3}
+            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
           />
         </div>
 
         {/* 关键洞察 */}
         <div>
-          <label className="block text-sm font-medium text-white/80 mb-3">关键洞察</label>
-          <p className="text-xs text-white/50 mb-3">列出项目需要关注的关键洞察点</p>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">关键洞察</label>
+          <p className="text-xs text-gray-400 mb-3">列出项目需要关注的关键洞察点</p>
           {data.keyInsights?.map((insight, index) => (
             <div key={index} className="flex gap-3 mb-3">
               <input
@@ -64,14 +60,14 @@ const BriefStep: React.FC<Props> = ({ data, onChange }) => {
                   onChange({ ...data, keyInsights: newInsights })
                 }}
                 placeholder={`洞察点 ${index + 1}`}
-                className="flex-1 px-4 py-3 rounded-xl bg-white/10 border border-white/20 focus:border-orange-400 focus:ring-2 focus:ring-orange-400/30 outline-none transition-all text-white placeholder-white/40 input-glow-orange"
+                className="flex-1 px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
               <button
                 onClick={() => {
                   const newInsights = (data.keyInsights || []).filter((_, i) => i !== index)
                   onChange({ ...data, keyInsights: newInsights })
                 }}
-                className="px-4 py-2 text-red-400 hover:bg-red-500/20 hover:text-red-300 rounded-xl transition-all duration-300 border border-transparent hover:border-red-500/30"
+                className="px-3 py-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
               >
                 <Trash2 className="w-5 h-5" />
               </button>
@@ -79,17 +75,17 @@ const BriefStep: React.FC<Props> = ({ data, onChange }) => {
           ))}
           <button
             onClick={() => onChange({ ...data, keyInsights: [...(data.keyInsights || []), ''] })}
-            className="px-5 py-2.5 bg-white/10 hover:bg-white/20 rounded-xl text-sm text-orange-300 hover:text-orange-200 transition-all border border-white/10 hover:border-orange-400/30 backdrop-blur"
+            className="px-4 py-2 text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all border border-dashed border-gray-300"
           >
-            <Plus className="w-4 h-4 inline mr-2" />
+            <Plus className="w-4 h-4 inline mr-1" />
             添加洞察点
           </button>
         </div>
 
         {/* 成功指标 */}
         <div>
-          <label className="block text-sm font-medium text-white/80 mb-3">成功指标</label>
-          <p className="text-xs text-white/50 mb-3">定义项目成功的衡量标准</p>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">成功指标</label>
+          <p className="text-xs text-gray-400 mb-3">定义项目成功的衡量标准</p>
           {data.successMetrics?.map((metric, index) => (
             <div key={index} className="flex gap-3 mb-3">
               <input
@@ -100,15 +96,15 @@ const BriefStep: React.FC<Props> = ({ data, onChange }) => {
                   newMetrics[index] = e.target.value
                   onChange({ ...data, successMetrics: newMetrics })
                 }}
-                placeholder={`指标 ${index + 1}`}
-                className="flex-1 px-4 py-3 rounded-xl bg-white/10 border border-white/20 focus:border-orange-400 focus:ring-2 focus:ring-orange-400/30 outline-none transition-all text-white placeholder-white/40 input-glow-orange"
+                placeholder={`成功指标 ${index + 1}`}
+                className="flex-1 px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
               <button
                 onClick={() => {
                   const newMetrics = (data.successMetrics || []).filter((_, i) => i !== index)
                   onChange({ ...data, successMetrics: newMetrics })
                 }}
-                className="px-4 py-2 text-red-400 hover:bg-red-500/20 hover:text-red-300 rounded-xl transition-all duration-300 border border-transparent hover:border-red-500/30"
+                className="px-3 py-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
               >
                 <Trash2 className="w-5 h-5" />
               </button>
@@ -116,24 +112,23 @@ const BriefStep: React.FC<Props> = ({ data, onChange }) => {
           ))}
           <button
             onClick={() => onChange({ ...data, successMetrics: [...(data.successMetrics || []), ''] })}
-            className="px-5 py-2.5 bg-white/10 hover:bg-white/20 rounded-xl text-sm text-orange-300 hover:text-orange-200 transition-all border border-white/10 hover:border-orange-400/30 backdrop-blur"
+            className="px-4 py-2 text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all border border-dashed border-gray-300"
           >
-            <Plus className="w-4 h-4 inline mr-2" />
+            <Plus className="w-4 h-4 inline mr-1" />
             添加成功指标
           </button>
         </div>
-      </div>
 
-      {/* 提示卡片 */}
-      <div className="mt-8 p-5 bg-gradient-to-r from-orange-500/20 to-yellow-500/20 rounded-2xl border border-orange-500/30 backdrop-blur-xl">
-        <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500/30 to-yellow-500/30 flex items-center justify-center flex-shrink-0">
-            <Sparkles className="w-5 h-5 text-orange-300" />
-          </div>
-          <div className="text-sm text-orange-100">
-            <p className="font-semibold text-orange-200">💡 提示</p>
-            <p className="mt-2 text-white/80">创意简报是整个项目的核心指导文档，后续的策略都将基于此展开。</p>
-          </div>
+        {/* 操作按钮 */}
+        <div className="flex gap-3 pt-4">
+          <button className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+            <Wand2 className="w-4 h-4" />
+            AI一键生成
+          </button>
+          <button className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
+            <Download className="w-4 h-4" />
+            导出简报
+          </button>
         </div>
       </div>
     </div>
