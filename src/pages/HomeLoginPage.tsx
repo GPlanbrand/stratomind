@@ -23,6 +23,14 @@ const HomeLoginPage: React.FC = () => {
   const [error, setError] = useState('');
   const [phoneError, setPhoneError] = useState('');
 
+  // 演示登录
+  const handleDemoLogin = () => {
+    const result = login('demo', 'demo123');
+    if (result.success) {
+      navigate('/projects');
+    }
+  };
+
   const handleAccountLogin = async () => {
     if (!account) {
       setAccountError('请输入用户名或邮箱');
@@ -37,6 +45,23 @@ const HomeLoginPage: React.FC = () => {
     setLoading(true);
     
     await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // 演示模式：密码123456直接登录
+    if (password === '123456') {
+      const result = login(account, 'demo123');
+      if (result.success) {
+        navigate('/projects');
+        return;
+      }
+      // 如果登录失败，创建新用户
+      const register = require('../services/auth').register;
+      const regResult = register(account, account.includes('@') ? account : account + '@demo.com', 'demo123');
+      if (regResult.success) {
+        navigate('/projects');
+        return;
+      }
+    }
+    
     const result = login(account, password);
     
     setLoading(false);
@@ -76,6 +101,19 @@ const HomeLoginPage: React.FC = () => {
   const handlePhoneLogin = async () => {
     if (!phone || !/^1[3-9]\d{9}$/.test(phone)) {
       setPhoneError('请输入正确的手机号');
+      return;
+    }
+    // 演示模式：验证码123456直接登录
+    if (code === '123456') {
+      setLoading(true);
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const result = login(phone, 'sms');
+      setLoading(false);
+      if (result.success) {
+        navigate('/projects');
+      } else {
+        setError(result.message);
+      }
       return;
     }
     if (!code || code.length !== 6) {
@@ -230,6 +268,11 @@ const HomeLoginPage: React.FC = () => {
               >
                 {loading ? '登录中...' : '登录'}
               </button>
+
+              {/* 演示提示 */}
+              <p className="text-xs text-gray-400 text-center">
+                演示模式：验证码输入 <span className="font-mono bg-gray-100 px-1 rounded">123456</span> 即可登录
+              </p>
             </div>
           )}
 
@@ -260,9 +303,19 @@ const HomeLoginPage: React.FC = () => {
             </div>
           )}
 
+          {/* 演示登录按钮 */}
+          {!showWechat && (
+            <button
+              onClick={handleDemoLogin}
+              className="w-full mt-4 py-3 border-2 border-dashed border-gray-300 text-gray-600 rounded-lg font-medium hover:border-gray-400 hover:text-gray-700 transition-colors text-sm"
+            >
+              🚀 演示体验（无需注册）
+            </button>
+          )}
+
           {/* 其他链接 */}
           {!showWechat && (
-            <div className="mt-6 flex items-center justify-between text-sm">
+            <div className="mt-4 flex items-center justify-between text-sm">
               <a href="/register" className="text-blue-600 hover:text-blue-700">
                 注册账号
               </a>
