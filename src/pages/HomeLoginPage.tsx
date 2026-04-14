@@ -45,23 +45,6 @@ const HomeLoginPage: React.FC = () => {
     setLoading(true);
     
     await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // 演示模式：密码123456直接登录
-    if (password === '123456') {
-      const result = login(account, 'demo123');
-      if (result.success) {
-        navigate('/projects');
-        return;
-      }
-      // 如果登录失败，创建新用户
-      const register = require('../services/auth').register;
-      const regResult = register(account, account.includes('@') ? account : account + '@demo.com', 'demo123');
-      if (regResult.success) {
-        navigate('/projects');
-        return;
-      }
-    }
-    
     const result = login(account, password);
     
     setLoading(false);
