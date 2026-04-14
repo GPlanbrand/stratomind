@@ -19,9 +19,13 @@ const RequirementsStep: React.FC<Props> = ({ data, onChange }) => {
 
   return (
     <div className="space-y-6">
+      {/* 标题区域 */}
       <div className="flex items-center gap-4 mb-8">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg">
-          <Target className="w-7 h-7 text-white" />
+        <div className="relative">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-xl animate-pulse-glow">
+            <Target className="w-7 h-7 text-white" />
+          </div>
+          <div className="absolute -inset-1 bg-gradient-to-br from-blue-500/50 to-cyan-500/50 rounded-2xl blur-lg -z-10"></div>
         </div>
         <div>
           <h2 className="text-2xl font-bold text-white">项目需求</h2>
@@ -30,13 +34,14 @@ const RequirementsStep: React.FC<Props> = ({ data, onChange }) => {
       </div>
 
       <div className="grid gap-6">
+        {/* 项目类型和预算 */}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-white/80 mb-2">项目类型</label>
             <select
               value={data.projectType || ''}
               onChange={(e) => onChange({ ...data, projectType: e.target.value })}
-              className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 outline-none transition-all text-white backdrop-blur"
+              className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 outline-none transition-all text-white backdrop-blur input-glow-blue"
             >
               <option value="" className="bg-gray-800">请选择类型</option>
               {projectTypes.map(type => (
@@ -50,7 +55,7 @@ const RequirementsStep: React.FC<Props> = ({ data, onChange }) => {
             <select
               value={data.budget || ''}
               onChange={(e) => onChange({ ...data, budget: e.target.value })}
-              className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 outline-none transition-all text-white backdrop-blur"
+              className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 outline-none transition-all text-white backdrop-blur input-glow-blue"
             >
               <option value="" className="bg-gray-800">请选择预算</option>
               {budgets.map(b => (
@@ -60,12 +65,13 @@ const RequirementsStep: React.FC<Props> = ({ data, onChange }) => {
           </div>
         </div>
 
+        {/* 项目周期 */}
         <div>
           <label className="block text-sm font-medium text-white/80 mb-2">项目周期</label>
           <select
             value={data.timeline || ''}
             onChange={(e) => onChange({ ...data, timeline: e.target.value })}
-            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 outline-none transition-all text-white backdrop-blur"
+            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 outline-none transition-all text-white backdrop-blur input-glow-blue"
           >
             <option value="" className="bg-gray-800">请选择周期</option>
             {timelines.map(t => (
@@ -74,6 +80,7 @@ const RequirementsStep: React.FC<Props> = ({ data, onChange }) => {
           </select>
         </div>
 
+        {/* 目标受众 */}
         <div>
           <label className="block text-sm font-medium text-white/80 mb-2">目标受众</label>
           <textarea
@@ -81,10 +88,11 @@ const RequirementsStep: React.FC<Props> = ({ data, onChange }) => {
             onChange={(e) => onChange({ ...data, targetAudience: e.target.value })}
             placeholder="描述目标人群的特征：年龄、职业、消费习惯等"
             rows={3}
-            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 outline-none transition-all resize-none text-white placeholder-white/40 backdrop-blur"
+            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 outline-none transition-all resize-none text-white placeholder-white/40 backdrop-blur input-glow-blue"
           />
         </div>
 
+        {/* 核心信息 */}
         <div>
           <label className="block text-sm font-medium text-white/80 mb-2">核心信息</label>
           <textarea
@@ -92,10 +100,11 @@ const RequirementsStep: React.FC<Props> = ({ data, onChange }) => {
             onChange={(e) => onChange({ ...data, keyMessage: e.target.value })}
             placeholder="品牌需要传达给受众的核心信息是什么"
             rows={3}
-            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 outline-none transition-all resize-none text-white placeholder-white/40 backdrop-blur"
+            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 outline-none transition-all resize-none text-white placeholder-white/40 backdrop-blur input-glow-blue"
           />
         </div>
 
+        {/* 预期交付物 */}
         <div>
           <label className="block text-sm font-medium text-white/80 mb-2">预期交付物</label>
           <input
@@ -103,10 +112,11 @@ const RequirementsStep: React.FC<Props> = ({ data, onChange }) => {
             value={data.deliverables?.join('、') || ''}
             onChange={(e) => onChange({ ...data, deliverables: e.target.value.split('、').filter(Boolean) })}
             placeholder="如：品牌手册、VI设计、营销方案等，用顿号分隔"
-            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 outline-none transition-all text-white placeholder-white/40 backdrop-blur"
+            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 outline-none transition-all text-white placeholder-white/40 backdrop-blur input-glow-blue"
           />
         </div>
 
+        {/* 品牌调性 */}
         <div>
           <label className="block text-sm font-medium text-white/80 mb-3">品牌调性</label>
           <div className="flex flex-wrap gap-3">
@@ -114,10 +124,10 @@ const RequirementsStep: React.FC<Props> = ({ data, onChange }) => {
               <button
                 key={tone}
                 onClick={() => onChange({ ...data, tone })}
-                className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ${
                   data.tone === tone
-                    ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg'
-                    : 'bg-white/10 text-white/70 hover:bg-white/20 border border-white/10'
+                    ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/30 hover-glow-blue'
+                    : 'bg-white/10 text-white/70 hover:bg-white/20 border border-white/10 hover:border-blue-400/30'
                 }`}
               >
                 {tone}
@@ -127,9 +137,10 @@ const RequirementsStep: React.FC<Props> = ({ data, onChange }) => {
         </div>
       </div>
 
-      <div className="mt-8 p-5 bg-blue-500/20 rounded-2xl border border-blue-500/30 backdrop-blur">
+      {/* 提示卡片 */}
+      <div className="mt-8 p-5 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-2xl border border-blue-500/30 backdrop-blur-xl">
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-500/30 flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/30 to-cyan-500/30 flex items-center justify-center flex-shrink-0">
             <Sparkles className="w-5 h-5 text-blue-300" />
           </div>
           <div className="text-sm text-blue-100">

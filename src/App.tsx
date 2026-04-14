@@ -2,6 +2,7 @@ import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import WorkspacePage from './pages/WorkspacePage'
+import AnalysisChartsPage from './pages/AnalysisChartsPage'
 import Layout from './components/Layout'
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="workspace/:projectId?" element={<WorkspacePage />} />
+        <Route path="analysis-charts" element={<AnalysisChartsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

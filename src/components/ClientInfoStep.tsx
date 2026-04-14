@@ -17,9 +17,13 @@ const ClientInfoStep: React.FC<Props> = ({ data, onChange }) => {
 
   return (
     <div className="space-y-6">
+      {/* 标题区域 */}
       <div className="flex items-center gap-4 mb-8">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
-          <Building2 className="w-7 h-7 text-white" />
+        <div className="relative">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-xl animate-pulse-glow">
+            <Building2 className="w-7 h-7 text-white" />
+          </div>
+          <div className="absolute -inset-1 bg-gradient-to-br from-purple-500/50 to-pink-500/50 rounded-2xl blur-lg -z-10"></div>
         </div>
         <div>
           <h2 className="text-2xl font-bold text-white">客户背景信息</h2>
@@ -28,6 +32,7 @@ const ClientInfoStep: React.FC<Props> = ({ data, onChange }) => {
       </div>
 
       <div className="grid gap-6">
+        {/* 公司名称 */}
         <div>
           <label className="block text-sm font-medium text-white/80 mb-2">
             公司名称 <span className="text-pink-400">*</span>
@@ -37,17 +42,18 @@ const ClientInfoStep: React.FC<Props> = ({ data, onChange }) => {
             value={data.companyName || ''}
             onChange={(e) => onChange({ ...data, companyName: e.target.value })}
             placeholder="请输入公司全称"
-            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/30 outline-none transition-all text-white placeholder-white/40 backdrop-blur"
+            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/30 outline-none transition-all text-white placeholder-white/40 backdrop-blur input-glow-purple"
           />
         </div>
 
+        {/* 行业和规模 - 两列布局 */}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-white/80 mb-2">所属行业</label>
             <select
               value={data.industry || ''}
               onChange={(e) => onChange({ ...data, industry: e.target.value })}
-              className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/30 outline-none transition-all text-white backdrop-blur"
+              className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/30 outline-none transition-all text-white backdrop-blur input-glow-purple"
             >
               <option value="" className="bg-gray-800">请选择行业</option>
               {industries.map(ind => (
@@ -61,7 +67,7 @@ const ClientInfoStep: React.FC<Props> = ({ data, onChange }) => {
             <select
               value={data.companySize || ''}
               onChange={(e) => onChange({ ...data, companySize: e.target.value })}
-              className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/30 outline-none transition-all text-white backdrop-blur"
+              className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/30 outline-none transition-all text-white backdrop-blur input-glow-purple"
             >
               <option value="" className="bg-gray-800">请选择规模</option>
               {companySizes.map(size => (
@@ -71,6 +77,7 @@ const ClientInfoStep: React.FC<Props> = ({ data, onChange }) => {
           </div>
         </div>
 
+        {/* 公司描述 */}
         <div>
           <label className="block text-sm font-medium text-white/80 mb-2">公司描述</label>
           <textarea
@@ -78,10 +85,11 @@ const ClientInfoStep: React.FC<Props> = ({ data, onChange }) => {
             onChange={(e) => onChange({ ...data, description: e.target.value })}
             placeholder="简要描述公司业务、产品或服务"
             rows={4}
-            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/30 outline-none transition-all resize-none text-white placeholder-white/40 backdrop-blur"
+            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/30 outline-none transition-all resize-none text-white placeholder-white/40 backdrop-blur input-glow-purple"
           />
         </div>
 
+        {/* 目标市场 */}
         <div>
           <label className="block text-sm font-medium text-white/80 mb-2">目标市场</label>
           <input
@@ -89,10 +97,11 @@ const ClientInfoStep: React.FC<Props> = ({ data, onChange }) => {
             value={data.targetMarket || ''}
             onChange={(e) => onChange({ ...data, targetMarket: e.target.value })}
             placeholder="描述您的目标市场区域或人群"
-            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/30 outline-none transition-all text-white placeholder-white/40 backdrop-blur"
+            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/30 outline-none transition-all text-white placeholder-white/40 backdrop-blur input-glow-purple"
           />
         </div>
 
+        {/* 核心产品/服务 */}
         <div>
           <label className="block text-sm font-medium text-white/80 mb-2">核心产品/服务</label>
           <input
@@ -100,10 +109,11 @@ const ClientInfoStep: React.FC<Props> = ({ data, onChange }) => {
             value={data.keyProducts?.join('、') || ''}
             onChange={(e) => onChange({ ...data, keyProducts: e.target.value.split('、').filter(Boolean) })}
             placeholder="输入主要产品或服务，用顿号分隔"
-            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/30 outline-none transition-all text-white placeholder-white/40 backdrop-blur"
+            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/30 outline-none transition-all text-white placeholder-white/40 backdrop-blur input-glow-purple"
           />
         </div>
 
+        {/* 品牌定位 */}
         <div>
           <label className="block text-sm font-medium text-white/80 mb-2">品牌定位</label>
           <textarea
@@ -111,14 +121,15 @@ const ClientInfoStep: React.FC<Props> = ({ data, onChange }) => {
             onChange={(e) => onChange({ ...data, brandPosition: e.target.value })}
             placeholder="描述品牌在市场中的独特定位"
             rows={3}
-            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/30 outline-none transition-all resize-none text-white placeholder-white/40 backdrop-blur"
+            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/30 outline-none transition-all resize-none text-white placeholder-white/40 backdrop-blur input-glow-purple"
           />
         </div>
       </div>
 
-      <div className="mt-8 p-5 bg-purple-500/20 rounded-2xl border border-purple-500/30 backdrop-blur">
+      {/* 提示卡片 */}
+      <div className="mt-8 p-5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl border border-purple-500/30 backdrop-blur-xl">
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-purple-500/30 flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500/30 to-pink-500/30 flex items-center justify-center flex-shrink-0">
             <Sparkles className="w-5 h-5 text-purple-300" />
           </div>
           <div className="text-sm text-purple-100">

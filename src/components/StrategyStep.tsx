@@ -10,9 +10,13 @@ interface Props {
 const StrategyStep: React.FC<Props> = ({ data, onChange }) => {
   return (
     <div className="space-y-6">
+      {/* 标题区域 */}
       <div className="flex items-center gap-4 mb-8">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-500 to-rose-500 flex items-center justify-center shadow-lg">
-          <Lightbulb className="w-7 h-7 text-white" />
+        <div className="relative">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-500 to-rose-500 flex items-center justify-center shadow-xl animate-pulse-glow">
+            <Lightbulb className="w-7 h-7 text-white" />
+          </div>
+          <div className="absolute -inset-1 bg-gradient-to-br from-red-500/50 to-rose-500/50 rounded-2xl blur-lg -z-10"></div>
         </div>
         <div>
           <h2 className="text-2xl font-bold text-white">创意策略</h2>
@@ -21,6 +25,7 @@ const StrategyStep: React.FC<Props> = ({ data, onChange }) => {
       </div>
 
       <div className="grid gap-6">
+        {/* 整体策略 */}
         <div>
           <label className="block text-sm font-medium text-white/80 mb-2">整体策略</label>
           <textarea
@@ -28,10 +33,11 @@ const StrategyStep: React.FC<Props> = ({ data, onChange }) => {
             onChange={(e) => onChange({ ...data, overallStrategy: e.target.value })}
             placeholder="描述品牌的整体战略方向和核心主张"
             rows={4}
-            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-red-400 focus:ring-2 focus:ring-red-400/30 outline-none transition-all resize-none text-white placeholder-white/40 backdrop-blur"
+            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-red-400 focus:ring-2 focus:ring-red-400/30 outline-none transition-all resize-none text-white placeholder-white/40 backdrop-blur input-glow-orange"
           />
         </div>
 
+        {/* 差异化定位 */}
         <div>
           <label className="block text-sm font-medium text-white/80 mb-2">差异化定位</label>
           <textarea
@@ -39,10 +45,11 @@ const StrategyStep: React.FC<Props> = ({ data, onChange }) => {
             onChange={(e) => onChange({ ...data, differentiation: e.target.value })}
             placeholder="说明品牌与竞品的差异化优势和独特卖点"
             rows={4}
-            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-red-400 focus:ring-2 focus:ring-red-400/30 outline-none transition-all resize-none text-white placeholder-white/40 backdrop-blur"
+            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-red-400 focus:ring-2 focus:ring-red-400/30 outline-none transition-all resize-none text-white placeholder-white/40 backdrop-blur input-glow-orange"
           />
         </div>
 
+        {/* 内容策略 */}
         <div>
           <label className="block text-sm font-medium text-white/80 mb-2">内容策略</label>
           <textarea
@@ -50,10 +57,11 @@ const StrategyStep: React.FC<Props> = ({ data, onChange }) => {
             onChange={(e) => onChange({ ...data, contentStrategy: e.target.value })}
             placeholder="规划内容创作的方向、风格和发布节奏"
             rows={4}
-            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-red-400 focus:ring-2 focus:ring-red-400/30 outline-none transition-all resize-none text-white placeholder-white/40 backdrop-blur"
+            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-red-400 focus:ring-2 focus:ring-red-400/30 outline-none transition-all resize-none text-white placeholder-white/40 backdrop-blur input-glow-orange"
           />
         </div>
 
+        {/* 媒体策略 */}
         <div>
           <label className="block text-sm font-medium text-white/80 mb-2">媒体策略</label>
           <textarea
@@ -61,19 +69,20 @@ const StrategyStep: React.FC<Props> = ({ data, onChange }) => {
             onChange={(e) => onChange({ ...data, mediaStrategy: e.target.value })}
             placeholder="规划媒体渠道的选择和投放策略"
             rows={4}
-            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-red-400 focus:ring-2 focus:ring-red-400/30 outline-none transition-all resize-none text-white placeholder-white/40 backdrop-blur"
+            className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 focus:border-red-400 focus:ring-2 focus:ring-red-400/30 outline-none transition-all resize-none text-white placeholder-white/40 backdrop-blur input-glow-orange"
           />
         </div>
       </div>
 
-      <div className="mt-8 p-5 bg-gradient-to-r from-red-500/20 to-rose-500/20 rounded-2xl border border-red-500/30 backdrop-blur">
+      {/* 完成卡片 */}
+      <div className="mt-8 p-5 bg-gradient-to-r from-red-500/20 to-rose-500/20 rounded-2xl border border-red-500/30 backdrop-blur-xl">
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-red-500/30 flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500/30 to-rose-500/30 flex items-center justify-center flex-shrink-0">
             <Sparkles className="w-5 h-5 text-red-300" />
           </div>
           <div className="text-sm text-red-100">
             <p className="font-semibold text-red-200">🎉 恭喜完成！</p>
-            <p className="mt-2 text-white/80">您已完所有步骤！可以导出简报或策略文档，也可以返回修改任何步骤。</p>
+            <p className="mt-2 text-white/80">您已完成所有步骤！可以导出简报或策略文档，也可以返回修改任何步骤。</p>
           </div>
         </div>
       </div>

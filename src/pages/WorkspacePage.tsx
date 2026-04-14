@@ -172,51 +172,59 @@ const WorkspacePage: React.FC = () => {
 
   return (
     <div className="min-h-screen relative z-10">
-      {/* 顶部导航 */}
-      <header className="glass rounded-2xl mx-4 mt-4 sticky top-0 z-20 shadow-xl border border-white/20">
+      {/* 顶部导航 - 玻璃态增强 */}
+      <header className="glass-strong rounded-2xl mx-4 mt-4 sticky top-0 z-20 shadow-2xl border border-white/20 transition-all duration-300 animate-fade-in-down">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
+            {/* 左侧区域 */}
             <div className="flex items-center gap-4">
-              {/* 返回首页按钮 */}
+              {/* 返回首页按钮 - 优化样式 */}
               <button
                 onClick={() => navigate('/')}
-                className="p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-all group"
+                className="p-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 hover:border-white/20 transition-all duration-300 group btn-glow"
                 title="返回首页"
               >
-                <Home className="w-5 h-5 text-white group-hover:scale-110 transition-transform" />
+                <Home className="w-5 h-5 text-white group-hover:scale-110 transition-transform duration-300" />
               </button>
               
-              <div className="w-px h-8 bg-white/20"></div>
+              <div className="w-px h-10 bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
               
+              {/* 当前步骤信息 */}
               <div className="flex items-center gap-3">
-                <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${STEPS[currentStep].color} flex items-center justify-center shadow-lg animate-pulse-soft`}>
-                  {React.createElement(STEPS[currentStep].icon, { className: 'w-5 h-5 text-white' })}
+                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${STEPS[currentStep].color} flex items-center justify-center shadow-lg animate-pulse-glow relative`}>
+                  {React.createElement(STEPS[currentStep].icon, { className: 'w-6 h-6 text-white' })}
+                  {/* 步骤图标光晕 */}
+                  <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/30 to-transparent opacity-0 animate-pulse"></div>
                 </div>
-                <div>
+                <div className="animate-fade-in">
                   <h1 className="text-lg font-bold text-white">
                     {isNewProject ? '新建项目' : (project?.name || project?.clientName || '项目详情')}
                   </h1>
-                  <p className="text-xs text-white/60">{STEPS[currentStep].name}</p>
+                  <p className="text-xs text-white/60 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 animate-pulse"></span>
+                    {STEPS[currentStep].name}
+                  </p>
                 </div>
               </div>
             </div>
 
+            {/* 右侧操作区 */}
             {!isNewProject && (
               <div className="flex items-center gap-3">
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 transition-all text-sm font-semibold shadow-lg hover:shadow-xl flex items-center gap-2 disabled:opacity-50 btn-press"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 transition-all duration-300 text-sm font-semibold shadow-lg hover:shadow-xl flex items-center gap-2 disabled:opacity-50 btn-press btn-glow hover-glow relative overflow-hidden"
                 >
                   <Save className="w-4 h-4" />
-                  保存
+                  {saving ? '保存中...' : '保存'}
                 </button>
               </div>
             )}
           </div>
 
-          {/* 步骤指示器 */}
-          <div className="mt-5 flex items-center gap-2 overflow-x-auto pb-2">
+          {/* 步骤指示器 - 增强样式 */}
+          <div className="mt-5 flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
             {STEPS.map((step, index) => {
               const Icon = step.icon
               const isCompleted = isStepCompleted(index)
@@ -227,16 +235,18 @@ const WorkspacePage: React.FC = () => {
                   <button
                     onClick={() => !isNewProject && setCurrentStep(index)}
                     disabled={isNewProject}
-                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 whitespace-nowrap step-indicator ${
                       isCurrent
-                        ? `bg-gradient-to-r ${step.color} text-white shadow-lg`
+                        ? `bg-gradient-to-r ${step.color} text-white shadow-lg shadow-${step.color.split(' ')[1]}/30`
                         : isCompleted
                         ? 'bg-green-500/20 text-green-200 hover:bg-green-500/30 backdrop-blur border border-green-500/20'
                         : 'bg-white/10 text-white/60 hover:bg-white/20 backdrop-blur border border-white/10'
                     } ${isNewProject ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                   >
                     {isCompleted ? (
-                      <Check className="w-4 h-4" />
+                      <span className="w-5 h-5 rounded-full bg-green-400 flex items-center justify-center">
+                        <Check className="w-3 h-3 text-white" />
+                      </span>
                     ) : (
                       <Icon className="w-4 h-4" />
                     )}
@@ -252,57 +262,97 @@ const WorkspacePage: React.FC = () => {
         </div>
       </header>
 
-      {/* 通知消息 */}
+      {/* 通知消息 - 动画增强 */}
       {notification && (
-        <div className={`fixed top-24 left-1/2 -translate-x-1/2 z-50 px-6 py-3.5 rounded-xl shadow-xl flex items-center gap-3 backdrop-blur animate-fade-in ${
+        <div className={`fixed top-28 left-1/2 -translate-x-1/2 z-[100] px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 backdrop-blur-xl animate-bounce-in ${
           notification.type === 'success' 
-            ? 'bg-green-500/90 text-white' 
-            : 'bg-red-500/90 text-white'
+            ? 'bg-gradient-to-r from-green-500/95 to-emerald-500/95 text-white border border-green-400/30' 
+            : 'bg-gradient-to-r from-red-500/95 to-rose-500/95 text-white border border-red-400/30'
         }`}>
-          {notification.type === 'success' ? <Check className="w-5 h-5" /> : <RotateCcw className="w-5 h-5" />}
-          {notification.message}
+          {notification.type === 'success' ? (
+            <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
+              <Check className="w-4 h-4" />
+            </span>
+          ) : (
+            <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
+              <RotateCcw className="w-4 h-4" />
+            </span>
+          )}
+          <span className="font-medium">{notification.message}</span>
         </div>
       )}
 
-      {/* 主内容 */}
+      {/* 主内容 - 玻璃态卡片 */}
       <main className="max-w-4xl mx-auto px-4 py-8 relative z-10">
-        <div className="glass rounded-2xl shadow-xl border border-white/20 p-8 mb-6 animate-fade-in">
+        <div className="glass-card rounded-2xl shadow-2xl border border-white/15 p-8 mb-6 animate-fade-in-up">
           {renderStepContent()}
         </div>
 
-        {/* 底部导航 */}
-        <div className="glass rounded-2xl shadow-xl border border-white/20 p-6 flex items-center justify-between animate-fade-in">
+        {/* 底部导航 - 按钮优化 */}
+        <div className="glass-strong rounded-2xl shadow-2xl border border-white/20 p-6 flex items-center justify-between animate-fade-in-up" style={{animationDelay: '100ms'}}>
+          {/* 上一步按钮 */}
           <button
             onClick={handlePrev}
             disabled={currentStep === 0 || isNewProject}
-            className="px-6 py-3 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-colors font-semibold flex items-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed backdrop-blur"
+            className="group px-6 py-3.5 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-all duration-300 font-semibold flex items-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed backdrop-blur-md border border-white/10 hover:border-white/20 btn-press"
           >
-            <ArrowLeft className="w-5 h-5" />
-            上一步
+            <ArrowLeft className="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-1" />
+            <span>上一步</span>
           </button>
 
-          <div className="text-sm text-white/50 backdrop-blur px-4 py-2 rounded-lg bg-white/5">
-            步骤 {currentStep + 1} / {STEPS.length}
+          {/* 步骤进度指示 */}
+          <div className="flex items-center gap-3 backdrop-blur px-5 py-2.5 rounded-xl bg-white/5 border border-white/10">
+            <span className="text-sm text-white/60">步骤</span>
+            <span className="text-white font-bold text-lg">{currentStep + 1}</span>
+            <span className="text-sm text-white/40">/</span>
+            <span className="text-white/60 text-sm">{STEPS.length}</span>
           </div>
 
+          {/* 下一步/完成按钮 - 优化：不换行，增加宽度 */}
           <button
             onClick={handleNext}
             disabled={saving}
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 transition-all font-semibold shadow-lg hover:shadow-xl flex items-center gap-2 disabled:opacity-50 btn-press"
+            className="group relative px-10 py-3.5 rounded-xl bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 text-white hover:from-purple-600 hover:via-pink-600 hover:to-purple-600 transition-all duration-300 font-bold shadow-xl hover:shadow-2xl flex items-center gap-3 disabled:opacity-50 btn-press btn-shine overflow-hidden whitespace-nowrap animate-gradient"
+            style={{
+              backgroundSize: '200% 200%',
+              animation: 'gradientShift 3s ease infinite'
+            }}
           >
-            {isNewProject ? '创建项目' : currentStep === STEPS.length - 1 ? '完成' : '下一步'}
-            {!isNewProject && currentStep < STEPS.length - 1 && <ArrowRight className="w-5 h-5" />}
-            {currentStep === STEPS.length - 1 && <Check className="w-5 h-5" />}
+            {/* 按钮光效 */}
+            <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700"></span>
+            
+            <span className="relative z-10 flex items-center gap-2">
+              {isNewProject ? (
+                <>
+                  <span className="text-base">创建项目</span>
+                  <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
+                </>
+              ) : currentStep === STEPS.length - 1 ? (
+                <>
+                  <Check className="w-5 h-5" />
+                  <span className="text-base">完成</span>
+                </>
+              ) : (
+                <>
+                  <span className="text-base">下一步</span>
+                  <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
+                </>
+              )}
+            </span>
           </button>
         </div>
       </main>
 
-      {/* 底部提示 */}
+      {/* 底部提示 - 美化 */}
       <footer className="max-w-6xl mx-auto px-4 py-6 text-center relative z-10">
-        <p className="text-sm text-white/40 flex items-center justify-center gap-2">
-          <Sparkles className="w-4 h-4" />
-          每一步都会自动保存，您可以随时中断并继续
-        </p>
+        <div className="inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-white/5 backdrop-blur border border-white/10">
+          <div className="w-2 h-2 rounded-full bg-gradient-to-r from-amber-400 to-orange-400 animate-pulse"></div>
+          <p className="text-sm text-white/50 flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-amber-400/70" />
+            每一步都会自动保存，您可以随时中断并继续
+          </p>
+          <div className="w-2 h-2 rounded-full bg-gradient-to-r from-orange-400 to-amber-400 animate-pulse" style={{animationDelay: '0.5s'}}></div>
+        </div>
       </footer>
     </div>
   )
