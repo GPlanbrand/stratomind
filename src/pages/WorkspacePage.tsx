@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { 
-  ArrowLeft, Save, Download, 
+  ArrowLeft, Save, Download, Home,
   Building2, Target, Users, FileText, Lightbulb,
-  Check, ChevronRight, Share2, Sparkles, ArrowRight, RotateCcw
+  Check, ChevronRight, Share2, Sparkles, ArrowRight, RotateCcw, LayoutDashboard
 } from 'lucide-react'
 import ClientInfoStep from '../components/ClientInfoStep'
 import RequirementsStep from '../components/RequirementsStep'
@@ -171,37 +171,42 @@ const WorkspacePage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative z-10">
       {/* 顶部导航 */}
-      <header className="bg-white/90 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-20 shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 py-3">
+      <header className="glass rounded-2xl mx-4 mt-4 sticky top-0 z-20 shadow-xl border border-white/20">
+        <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
+              {/* 返回首页按钮 */}
               <button
                 onClick={() => navigate('/')}
-                className="p-2 rounded-xl hover:bg-gray-100 transition-colors"
+                className="p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-all group"
+                title="返回首页"
               >
-                <ArrowLeft className="w-5 h-5 text-gray-600" />
+                <Home className="w-5 h-5 text-white group-hover:scale-110 transition-transform" />
               </button>
-              <div className="flex items-center gap-2">
-                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${STEPS[currentStep].color} flex items-center justify-center shadow-md`}>
+              
+              <div className="w-px h-8 bg-white/20"></div>
+              
+              <div className="flex items-center gap-3">
+                <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${STEPS[currentStep].color} flex items-center justify-center shadow-lg animate-pulse-soft`}>
                   {React.createElement(STEPS[currentStep].icon, { className: 'w-5 h-5 text-white' })}
                 </div>
                 <div>
-                  <h1 className="text-lg font-bold text-gray-800">
+                  <h1 className="text-lg font-bold text-white">
                     {isNewProject ? '新建项目' : (project?.name || project?.clientName || '项目详情')}
                   </h1>
-                  <p className="text-xs text-gray-500">{STEPS[currentStep].name}</p>
+                  <p className="text-xs text-white/60">{STEPS[currentStep].name}</p>
                 </div>
               </div>
             </div>
 
             {!isNewProject && (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 transition-all text-sm font-medium shadow-sm flex items-center gap-2 disabled:opacity-50"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 transition-all text-sm font-semibold shadow-lg hover:shadow-xl flex items-center gap-2 disabled:opacity-50 btn-press"
                 >
                   <Save className="w-4 h-4" />
                   保存
@@ -211,7 +216,7 @@ const WorkspacePage: React.FC = () => {
           </div>
 
           {/* 步骤指示器 */}
-          <div className="mt-4 flex items-center gap-2 overflow-x-auto pb-2">
+          <div className="mt-5 flex items-center gap-2 overflow-x-auto pb-2">
             {STEPS.map((step, index) => {
               const Icon = step.icon
               const isCompleted = isStepCompleted(index)
@@ -222,12 +227,12 @@ const WorkspacePage: React.FC = () => {
                   <button
                     onClick={() => !isNewProject && setCurrentStep(index)}
                     disabled={isNewProject}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${
                       isCurrent
-                        ? `bg-gradient-to-r ${step.color} text-white shadow-md`
+                        ? `bg-gradient-to-r ${step.color} text-white shadow-lg`
                         : isCompleted
-                        ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                        : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                        ? 'bg-green-500/20 text-green-200 hover:bg-green-500/30 backdrop-blur border border-green-500/20'
+                        : 'bg-white/10 text-white/60 hover:bg-white/20 backdrop-blur border border-white/10'
                     } ${isNewProject ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                   >
                     {isCompleted ? (
@@ -238,7 +243,7 @@ const WorkspacePage: React.FC = () => {
                     <span>{step.name}</span>
                   </button>
                   {index < STEPS.length - 1 && (
-                    <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
+                    <ChevronRight className="w-4 h-4 text-white/30 flex-shrink-0" />
                   )}
                 </React.Fragment>
               )
@@ -249,10 +254,10 @@ const WorkspacePage: React.FC = () => {
 
       {/* 通知消息 */}
       {notification && (
-        <div className={`fixed top-20 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-xl shadow-lg flex items-center gap-2 ${
+        <div className={`fixed top-24 left-1/2 -translate-x-1/2 z-50 px-6 py-3.5 rounded-xl shadow-xl flex items-center gap-3 backdrop-blur animate-fade-in ${
           notification.type === 'success' 
-            ? 'bg-green-500 text-white' 
-            : 'bg-red-500 text-white'
+            ? 'bg-green-500/90 text-white' 
+            : 'bg-red-500/90 text-white'
         }`}>
           {notification.type === 'success' ? <Check className="w-5 h-5" /> : <RotateCcw className="w-5 h-5" />}
           {notification.message}
@@ -260,30 +265,30 @@ const WorkspacePage: React.FC = () => {
       )}
 
       {/* 主内容 */}
-      <main className="max-w-4xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+      <main className="max-w-4xl mx-auto px-4 py-8 relative z-10">
+        <div className="glass rounded-2xl shadow-xl border border-white/20 p-8 mb-6 animate-fade-in">
           {renderStepContent()}
         </div>
 
         {/* 底部导航 */}
-        <div className="flex items-center justify-between">
+        <div className="glass rounded-2xl shadow-xl border border-white/20 p-6 flex items-center justify-between animate-fade-in">
           <button
             onClick={handlePrev}
-            disabled={currentStep === 0}
-            className="px-6 py-3 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors font-medium flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={currentStep === 0 || isNewProject}
+            className="px-6 py-3 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-colors font-semibold flex items-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed backdrop-blur"
           >
             <ArrowLeft className="w-5 h-5" />
             上一步
           </button>
 
-          <div className="text-sm text-white/60">
+          <div className="text-sm text-white/50 backdrop-blur px-4 py-2 rounded-lg bg-white/5">
             步骤 {currentStep + 1} / {STEPS.length}
           </div>
 
           <button
             onClick={handleNext}
             disabled={saving}
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 transition-all font-medium shadow-md hover:shadow-lg flex items-center gap-2 disabled:opacity-50"
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 transition-all font-semibold shadow-lg hover:shadow-xl flex items-center gap-2 disabled:opacity-50 btn-press"
           >
             {isNewProject ? '创建项目' : currentStep === STEPS.length - 1 ? '完成' : '下一步'}
             {!isNewProject && currentStep < STEPS.length - 1 && <ArrowRight className="w-5 h-5" />}
@@ -293,8 +298,8 @@ const WorkspacePage: React.FC = () => {
       </main>
 
       {/* 底部提示 */}
-      <footer className="max-w-6xl mx-auto px-4 py-6 text-center">
-        <p className="text-sm text-white/60 flex items-center justify-center gap-2">
+      <footer className="max-w-6xl mx-auto px-4 py-6 text-center relative z-10">
+        <p className="text-sm text-white/40 flex items-center justify-center gap-2">
           <Sparkles className="w-4 h-4" />
           每一步都会自动保存，您可以随时中断并继续
         </p>

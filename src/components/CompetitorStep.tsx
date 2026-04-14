@@ -36,25 +36,25 @@ const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center shadow-md">
-          <Users className="w-6 h-6 text-white" />
+      <div className="flex items-center gap-4 mb-8">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center shadow-lg">
+          <Users className="w-7 h-7 text-white" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-gray-800">竞品分析</h2>
-          <p className="text-sm text-gray-500">分析主要竞争对手的市场表现</p>
+          <h2 className="text-2xl font-bold text-white">竞品分析</h2>
+          <p className="text-sm text-white/60">分析主要竞争对手的市场表现</p>
         </div>
       </div>
 
       {data.competitors.length === 0 ? (
-        <div className="text-center py-12">
-          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Users className="w-8 h-8 text-gray-400" />
+        <div className="text-center py-16">
+          <div className="w-24 h-24 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur">
+            <Users className="w-12 h-12 text-white/60" />
           </div>
-          <p className="text-gray-500 mb-4">还没有添加竞品</p>
+          <p className="text-white/60 mb-6 text-lg">还没有添加竞品</p>
           <button
             onClick={addCompetitor}
-            className="px-6 py-3 bg-green-100 text-green-600 rounded-xl font-medium hover:bg-green-200 transition-colors inline-flex items-center gap-2"
+            className="px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-semibold hover:from-green-600 hover:to-emerald-600 transition-all shadow-lg hover:shadow-xl flex items-center gap-2 mx-auto btn-press"
           >
             <Plus className="w-5 h-5" />
             添加竞品
@@ -63,93 +63,96 @@ const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
       ) : (
         <div className="space-y-6">
           {data.competitors.map((competitor, index) => (
-            <div key={competitor.id} className="bg-gray-50 rounded-2xl p-5 border border-gray-100">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-gray-800">竞品 {index + 1}</h3>
+            <div key={competitor.id} className="bg-white/10 rounded-2xl p-6 border border-white/20 backdrop-blur">
+              <div className="flex items-center justify-between mb-5">
+                <h3 className="font-bold text-lg text-white flex items-center gap-2">
+                  <span className="w-8 h-8 rounded-lg bg-green-500/30 flex items-center justify-center text-sm font-bold">{index + 1}</span>
+                  竞品信息
+                </h3>
                 <button
                   onClick={() => removeCompetitor(competitor.id)}
-                  className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                  className="p-2.5 text-red-400 hover:bg-red-500/20 rounded-xl transition-colors"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-5 h-5" />
                 </button>
               </div>
 
-              <div className="grid gap-4">
+              <div className="grid gap-5">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">竞品名称</label>
+                  <label className="block text-sm font-medium text-white/80 mb-2">竞品名称</label>
                   <input
                     type="text"
                     value={competitor.name}
                     onChange={(e) => updateCompetitor(competitor.id, 'name', e.target.value)}
                     placeholder="输入竞品公司/品牌名称"
-                    className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition-all"
+                    className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 focus:border-green-400 focus:ring-2 focus:ring-green-400/30 outline-none transition-all text-white placeholder-white/40"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">品牌定位</label>
+                  <label className="block text-sm font-medium text-white/80 mb-2">品牌定位</label>
                   <input
                     type="text"
                     value={competitor.brandPositioning}
                     onChange={(e) => updateCompetitor(competitor.id, 'brandPositioning', e.target.value)}
                     placeholder="描述竞品的品牌定位"
-                    className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition-all"
+                    className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 focus:border-green-400 focus:ring-2 focus:ring-green-400/30 outline-none transition-all text-white placeholder-white/40"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">视觉风格</label>
+                    <label className="block text-sm font-medium text-white/80 mb-2">视觉风格</label>
                     <input
                       type="text"
                       value={competitor.visualStyle}
                       onChange={(e) => updateCompetitor(competitor.id, 'visualStyle', e.target.value)}
                       placeholder="如：简约、科技感"
-                      className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition-all"
+                      className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 focus:border-green-400 focus:ring-2 focus:ring-green-400/30 outline-none transition-all text-white placeholder-white/40"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">市场份额</label>
+                    <label className="block text-sm font-medium text-white/80 mb-2">市场份额</label>
                     <input
                       type="text"
                       value={competitor.marketShare}
                       onChange={(e) => updateCompetitor(competitor.id, 'marketShare', e.target.value)}
                       placeholder="如：20%"
-                      className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition-all"
+                      className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 focus:border-green-400 focus:ring-2 focus:ring-green-400/30 outline-none transition-all text-white placeholder-white/40"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">目标受众</label>
+                  <label className="block text-sm font-medium text-white/80 mb-2">目标受众</label>
                   <input
                     type="text"
                     value={competitor.targetAudience}
                     onChange={(e) => updateCompetitor(competitor.id, 'targetAudience', e.target.value)}
                     placeholder="描述竞品的目标用户群体"
-                    className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition-all"
+                    className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 focus:border-green-400 focus:ring-2 focus:ring-green-400/30 outline-none transition-all text-white placeholder-white/40"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">优势</label>
+                  <label className="block text-sm font-medium text-white/80 mb-2">优势</label>
                   <input
                     type="text"
                     value={competitor.strengths?.join('、') || ''}
                     onChange={(e) => updateCompetitor(competitor.id, 'strengths', e.target.value.split('、').filter(Boolean))}
                     placeholder="竞品的优势，用顿号分隔"
-                    className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition-all"
+                    className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 focus:border-green-400 focus:ring-2 focus:ring-green-400/30 outline-none transition-all text-white placeholder-white/40"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">劣势</label>
+                  <label className="block text-sm font-medium text-white/80 mb-2">劣势</label>
                   <input
                     type="text"
                     value={competitor.weaknesses?.join('、') || ''}
                     onChange={(e) => updateCompetitor(competitor.id, 'weaknesses', e.target.value.split('、').filter(Boolean))}
                     placeholder="竞品的劣势，用顿号分隔"
-                    className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition-all"
+                    className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 focus:border-green-400 focus:ring-2 focus:ring-green-400/30 outline-none transition-all text-white placeholder-white/40"
                   />
                 </div>
               </div>
@@ -158,7 +161,7 @@ const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
 
           <button
             onClick={addCompetitor}
-            className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:border-green-500 hover:text-green-500 transition-colors flex items-center justify-center gap-2"
+            className="w-full py-4 border-2 border-dashed border-white/30 rounded-xl text-white/60 hover:border-green-400 hover:text-green-400 transition-all flex items-center justify-center gap-2 backdrop-blur"
           >
             <Plus className="w-5 h-5" />
             添加更多竞品
@@ -166,12 +169,14 @@ const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
         </div>
       )}
 
-      <div className="mt-6 p-4 bg-green-50 rounded-xl">
+      <div className="mt-8 p-5 bg-green-500/20 rounded-2xl border border-green-500/30 backdrop-blur">
         <div className="flex items-start gap-3">
-          <Sparkles className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-          <div className="text-sm text-green-700">
-            <p className="font-medium">提示</p>
-            <p className="mt-1">建议分析2-4个主要竞品，过于分散的分析会影响策略的聚焦性。</p>
+          <div className="w-10 h-10 rounded-xl bg-green-500/30 flex items-center justify-center flex-shrink-0">
+            <Sparkles className="w-5 h-5 text-green-300" />
+          </div>
+          <div className="text-sm text-green-100">
+            <p className="font-semibold text-green-200">💡 提示</p>
+            <p className="mt-2 text-white/80">建议分析2-4个主要竞品，过于分散的分析会影响策略的聚焦性。</p>
           </div>
         </div>
       </div>
