@@ -1,7 +1,9 @@
 import React from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 
 const Layout: React.FC = () => {
+  const navigate = useNavigate()
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 relative overflow-hidden">
       {/* 背景装饰 */}
@@ -17,7 +19,20 @@ const Layout: React.FC = () => {
         }}></div>
       </div>
       
-      <Outlet />
+      {/* 顶部导航栏 */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/10 backdrop-blur-md border-b border-white/20">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/')}>
+            <img src="/logo.svg" alt="Logo" className="h-8 w-auto" />
+            <span className="text-white font-bold text-lg">StratoMind</span>
+          </div>
+        </div>
+      </nav>
+      
+      {/* 主内容区域 - 添加顶部padding避免被导航栏遮挡 */}
+      <div className="pt-16">
+        <Outlet />
+      </div>
     </div>
   )
 }
