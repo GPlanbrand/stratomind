@@ -80,6 +80,17 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
           </button>
         </div>
 
+        {/* 当前项目 */}
+        <div className="px-2 py-1 border-b border-gray-100">
+          <button
+            onClick={() => navigate(`/projects/workspace/${projectId}`)}
+            className="w-full flex items-center justify-center py-2 text-gray-600 hover:bg-gray-50 rounded-lg"
+            title={projectName}
+          >
+            <Briefcase className="w-5 h-5 text-purple-500" />
+          </button>
+        </div>
+
         {/* 项目步骤 */}
         <nav className="flex-1 py-2 scroll-fix">
           {projectSteps.map(item => (
