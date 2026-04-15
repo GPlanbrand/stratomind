@@ -158,8 +158,7 @@ const HomeLoginPage: React.FC = () => {
       <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-white border-b border-gray-100">
         <div className="px-4 py-3 flex items-center gap-2">
           <img src="/logo.svg" alt="灵思" className="h-6 w-auto" />
-          <span className="text-base font-semibold text-gray-800">StratoMind</span>
-          <span className="text-sm text-gray-500">灵思AI创意工作台</span>
+          <span className="text-base font-semibold text-gray-800">灵思，你的AI创意合伙人</span>
         </div>
       </div>
 
