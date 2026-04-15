@@ -9,6 +9,11 @@ import RegisterPage from './pages/RegisterPage'
 import MemberPage from './pages/MemberPage'
 import TermsPage from './pages/TermsPage'
 import PrivacyPage from './pages/PrivacyPage'
+import FilesPage from './pages/FilesPage'
+import EmailPage from './pages/EmailPage'
+import CalendarPage from './pages/CalendarPage'
+import KnowledgePage from './pages/KnowledgePage'
+import AssistantPage from './pages/AssistantPage'
 import Layout from './components/Layout'
 
 function App() {
@@ -24,6 +29,11 @@ function App() {
         <Route path="workspace/:projectId?" element={<WorkspacePage />} />
         <Route path="analysis-charts" element={<AnalysisChartsPage />} />
         <Route path="member" element={<MemberPage />} />
+        <Route path="files" element={<FilesPage />} />
+        <Route path="email" element={<EmailPage />} />
+        <Route path="calendar" element={<CalendarPage />} />
+        <Route path="knowledge" element={<KnowledgePage />} />
+        <Route path="assistant" element={<AssistantPage />} />
         <Route path="*" element={<Navigate to="/projects" replace />} />
       </Route>
     </Routes>
