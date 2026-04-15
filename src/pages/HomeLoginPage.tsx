@@ -157,7 +157,7 @@ const HomeLoginPage: React.FC = () => {
               
               {/* 文案 */}
               <h2 className="text-lg font-semibold text-gray-900 mb-1">使用App登陆更便捷</h2>
-              <p className="text-sm text-gray-500">请下载官方App使用</p>
+              <p className="text-lg font-semibold text-gray-500">请下载官方App使用</p>
             </div>
           </div>
 
