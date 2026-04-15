@@ -6,6 +6,8 @@ import {
   Book, Bot, Plus, Briefcase
 } from 'lucide-react';
 import { User } from '../types/user';
+import { getProjects } from '../services/api';
+import { Project } from '../types';
 
 interface SidebarProps {
   user: User | null;
@@ -37,11 +39,18 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
   const navigate = useNavigate();
   const location = useLocation();
   const [projectExpanded, setProjectExpanded] = useState(true);
+  const [projects, setProjects] = useState<Project[]>([]);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // 默认当前项目（可从 props 传入）
-  const projectId = currentProject?.id || 'default-project';
-  const projectName = currentProject?.name || '烟火序肥牛火锅';
+  // 获取项目列表
+  useEffect(() => {
+    getProjects().then(setProjects).catch(console.error);
+  }, []);
+
+  // 当前项目：优先使用props传入的，否则使用列表第一个
+  const activeProject = currentProject || projects[0];
+  const projectId = activeProject?.id || '';
+  const projectName = activeProject?.name || '暂无项目';
 
   // 检查当前步骤是否激活
   const isStepActive = (step: number) => {
@@ -52,7 +61,11 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
 
   // 跳转到项目步骤
   const navigateToStep = (step: number) => {
-    navigate(`/projects/workspace/${projectId}?step=${step}`);
+    if (projectId) {
+      navigate(`/projects/workspace/${projectId}?step=${step}`);
+    } else {
+      navigate('/projects/workspace/new');
+    }
   };
 
   // 滚动事件处理 - 确保鼠标滚轮能正常滚动
@@ -142,7 +155,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
         {/* 当前项目 */}
         <div className="px-2 py-1 border-b border-gray-100 flex-shrink-0">
           <button
-            onClick={() => navigate(`/projects/workspace/${projectId}`)}
+            onClick={() => projectId ? navigate(`/projects/workspace/${projectId}`) : navigate('/projects/workspace/new')}
             className="w-full flex items-center justify-center py-2 text-gray-600 hover:bg-gray-50 rounded-lg"
             title={projectName}
           >

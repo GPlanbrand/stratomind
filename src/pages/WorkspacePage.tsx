@@ -380,7 +380,9 @@ const WorkspacePage: React.FC = () => {
       }
     } catch (error) {
       console.error('加载项目失败:', error)
-      showNotification('error', '加载项目失败')
+      // 项目不存在，跳转到项目列表
+      showNotification('error', '项目不存在，正在跳转...')
+      setTimeout(() => navigate('/projects'), 1500)
     }
   }, [projectId, getDraftLastSavedTime, loadDraft])
 
