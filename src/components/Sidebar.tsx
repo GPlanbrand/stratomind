@@ -117,7 +117,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
 
   // 展开状态
   return (
-    <div className="fixed left-0 top-0 h-screen w-60 bg-white border-r border-gray-200 flex flex-col z-40 overflow-hidden">
+    <div className="fixed left-0 top-0 h-screen w-60 bg-white border-r border-gray-200 flex flex-col z-40">
       {/* Logo */}
       <div className="h-14 flex items-center justify-between px-4 border-b border-gray-200 flex-shrink-0">
         <button onClick={() => navigate('/projects')} className="flex items-center gap-2">
