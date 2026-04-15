@@ -76,7 +76,7 @@ const ProjectsPage: React.FC = () => {
   }
 
   const getStepName = (index: number) => {
-    const names = ['客户背景', '项目需求', '竞品分析', '创意简报', '创意策略']
+    const names = ['背景', '需求', '竞品', '简报', '策略']
     return names[index] || ''
   }
 
@@ -169,7 +169,7 @@ const ProjectsPage: React.FC = () => {
                   <div
                     key={project.id}
                     onClick={() => handleOpenProject(project.id)}
-                    className="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 hover:border-gray-300 hover:shadow-sm transition-all cursor-pointer min-h-[100px] sm:min-h-[120px]"
+                    className="bg-white rounded-xl border border-gray-200 p-3 sm:p-5 hover:border-gray-300 hover:shadow-sm transition-all cursor-pointer min-h-[100px] sm:min-h-[120px] overflow-hidden"
                   >
                     {/* 项目头部信息 - 移动端优化 */}
                     <div className="flex items-start justify-between gap-2 mb-3 sm:mb-4">
@@ -237,8 +237,8 @@ const ProjectsPage: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* 步骤标签 - 移动端横向滚动 */}
-                    <div className="flex items-center gap-1 flex-wrap">
+                    {/* 步骤标签 - 移动端适配 */}
+                    <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
                       {[0, 1, 2, 3, 4].map((index) => {
                         const isCompleted = index < currentStep || (index === 4 && progressInfo.progress === 100)
                         const isCurrent = index === currentStep
@@ -253,7 +253,7 @@ const ProjectsPage: React.FC = () => {
                         return (
                           <span
                             key={index}
-                            className={`px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded text-xs font-medium whitespace-nowrap ${
+                            className={`px-1.5 sm:px-2 py-0.5 rounded text-[10px] sm:text-xs font-medium whitespace-nowrap flex-shrink-0 ${
                               isCompleted
                                 ? 'bg-green-100 text-green-700'
                                 : isCurrent
@@ -263,7 +263,7 @@ const ProjectsPage: React.FC = () => {
                                 : 'bg-gray-50 text-gray-400'
                             }`}
                           >
-                            {isCompleted ? '✓ ' : isCurrent ? '● ' : ''}{getStepName(index)}
+                            {isCompleted ? '✓' : isCurrent ? '●' : ''}{getStepName(index)}
                           </span>
                         )
                       })}
