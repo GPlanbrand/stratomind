@@ -555,13 +555,19 @@ const WorkspacePage: React.FC = () => {
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
           <div className="flex items-center justify-between gap-2">
-            <button
-              onClick={() => navigate('/projects')}
-              className="flex items-center gap-1 sm:gap-2 text-gray-600 hover:text-gray-900 text-sm"
-            >
-              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-              <span className="hidden sm:inline">返回</span>
-            </button>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <button
+                onClick={() => navigate('/projects')}
+                className="flex items-center gap-1 sm:gap-2 text-gray-600 hover:text-gray-900 text-sm"
+              >
+                <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="hidden sm:inline">返回</span>
+              </button>
+              {/* 项目名称 */}
+              <span className="text-sm sm:text-base font-medium text-gray-900 truncate max-w-[150px] sm:max-w-[300px]">
+                {project?.name || clientInfo.companyName || '新项目'}
+              </span>
+            </div>
             
             <div className="flex items-center gap-2 sm:gap-4">
               {/* 自动保存状态 */}
