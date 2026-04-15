@@ -6,11 +6,15 @@ import {
   Share2, 
   History, 
   ChevronRight,
-  X
+  X,
+  Menu,
+  Sparkles
 } from 'lucide-react';
 
 interface HeaderProps {
   collapsed: boolean;
+  isMobile?: boolean;
+  onMenuClick?: () => void;
 }
 
 interface BreadcrumbItem {
@@ -28,7 +32,7 @@ const pageBreadcrumbs: Record<string, BreadcrumbItem[]> = {
   '/projects/member': [{ label: '项目', path: '/projects' }, { label: '会员中心' }],
 };
 
-const Header: React.FC<HeaderProps> = ({ collapsed }) => {
+const Header: React.FC<HeaderProps> = ({ collapsed, isMobile, onMenuClick }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchOpen, setSearchOpen] = useState(false);
@@ -58,6 +62,67 @@ const Header: React.FC<HeaderProps> = ({ collapsed }) => {
     }
   };
 
+  // 移动端布局
+  if (isMobile) {
+    return (
+      <div className="fixed top-0 left-0 right-0 h-14 bg-white border-b border-gray-200 z-30 flex items-center justify-between px-4">
+        {/* 左侧：汉堡菜单 + Logo */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={onMenuClick}
+            className="p-2 -ml-2 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+          <button 
+            onClick={() => navigate('/projects')}
+            className="flex items-center gap-2"
+          >
+            <Sparkles className="w-5 h-5 text-purple-600" />
+            <span className="text-base font-semibold text-gray-800">灵思</span>
+          </button>
+        </div>
+
+        {/* 右侧：搜索按钮 */}
+        <button
+          onClick={() => setSearchOpen(!searchOpen)}
+          className="p-2 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors"
+        >
+          <Search className="w-5 h-5" />
+        </button>
+
+        {/* 搜索展开层 */}
+        {searchOpen && (
+          <div className="fixed inset-0 top-14 bg-white z-50 p-4">
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="搜索..."
+                  className="w-full h-10 pl-10 pr-4 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-purple-400"
+                  autoFocus
+                />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              </div>
+              <button
+                onClick={() => {
+                  setSearchOpen(false);
+                  setSearchQuery('');
+                }}
+                className="p-2 rounded-lg hover:bg-gray-100 text-gray-500"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // 桌面端布局
   return (
     <div 
       className={`fixed top-0 right-0 h-14 bg-white border-b border-gray-200 z-30 flex items-center justify-between transition-all duration-300 ${

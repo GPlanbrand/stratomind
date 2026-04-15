@@ -8,8 +8,9 @@ import Header from './Header';
 const Layout: React.FC = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     const currentUser = refreshCurrentUser();
@@ -21,8 +22,10 @@ const Layout: React.FC = () => {
     const checkMobile = () => {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
-      if (mobile) {
-        setSidebarCollapsed(true);
+      // 桌面端默认展开侧边栏
+      if (!mobile) {
+        setSidebarCollapsed(false);
+        setSidebarOpen(false);
       }
     };
     
@@ -32,39 +35,58 @@ const Layout: React.FC = () => {
   }, []);
 
   const toggleSidebar = () => {
-    setSidebarCollapsed(!sidebarCollapsed);
+    if (isMobile) {
+      setSidebarOpen(!sidebarOpen);
+    } else {
+      setSidebarCollapsed(!sidebarCollapsed);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* 左侧导航栏 */}
-      <Sidebar 
-        user={user} 
-        collapsed={sidebarCollapsed} 
-        onToggleCollapse={toggleSidebar}
-      />
+      {/* 左侧导航栏 - 桌面端 */}
+      {!isMobile && (
+        <Sidebar 
+          user={user} 
+          collapsed={sidebarCollapsed} 
+          onToggleCollapse={toggleSidebar}
+        />
+      )}
+
+      {/* 移动端侧边栏（抽屉模式） */}
+      {isMobile && sidebarOpen && (
+        <>
+          <div 
+            className="fixed inset-0 bg-black/30 z-40"
+            onClick={() => setSidebarOpen(false)}
+          />
+          <div className="fixed left-0 top-0 h-screen z-50 animate-slide-in-left">
+            <Sidebar 
+              user={user} 
+              collapsed={false} 
+              onToggleCollapse={() => setSidebarOpen(false)}
+            />
+          </div>
+        </>
+      )}
 
       {/* 顶部功能栏 */}
-      <Header collapsed={sidebarCollapsed} />
+      <Header 
+        collapsed={isMobile ? true : sidebarCollapsed} 
+        isMobile={isMobile}
+        onMenuClick={toggleSidebar}
+      />
 
       {/* 主内容区 */}
       <main 
         className={`pt-14 min-h-screen transition-all duration-300 ${
-          sidebarCollapsed ? 'ml-16' : 'ml-60'
+          isMobile ? 'ml-0' : (sidebarCollapsed ? 'ml-16' : 'ml-60')
         }`}
       >
         <div className="p-4 sm:p-6 lg:p-8">
           <Outlet />
         </div>
       </main>
-
-      {/* 移动端遮罩层 */}
-      {isMobile && !sidebarCollapsed && (
-        <div 
-          className="fixed inset-0 bg-black/20 z-30 lg:hidden"
-          onClick={() => setSidebarCollapsed(true)}
-        />
-      )}
     </div>
   );
 };
