@@ -482,21 +482,15 @@ const HomeLoginPage: React.FC = () => {
           </div>
 
           {/* Banner内容 - 居中偏左 */}
-          <div className="ml-20 max-w-xl">
+          <div className="ml-20 max-w-xl relative" style={{ minHeight: '120px' }}>
             {leftBanners.map((banner, index) => (
               <div
                 key={index}
-                className={`absolute transition-all duration-700 ${
+                className={`transition-all duration-700 ${
                   index === currentBanner 
-                    ? 'opacity-100 translate-y-0' 
-                    : 'opacity-0 translate-y-8 pointer-events-none'
+                    ? 'opacity-100' 
+                    : 'opacity-0 absolute top-0 left-0 right-0 pointer-events-none'
                 }`}
-                style={{ 
-                  position: index === 0 ? 'relative' : 'absolute',
-                  left: 0,
-                  top: 0,
-                  right: 0
-                }}
               >
                 <h1 className="text-4xl font-bold text-gray-900 mb-4 leading-tight">
                   {banner.title}
