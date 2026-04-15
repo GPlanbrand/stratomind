@@ -473,30 +473,39 @@ const HomeLoginPage: React.FC = () => {
           <p className="text-lg text-white/80 mb-8">
             一站式品牌创意工作平台，助力企业快速构建品牌策略
           </p>
-          <div className="space-y-4">
-            <div className="flex items-center gap-3 text-white/90">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span>智能竞品分析 · 多维度数据洞察市场格局</span>
+          <div className="space-y-5">
+            <div className="flex items-start gap-4 text-white/90">
+              <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+              <div>
+                <div className="font-semibold text-lg">智能竞品分析</div>
+                <div className="text-white/70 text-sm">多维度数据洞察，一键生成竞品报告</div>
+              </div>
             </div>
-            <div className="flex items-center gap-3 text-white/90">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span>创意策略生成 · AI驱动的品牌策略方案</span>
+            <div className="flex items-start gap-4 text-white/90">
+              <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <div>
+                <div className="font-semibold text-lg">AI创意生成</div>
+                <div className="text-white/70 text-sm">智能生成创意简报与品牌策略方案</div>
+              </div>
             </div>
-            <div className="flex items-center gap-3 text-white/90">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span>可视化报告 · 专业图表呈现分析结果</span>
-            </div>
-            <div className="flex items-center gap-3 text-white/90">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span>团队协作 · 高效协同推进品牌项目</span>
+            <div className="flex items-start gap-4 text-white/90">
+              <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <div>
+                <div className="font-semibold text-lg">一键导出报告</div>
+                <div className="text-white/70 text-sm">专业文档格式，随时下载分享团队</div>
+              </div>
             </div>
           </div>
         </div>
