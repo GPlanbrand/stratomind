@@ -145,41 +145,43 @@ const HomeLoginPage: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       {/* 手机版引导页 */}
       {showMobileGuide && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-gradient-to-b from-purple-50 to-white flex flex-col items-center justify-center px-6" style={{ overscrollBehavior: 'none', touchAction: 'none' }}>
+        <div className="lg:hidden fixed inset-0 z-50 flex flex-col items-center justify-center px-6" style={{ background: 'linear-gradient(to bottom, #f3e8ff 0%, #ffffff 100%)', overscrollBehavior: 'none', touchAction: 'none' }}>
           {/* 主内容区 */}
-          <div className="flex flex-col items-center mb-8">
+          <div className="flex flex-col items-center mb-10">
             {/* App图标 */}
-            <div className="w-16 h-16 mb-5">
+            <div className="w-20 h-20 mb-6">
               <img src="/app-icon.svg" alt="StratoMind" className="w-full h-full" />
             </div>
             
             {/* 文案 */}
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">使用App登陆更便捷</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-1">使用App登陆更便捷</h2>
             <p className="text-sm text-gray-500">请下载官方App使用</p>
           </div>
 
-          {/* 按钮区 - 屏幕正中间 */}
-          <div className="w-full max-w-[260px] space-y-3">
+          {/* 按钮区 */}
+          <div className="w-full max-w-[280px] space-y-3">
             <button
               onClick={() => window.open('#', '_blank')}
-              className="w-full py-2.5 bg-purple-600 text-white rounded-xl font-medium text-sm hover:bg-purple-700 transition-colors"
+              className="w-full py-3 bg-purple-600 text-white rounded-xl font-medium text-sm hover:bg-purple-700 transition-colors"
             >
               立刻下载StratoMind
             </button>
             <button
               onClick={() => setShowMobileGuide(false)}
-              className="w-full py-2.5 bg-gray-100 text-gray-400 rounded-xl font-medium text-sm hover:bg-gray-200 transition-colors"
+              className="w-full py-3 bg-gray-100 text-purple-400 rounded-xl font-medium text-sm hover:bg-gray-200 transition-colors"
             >
               先进入网页版
             </button>
           </div>
 
           {/* 底部品牌 */}
-          <div className="absolute bottom-8 flex flex-col items-center">
-            <div className="flex items-center gap-2">
-              <img src="/guide-logo.svg" alt="StratoMind" className="h-12 w-auto" />
+          <div className="absolute bottom-6 flex flex-col items-center">
+            <div className="flex items-center gap-1.5 mb-1">
+              <img src="/app-icon.svg" alt="StratoMind" className="h-5 w-5" />
+              <span className="text-xs text-gray-600">StratoMind®</span>
             </div>
-            <p className="text-xs text-gray-500 mt-2">© StratoMind. All Rights Reserved.</p>
+            <p className="text-xs text-gray-400">你的AI创意合伙人</p>
+            <p className="text-xs text-gray-300 mt-3">© StratoMind. All Rights Reserved.</p>
           </div>
         </div>
       )}
