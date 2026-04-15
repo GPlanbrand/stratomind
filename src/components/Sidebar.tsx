@@ -124,7 +124,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse }) 
         >
           <div className="flex items-center gap-2 min-w-0">
             <FolderOpen className="w-5 h-5 text-purple-500 flex-shrink-0" />
-            <span className="text-sm font-medium text-gray-800 truncate">新消费茶饮品牌全案</span>
+            <span className="text-sm font-medium text-gray-800 truncate">烟火序肥牛火锅</span>
           </div>
           <ChevronDown className={`w-4 h-4 text-gray-400 flex-shrink-0 transition-transform ${projectExpanded ? 'rotate-180' : ''}`} />
         </button>
@@ -132,17 +132,16 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse }) 
         {/* 项目步骤 */}
         {projectExpanded && (
           <div className="mt-1 ml-2 space-y-0.5">
-            {projectSteps.map((item, index) => (
+            {projectSteps.map(item => (
               <button
                 key={item.path}
                 onClick={() => navigate(item.path)}
-                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg ${
+                className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg ${
                   isActive(item.path) 
                     ? 'bg-purple-50 text-purple-600' 
                     : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >
-                <span className="text-xs text-gray-400 w-4 font-mono">{String(index + 1).padStart(2, '0')}</span>
                 <item.icon className="w-4 h-4" />
                 <span className="text-sm">{item.label}</span>
               </button>
