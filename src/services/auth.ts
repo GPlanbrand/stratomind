@@ -82,21 +82,57 @@ export const register = (username: string, email: string, password: string, invi
   return { success: true, message: '注册成功！已赠送600积分', user: newUser };
 };
 
-export const login = (email: string, password: string): { success: boolean; message: string; user?: User } => {
+// 演示模式：自动注册并登录
+const demoRegister = (identifier: string): { success: boolean; message: string; user?: User } => {
   const users = getUsers();
-  let user = users.find(u => u.email === email && u.password === password);
   
-  // 演示模式：密码123456自动创建用户并登录
-  if (!user && password === '123456') {
-    const newEmail = email.includes('@') ? email : email + '@demo.com';
-    const regResult = register(email, newEmail, '123456');
-    if (regResult.success) {
-      return { success: true, message: '登录成功（演示模式）', user: regResult.user };
-    }
+  // 检查是否已有演示账号
+  let user = users.find(u => u.username === 'demo' || u.email === 'demo@demo.com');
+  if (user) {
+    setCurrentUser(user);
+    return { success: true, message: '演示登录成功', user };
   }
   
+  // 创建演示账号
+  const newUser: User = {
+    id: generateId(),
+    username: 'demo',
+    email: 'demo@demo.com',
+    password: 'demo123',
+    memberLevel: 'vip',
+    points: 1000,
+    createdAt: new Date().toISOString(),
+    signInDays: 0,
+    inviteCode: generateInviteCode(),
+  };
+  
+  users.push(newUser);
+  saveUsers(users);
+  setCurrentUser(newUser);
+  
+  return { success: true, message: '演示登录成功', user: newUser };
+};
+
+export const login = (identifier: string, password: string): { success: boolean; message: string; user?: User } => {
+  const users = getUsers();
+  
+  // 演示模式：demo/demo123 或 任意账号/123456
+  if (password === 'demo123' && identifier === 'demo') {
+    return demoRegister(identifier);
+  }
+  
+  // 演示模式2：任意账号/123456自动注册
+  if (password === '123456') {
+    return demoRegister(identifier);
+  }
+  
+  // 正常登录：邮箱或用户名匹配
+  let user = users.find(u => 
+    (u.email === identifier || u.username === identifier) && u.password === password
+  );
+  
   if (!user) {
-    return { success: false, message: '邮箱或密码错误' };
+    return { success: false, message: '用户名或密码错误' };
   }
   
   user.lastLoginAt = new Date().toISOString();
@@ -109,6 +145,10 @@ export const login = (email: string, password: string): { success: boolean; mess
 
 export const logout = (): void => {
   setCurrentUser(null);
+};
+
+export const refreshCurrentUser = (): User | null => {
+  return getCurrentUser();
 };
 
 export const updateUser = (updates: Partial<User>): User | null => {
@@ -128,84 +168,32 @@ export const updateUser = (updates: Partial<User>): User | null => {
   return updatedUser;
 };
 
-export const dailySignIn = (): { success: boolean; message: string; points?: number; streakDays?: number } => {
+export const dailySignIn = (): { success: boolean; message: string } => {
   const currentUser = getCurrentUser();
   if (!currentUser) {
     return { success: false, message: '请先登录' };
   }
-  
-  const today = new Date().toISOString().split('T')[0];
-  
-  if (currentUser.lastSignInDate === today) {
-    return { success: false, message: '今日已签到，明天再来吧~' };
-  }
-  
-  let newStreakDays = 1;
-  if (currentUser.lastSignInDate) {
-    const lastSignIn = new Date(currentUser.lastSignInDate);
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    
-    if (lastSignIn.toISOString().split('T')[0] === yesterday.toISOString().split('T')[0]) {
-      newStreakDays = currentUser.signInDays + 1;
-    }
-  }
-  
-  let pointsEarned = POINTS_RULES.dailySignIn;
-  if (newStreakDays > 0 && newStreakDays % 7 === 0) {
-    pointsEarned += POINTS_RULES.signInStreak;
-  }
-  
-  const updatedUser = updateUser({
-    points: currentUser.points + pointsEarned,
-    lastSignInDate: today,
-    signInDays: newStreakDays
-  });
-  
-  if (!updatedUser) {
-    return { success: false, message: '签到失败' };
-  }
-  
-  return { 
-    success: true, 
-    message: `签到成功！获得${pointsEarned}积分${newStreakDays > 1 ? `（连续${newStreakDays}天签到）` : ''}`,
-    points: pointsEarned,
-    streakDays: newStreakDays
-  };
-};
-
-export const consumePoints = (amount: number): { success: boolean; message: string; remainingPoints?: number } => {
-  const currentUser = getCurrentUser();
-  if (!currentUser) {
-    return { success: false, message: '请先登录' };
-  }
-  
-  if (currentUser.points < amount) {
-    return { success: false, message: `积分不足，当前余额：${currentUser.points}` };
-  }
-  
-  const updatedUser = updateUser({
-    points: currentUser.points - amount
-  });
-  
-  if (!updatedUser) {
-    return { success: false, message: '扣减积分失败' };
-  }
-  
-  return { success: true, message: `消耗${amount}积分`, remainingPoints: updatedUser.points };
-};
-
-export const refreshCurrentUser = (): User | null => {
-  const currentUser = getCurrentUser();
-  if (!currentUser) return null;
   
   const users = getUsers();
-  const user = users.find(u => u.id === currentUser.id);
+  const userIndex = users.findIndex(u => u.id === currentUser.id);
   
-  if (user) {
-    setCurrentUser(user);
-    return user;
+  if (userIndex === -1) {
+    return { success: false, message: '用户不存在' };
   }
   
-  return null;
+  const today = new Date().toDateString();
+  const lastSignIn = users[userIndex].lastSignInDate;
+  
+  if (lastSignIn === today) {
+    return { success: false, message: '今日已签到，明天再来吧' };
+  }
+  
+  users[userIndex].points += POINTS_RULES.dailySignIn;
+  users[userIndex].signInDays += 1;
+  users[userIndex].lastSignInDate = today;
+  
+  saveUsers(users);
+  setCurrentUser({ ...users[userIndex] });
+  
+  return { success: true, message: `签到成功！获得${POINTS_RULES.dailySignIn}积分` };
 };
