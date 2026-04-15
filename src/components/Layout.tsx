@@ -31,7 +31,7 @@ const Layout: React.FC = () => {
                 alt="灵思" 
                 className="h-6 w-auto sm:h-7" 
               />
-              <span className="text-sm sm:text-base font-semibold text-gray-800">灵思AI创意工作台</span>
+              <span className="text-sm sm:text-base font-semibold text-gray-800">灵思，你的AI创意合伙人</span>
             </button>
 
             <div className="flex items-center gap-2 sm:gap-4">

@@ -164,7 +164,7 @@ const HomeLoginPage: React.FC = () => {
               onClick={() => window.open('#', '_blank')}
               className="w-full py-3 bg-purple-600 text-white rounded-xl font-medium text-sm hover:bg-purple-700 transition-colors"
             >
-              立刻下载StratoMind
+              立刻下载灵思
             </button>
             <button
               onClick={() => setShowMobileGuide(false)}
@@ -177,7 +177,7 @@ const HomeLoginPage: React.FC = () => {
           {/* 底部品牌 - 位置锁定 */}
           <div className="absolute bottom-8 flex flex-col items-center">
             <img src="/guide-logo.svg" alt="StratoMind" className="h-8 w-auto" />
-            <p className="text-xs text-gray-500 mt-2">© StratoMind. All Rights Reserved.</p>
+            <p className="text-xs text-gray-500 mt-2">© 灵思. All Rights Reserved.</p>
           </div>
         </div>
       )}
@@ -201,8 +201,8 @@ const HomeLoginPage: React.FC = () => {
             <img src="/app-logo.svg" alt="App Logo" className="w-7 h-7" />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-sm font-medium leading-tight truncate">AI 创意工作台</div>
-            <div className="text-xs opacity-80 leading-tight">智能品牌策划</div>
+            <div className="text-sm font-medium leading-tight truncate">灵思</div>
+            <div className="text-xs opacity-80 leading-tight">你的AI创意合伙人</div>
           </div>
           <button 
             onClick={() => window.open('#', '_blank')}
@@ -446,7 +446,7 @@ const HomeLoginPage: React.FC = () => {
         <div className="fixed top-0 left-0 right-0 z-20 px-10 py-5">
           <div className="flex items-center gap-3">
             <img src="/logo.svg" alt="灵思" className="h-10 w-auto" />
-            <span className="text-xl font-semibold text-gray-800">灵思AI创意工作台</span>
+            <span className="text-xl font-semibold text-gray-800">灵思，你的AI创意合伙人</span>
           </div>
         </div>
 
