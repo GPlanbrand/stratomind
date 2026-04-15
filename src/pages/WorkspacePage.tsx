@@ -343,7 +343,11 @@ const WorkspacePage: React.FC = () => {
 
   // 加载项目数据
   const loadProject = useCallback(async () => {
-    if (!projectId) return
+    if (!projectId) {
+      // 没有项目ID，跳转到新建项目
+      navigate('/projects/workspace/new', { replace: true })
+      return
+    }
     
     try {
       const [projectData, stepsData] = await Promise.all([
@@ -381,10 +385,9 @@ const WorkspacePage: React.FC = () => {
     } catch (error) {
       console.error('加载项目失败:', error)
       // 项目不存在，跳转到项目列表
-      showNotification('error', '项目不存在，正在跳转...')
-      setTimeout(() => navigate('/projects'), 1500)
+      navigate('/projects', { replace: true })
     }
-  }, [projectId, getDraftLastSavedTime, loadDraft])
+  }, [projectId, getDraftLastSavedTime, loadDraft, navigate])
 
   useEffect(() => {
     // 清理防抖定时器

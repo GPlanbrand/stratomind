@@ -61,11 +61,12 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
 
   // 跳转到项目步骤
   const navigateToStep = (step: number) => {
-    if (projectId) {
-      navigate(`/projects/workspace/${projectId}?step=${step}`);
-    } else {
+    if (!activeProject) {
+      // 没有项目，跳转到新建项目
       navigate('/projects/workspace/new');
+      return;
     }
+    navigate(`/projects/workspace/${projectId}?step=${step}`);
   };
 
   // 滚动事件处理 - 确保鼠标滚轮能正常滚动
@@ -126,10 +127,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
   // 折叠状态
   if (collapsed) {
     return (
-      <div 
-        className="fixed left-0 top-0 h-screen w-16 bg-white border-r border-gray-200 flex flex-col z-40"
-        style={{ overflow: 'hidden' }}
-      >
+      <div className="fixed left-0 top-0 h-screen w-16 bg-white border-r border-gray-200 flex flex-col z-40">
         {/* Logo */}
         <div className="p-2 border-b border-gray-100 flex items-center justify-center flex-shrink-0">
           <button 
@@ -155,7 +153,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
         {/* 当前项目 */}
         <div className="px-2 py-1 border-b border-gray-100 flex-shrink-0">
           <button
-            onClick={() => projectId ? navigate(`/projects/workspace/${projectId}`) : navigate('/projects/workspace/new')}
+            onClick={() => activeProject ? navigate(`/projects/workspace/${projectId}`) : navigate('/projects/workspace/new')}
             className="w-full flex items-center justify-center py-2 text-gray-600 hover:bg-gray-50 rounded-lg"
             title={projectName}
           >
@@ -163,12 +161,8 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
           </button>
         </div>
 
-        {/* 可滚动区域 - 关键修复 */}
-        <nav 
-          ref={scrollContainerRef}
-          className="flex-1 py-2 sidebar-scroll"
-          style={scrollableContainerStyle}
-        >
+        {/* 可滚动区域 */}
+        <nav className="flex-1 overflow-y-auto py-2" style={{ minHeight: 0 }}>
           {projectSteps.map(item => (
             <button
               key={item.step}
@@ -209,19 +203,13 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
-
-        {/* 隐藏滚动条样式 */}
-        <style>{hideScrollbarCSS}</style>
       </div>
     );
   }
 
   // 展开状态
   return (
-    <div 
-      className="fixed left-0 top-0 h-screen w-60 bg-white border-r border-gray-200 flex flex-col z-40"
-      style={{ overflow: 'hidden' }}
-    >
+    <div className="fixed left-0 top-0 h-screen w-60 bg-white border-r border-gray-200 flex flex-col z-40">
       {/* Logo */}
       <div className="h-14 flex items-center justify-between px-4 border-b border-gray-200 flex-shrink-0">
         <button onClick={() => navigate('/projects')} className="flex items-center gap-2">
@@ -243,11 +231,11 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
         </button>
       </div>
 
-      {/* 可滚动区域 - 关键修复 */}
+      {/* 可滚动区域 - 简单直接的方式 */}
       <div 
         ref={scrollContainerRef}
-        className="flex-1 sidebar-scroll"
-        style={scrollableContainerStyle}
+        className="flex-1 overflow-y-auto"
+        style={{ minHeight: 0 }}
       >
         {/* 当前项目 */}
         <div className="px-3 py-2">
