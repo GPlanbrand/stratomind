@@ -133,69 +133,8 @@ const ClientInfoStep: React.FC<Props> = ({ data, onChange }) => {
         <p className="text-gray-500 text-xs sm:text-sm">按专业填写客户品牌信息</p>
       </div>
 
-      {/* 资料上传区 - 左侧固定 */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
-        {/* 资料上传区 */}
-        <div className="lg:col-span-1">
-          <div className="border-2 border-dashed border-gray-300 rounded-xl p-4 bg-gray-50">
-            <div className="flex items-center gap-2 mb-3">
-              <Upload className="w-5 h-5 text-gray-500" />
-              <span className="font-medium text-gray-700">客户资料上传</span>
-            </div>
-            <p className="text-xs text-gray-500 mb-3">支持PDF、Word、PPT、图片、压缩包</p>
-            
-            <input
-              ref={fileInputRef}
-              type="file"
-              multiple
-              accept=".pdf,.doc,.docx,.ppt,.pptx,.jpg,.jpeg,.png,.gif,.webp,.zip,.rar,.7z"
-              onChange={handleFileUpload}
-              className="hidden"
-            />
-            
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="w-full py-2.5 px-4 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors flex items-center justify-center gap-2"
-            >
-              <Upload className="w-4 h-4" />
-              选择文件
-            </button>
-
-            {/* 已上传文件列表 */}
-            {attachments.length > 0 && (
-              <div className="mt-4 space-y-2">
-                <p className="text-xs font-medium text-gray-600">已上传文件 ({attachments.length})</p>
-                <div className="space-y-2 max-h-64 overflow-y-auto">
-                  {attachments.map(attachment => (
-                    <div
-                      key={attachment.id}
-                      className="flex items-center gap-2 p-2 bg-white rounded-lg border border-gray-200 group"
-                    >
-                      {getFileIcon(attachment.type)}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs text-gray-700 truncate" title={attachment.name}>
-                          {attachment.name}
-                        </p>
-                        <p className="text-xs text-gray-400">
-                          {formatFileSize(attachment.size)}
-                        </p>
-                      </div>
-                      <button
-                        onClick={() => handleRemoveAttachment(attachment.id)}
-                        className="p-1 hover:bg-red-50 rounded opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <X className="w-4 h-4 text-red-500" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* 表单填写区 - 移动端全宽 */}
-        <div className="lg:col-span-3 order-1 lg:order-2 w-full">
+      {/* 表单填写区 - 全宽 */}
+      <div className="w-full mb-6">
           {/* 必填信息 - 始终展开 */}
           <div className="border border-blue-200 rounded-xl overflow-hidden mb-4 bg-blue-50/30">
             <div className="px-3 sm:px-4 py-2.5 sm:py-3 bg-blue-50 border-b border-blue-200">
@@ -494,9 +433,71 @@ const ClientInfoStep: React.FC<Props> = ({ data, onChange }) => {
             </>
           ))}
         </div>
+
+      {/* 资料上传区 - 底部 */}
+      <div className="mb-6">
+        <div className="border-2 border-dashed border-gray-300 rounded-xl p-4 bg-gray-50">
+          <div className="flex items-center gap-2 mb-3">
+            <Upload className="w-5 h-5 text-gray-500" />
+            <span className="font-medium text-gray-700">客户资料上传</span>
+            <span className="text-xs text-gray-400">（可选）</span>
+          </div>
+          <p className="text-xs text-gray-500 mb-3">支持PDF、Word、PPT、图片、压缩包，上传品牌手册、调研报告等资料有助于AI更好地理解品牌</p>
+          
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            accept=".pdf,.doc,.docx,.ppt,.pptx,.jpg,.jpeg,.png,.gif,.webp,.zip,.rar,.7z"
+            onChange={handleFileUpload}
+            className="hidden"
+          />
+          
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="py-2.5 px-5 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors flex items-center gap-2"
+            >
+              <Upload className="w-4 h-4" />
+              选择文件
+            </button>
+            {attachments.length > 0 && (
+              <span className="text-sm text-gray-500">已上传 {attachments.length} 个文件</span>
+            )}
+          </div>
+
+          {/* 已上传文件列表 */}
+          {attachments.length > 0 && (
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              {attachments.map(attachment => (
+                <div
+                  key={attachment.id}
+                  className="flex items-center gap-2 p-2.5 bg-white rounded-lg border border-gray-200 group hover:border-gray-300 transition-colors"
+                >
+                  {getFileIcon(attachment.type)}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-gray-700 truncate" title={attachment.name}>
+                      {attachment.name}
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      {formatFileSize(attachment.size)}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleRemoveAttachment(attachment.id)}
+                    className="p-1 hover:bg-red-50 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X className="w-4 h-4 text-red-500" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="mt-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
+      {/* 专业提示 */}
+      <div className="p-4 bg-blue-50 rounded-xl border border-blue-200">
         <div className="flex items-start gap-3">
           <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
             <Lightbulb className="w-4 h-4 text-blue-600" />
