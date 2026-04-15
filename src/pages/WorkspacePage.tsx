@@ -21,7 +21,7 @@ const STEPS = [
   { key: 'requirements', name: '项目需求', icon: Target },
   { key: 'competitors', name: '竞品分析', icon: Users },
   { key: 'brief', name: '创意简报', icon: FileText },
-  { key: 'strategy', name: '创意策略', icon: Lightbulb },
+  { key: 'strategy', name: '策略', icon: Lightbulb },
 ]
 
 // 自动保存数据接口
