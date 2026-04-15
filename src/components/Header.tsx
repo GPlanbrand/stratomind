@@ -83,8 +83,7 @@ const Header: React.FC<HeaderProps> = ({ collapsed, isMobile, onMenuClick, proje
             onClick={() => navigate('/projects')}
             className="flex items-center gap-2"
           >
-            <Sparkles className="w-5 h-5 text-purple-600" />
-            <span className="text-base font-semibold text-gray-800">灵思</span>
+            <img src="/stratomind-logo.svg" alt="灵思" className="h-6" />
           </button>
         </div>
 
