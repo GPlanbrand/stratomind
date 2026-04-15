@@ -105,6 +105,17 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse }) 
   // 展开状态
   return (
     <div className="fixed left-0 top-0 h-screen w-60 bg-white border-r border-gray-200 flex flex-col z-40">
+      {/* Logo */}
+      <div className="h-14 flex items-center justify-between px-4 border-b border-gray-200">
+        <button onClick={() => navigate('/projects')} className="flex items-center gap-2">
+          <Sparkles className="w-6 h-6 text-purple-600" />
+          <span className="font-semibold text-gray-800">灵思</span>
+        </button>
+        <button onClick={onToggleCollapse} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400">
+          <ChevronLeft className="w-4 h-4" />
+        </button>
+      </div>
+
       {/* 新建项目 */}
       <div className="p-3 border-b border-gray-100">
         <button 
