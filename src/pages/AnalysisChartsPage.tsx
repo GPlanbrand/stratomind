@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeft, Download } from 'lucide-react'
-import { RadarChartComponent, PositioningMatrix, WordCloudChart, UserJourneyChart } from '../components/CompetitorAnalysisCharts'
+import { CompetitorRadarChart, PositioningMatrixChart, WordCloudChart, UserJourneyChart } from '../components/CompetitorAnalysisCharts'
 
 const AnalysisChartsPage: React.FC = () => {
   const handleExport = () => {
@@ -44,8 +44,8 @@ const AnalysisChartsPage: React.FC = () => {
       <div id="charts-container" className="max-w-7xl mx-auto space-y-6">
         {/* 第一行：雷达图 + 竞争定位矩阵 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <RadarChartComponent />
-          <PositioningMatrix />
+          <CompetitorRadarChart />
+          <PositioningMatrixChart />
         </div>
 
         {/* 第二行：词云 */}
