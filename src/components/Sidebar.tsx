@@ -58,8 +58,19 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
   if (collapsed) {
     return (
       <div className="fixed left-0 top-0 h-screen w-16 bg-white border-r border-gray-200 flex flex-col z-40">
+        {/* Logo */}
+        <div className="p-2 border-b border-gray-100 flex items-center justify-center">
+          <button 
+            onClick={() => navigate('/projects')}
+            className="p-1"
+            title="灵思"
+          >
+            <img src="/stratomind-logo.svg" alt="灵思" className="h-6" />
+          </button>
+        </div>
+
         {/* 新建项目 */}
-        <div className="p-2 border-b border-gray-100">
+        <div className="p-2">
           <button 
             onClick={() => navigate('/projects/workspace/new')}
             className="w-full flex items-center justify-center py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
@@ -70,7 +81,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
         </div>
 
         {/* 项目步骤 */}
-        <nav className="flex-1 py-2 overflow-y-auto">
+        <nav className="flex-1 py-2 scroll-fix">
           {projectSteps.map(item => (
             <button
               key={item.step}
@@ -121,8 +132,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
       {/* Logo */}
       <div className="h-14 flex items-center justify-between px-4 border-b border-gray-200 flex-shrink-0">
         <button onClick={() => navigate('/projects')} className="flex items-center gap-2">
-          <Sparkles className="w-6 h-6 text-purple-600" />
-          <span className="font-semibold text-gray-800">灵思</span>
+          <img src="/stratomind-logo.svg" alt="灵思" className="h-7" />
         </button>
         <button onClick={onToggleCollapse} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400">
           <ChevronLeft className="w-4 h-4" />
@@ -140,8 +150,8 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
         </button>
       </div>
 
-      {/* 可滚动区域 - 添加滚动隔离和高度约束 */}
-      <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain touch-none">
+      {/* 可滚动区域 - 使用scroll-fix类确保滚动正常工作 */}
+      <div className="flex-1 scroll-fix">
         {/* 当前项目 */}
         <div className="px-3 py-2">
           <button 

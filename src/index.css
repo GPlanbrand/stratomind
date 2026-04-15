@@ -16,18 +16,23 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  /* 禁用移动端点击高亮 */
+  -webkit-tap-highlight-color: transparent;
 }
 
-body {
+html, body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
-  background-color: white;
+  overflow-x: hidden;
+  overflow-y: auto; /* 关键：允许页面整体滚动 */
+  height: auto;
 }
 
 #root {
   min-height: 100vh;
+  overflow: hidden;
 }
 
 /* 滚动条样式 */
@@ -49,47 +54,32 @@ body {
   background: #9ca3af;
 }
 
-/* 侧边栏滚动隔离 - 防止滚动穿透 */
+/* ============================================
+   侧边栏滚动修复
+   ============================================ */
+
+/* 侧边栏滚动隔离 - 防止滚动穿透到父容器 */
 .overscroll-contain {
   overscroll-behavior-y: contain;
+  overscroll-behavior: contain;
 }
 
-/* 触摸设备禁用触摸滚动（用于需要原生滚动的场景） */
+/* 触摸设备控制 */
 .touch-none {
   touch-action: none;
 }
 
-/* 固定侧边栏滚动容器高度约束 */
-.sidebar-scroll-container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.sidebar-scroll-content {
-  flex: 1;
+/* 固定定位容器内滚动区域的关键样式 */
+.scroll-fix {
+  /* 确保flex子元素可以收缩 */
+  min-height: 0;
+  
+  /* 允许垂直滚动 */
   overflow-y: auto;
   overflow-x: hidden;
-  min-height: 0; /* 关键：允许flex子元素收缩 */
-}
-
-/* 确保body和html不阻止fixed元素的滚动 */
-html, body {
-  overflow-x: hidden;
-  overflow-y: auto;
-  height: auto;
-  min-height: 100vh;
-}
-
-#root {
-  min-height: 100vh;
-  overflow: hidden;
-}
-
-/* 禁用移动端点击高亮 */
-* {
-  -webkit-tap-highlight-color: transparent;
+  
+  /* 阻止滚动穿透 */
+  overscroll-behavior-y: contain;
 }
 
 /* 移动端优化 */
