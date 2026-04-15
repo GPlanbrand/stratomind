@@ -145,7 +145,7 @@ const HomeLoginPage: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       {/* 手机版引导页 */}
       {showMobileGuide && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-gradient-to-b from-purple-50 to-white flex flex-col items-center justify-between py-16 px-6">
+        <div className="lg:hidden fixed inset-0 z-50 bg-gradient-to-b from-purple-50 to-white flex flex-col items-center justify-between py-16 px-6 overflow-hidden touch-none">
           {/* 主内容区 */}
           <div className="flex-1 flex flex-col items-center justify-center">
             {/* App图标 */}
