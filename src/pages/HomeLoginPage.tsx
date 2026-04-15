@@ -177,7 +177,7 @@ const HomeLoginPage: React.FC = () => {
           {/* 底部品牌 */}
           <div className="absolute bottom-8 flex flex-col items-center">
             <div className="flex items-center gap-2">
-              <img src="/guide-logo.svg" alt="StratoMind" className="h-16 w-auto" />
+              <img src="/guide-logo.svg" alt="StratoMind" className="h-12 w-auto" />
             </div>
             <p className="text-xs text-gray-500 mt-2">© StratoMind. All Rights Reserved.</p>
           </div>
