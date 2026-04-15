@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   ChevronDown, ChevronRight, ChevronLeft, Bell, Star, Sparkles,
@@ -37,6 +37,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
   const navigate = useNavigate();
   const location = useLocation();
   const [projectExpanded, setProjectExpanded] = useState(true);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // 默认当前项目（可从 props 传入）
   const projectId = currentProject?.id || 'default-project';
@@ -54,12 +55,70 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
     navigate(`/projects/workspace/${projectId}?step=${step}`);
   };
 
+  // 滚动事件处理 - 确保鼠标滚轮能正常滚动
+  const handleWheel = useCallback((e: WheelEvent) => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    // 如果已经滚动到边界，让事件继续传播
+    const { scrollTop, scrollHeight, clientHeight } = container;
+    const isAtTop = scrollTop === 0;
+    const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
+
+    // 如果是向下滚动且已到底，或向上滚动且已在顶，且内容高度大于容器高度
+    if ((e.deltaY > 0 && isAtBottom) || (e.deltaY < 0 && isAtTop)) {
+      // 内容不足以滚动，不阻止事件
+      if (scrollHeight <= clientHeight) {
+        return;
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.addEventListener('wheel', handleWheel, { passive: false });
+      return () => container.removeEventListener('wheel', handleWheel);
+    }
+  }, [handleWheel]);
+
+  // 滚动状态样式
+  const scrollableContainerStyle: React.CSSProperties = {
+    minHeight: 0,                        // Flexbox 中允许收缩的关键属性
+    height: '100%',                      // 确保填满父容器
+    overflowY: 'auto',                   // 允许垂直滚动
+    overflowX: 'hidden',                 // 隐藏水平溢出
+    overscrollBehavior: 'contain',       // 防止滚动链到父元素
+    scrollbarWidth: 'thin',              // Firefox 细滚动条
+    scrollbarColor: 'transparent transparent', // 隐藏滚动条（可选）
+  };
+
+  // 隐藏滚动条的 CSS（通过 webkit）
+  const hideScrollbarCSS = `
+    .sidebar-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .sidebar-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .sidebar-scroll::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.15);
+      border-radius: 4px;
+    }
+    .sidebar-scroll::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 0, 0, 0.25);
+    }
+  `;
+
   // 折叠状态
   if (collapsed) {
     return (
-      <div className="fixed left-0 top-0 h-screen w-16 bg-white border-r border-gray-200 flex flex-col z-40 overflow-hidden">
+      <div 
+        className="fixed left-0 top-0 h-screen w-16 bg-white border-r border-gray-200 flex flex-col z-40"
+        style={{ overflow: 'hidden' }}
+      >
         {/* Logo */}
-        <div className="p-2 border-b border-gray-100 flex items-center justify-center">
+        <div className="p-2 border-b border-gray-100 flex items-center justify-center flex-shrink-0">
           <button 
             onClick={() => navigate('/projects')}
             className="p-1"
@@ -70,7 +129,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
         </div>
 
         {/* 新建项目 */}
-        <div className="p-2">
+        <div className="p-2 flex-shrink-0">
           <button 
             onClick={() => navigate('/projects/workspace/new')}
             className="w-full flex items-center justify-center py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
@@ -81,7 +140,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
         </div>
 
         {/* 当前项目 */}
-        <div className="px-2 py-1 border-b border-gray-100">
+        <div className="px-2 py-1 border-b border-gray-100 flex-shrink-0">
           <button
             onClick={() => navigate(`/projects/workspace/${projectId}`)}
             className="w-full flex items-center justify-center py-2 text-gray-600 hover:bg-gray-50 rounded-lg"
@@ -91,15 +150,11 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
           </button>
         </div>
 
-        {/* 项目步骤 */}
+        {/* 可滚动区域 - 关键修复 */}
         <nav 
-          className="flex-1 py-2"
-          style={{ 
-            minHeight: 0, 
-            overflowY: 'auto', 
-            overflowX: 'hidden',
-            overscrollBehavior: 'contain'
-          } as React.CSSProperties}
+          ref={scrollContainerRef}
+          className="flex-1 py-2 sidebar-scroll"
+          style={scrollableContainerStyle}
         >
           {projectSteps.map(item => (
             <button
@@ -133,7 +188,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
         </nav>
 
         {/* 用户 */}
-        <div className="py-3 border-t border-gray-200 flex flex-col items-center gap-2">
+        <div className="py-3 border-t border-gray-200 flex flex-col items-center gap-2 flex-shrink-0">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm font-semibold">
             {user?.username?.charAt(0)?.toUpperCase() || 'D'}
           </div>
@@ -141,13 +196,19 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
+
+        {/* 隐藏滚动条样式 */}
+        <style>{hideScrollbarCSS}</style>
       </div>
     );
   }
 
   // 展开状态
   return (
-    <div className="fixed left-0 top-0 h-screen w-60 bg-white border-r border-gray-200 flex flex-col z-40 overflow-hidden">
+    <div 
+      className="fixed left-0 top-0 h-screen w-60 bg-white border-r border-gray-200 flex flex-col z-40"
+      style={{ overflow: 'hidden' }}
+    >
       {/* Logo */}
       <div className="h-14 flex items-center justify-between px-4 border-b border-gray-200 flex-shrink-0">
         <button onClick={() => navigate('/projects')} className="flex items-center gap-2">
@@ -169,15 +230,11 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
         </button>
       </div>
 
-      {/* 可滚动区域 */}
+      {/* 可滚动区域 - 关键修复 */}
       <div 
-        className="flex-1"
-        style={{ 
-          minHeight: 0, 
-          overflowY: 'auto', 
-          overflowX: 'hidden',
-          overscrollBehavior: 'contain'
-        } as React.CSSProperties}
+        ref={scrollContainerRef}
+        className="flex-1 sidebar-scroll"
+        style={scrollableContainerStyle}
       >
         {/* 当前项目 */}
         <div className="px-3 py-2">
@@ -253,6 +310,9 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
           </button>
         </div>
       </div>
+
+      {/* 隐藏滚动条样式 */}
+      <style>{hideScrollbarCSS}</style>
     </div>
   );
 };
