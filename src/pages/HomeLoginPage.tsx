@@ -147,7 +147,7 @@ const HomeLoginPage: React.FC = () => {
       {showMobileGuide && (
         <div className="lg:hidden fixed inset-0 z-50 flex flex-col items-center justify-center px-6" style={{ background: 'linear-gradient(to bottom, #f3e8ff 0%, #ffffff 100%)', overscrollBehavior: 'none', touchAction: 'none' }}>
           {/* 主内容区 */}
-          <div className="flex flex-col items-center mb-10">
+          <div className="flex flex-col items-center mb-2">
             {/* App图标 */}
             <div className="w-20 h-20 mb-6">
               <img src="/app-icon.svg" alt="StratoMind" className="w-full h-full" />
