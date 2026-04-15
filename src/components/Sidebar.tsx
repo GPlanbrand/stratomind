@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   ChevronDown, ChevronRight, ChevronLeft, Bell, Star, Sparkles,
   Building2, Target, Users, FileText, Lightbulb, FolderOpen,
-  Book, Bot, Plus
+  Book, Bot, Plus, Briefcase
 } from 'lucide-react';
 import { User } from '../types/user';
 
@@ -11,15 +11,19 @@ interface SidebarProps {
   user: User | null;
   collapsed: boolean;
   onToggleCollapse: () => void;
+  currentProject?: {
+    id: string;
+    name: string;
+  };
 }
 
-// 当前项目的五个步骤
+// 当前项目的五个步骤 - 对应 step 参数
 const projectSteps = [
-  { icon: Building2, label: '客户背景', path: '/projects/workspace' },
-  { icon: Target, label: '项目需求', path: '/projects/requirements' },
-  { icon: Users, label: '竞品分析', path: '/projects/competitors' },
-  { icon: FileText, label: '创意简报', path: '/projects/brief' },
-  { icon: Lightbulb, label: '创意策略', path: '/projects/strategy' },
+  { icon: Building2, label: '客户背景', step: 0 },
+  { icon: Target, label: '项目需求', step: 1 },
+  { icon: Users, label: '竞品分析', step: 2 },
+  { icon: FileText, label: '创意简报', step: 3 },
+  { icon: Lightbulb, label: '创意策略', step: 4 },
 ];
 
 // 独立导航
@@ -29,16 +33,25 @@ const independentItems = [
   { icon: Bot, label: 'AI助手', path: '/projects/assistant' },
 ];
 
-const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse }) => {
+const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, currentProject }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [projectExpanded, setProjectExpanded] = useState(true);
 
-  const isActive = (path: string) => {
-    if (path === '/projects/workspace') {
-      return location.pathname === '/projects/workspace' || location.pathname.includes('/workspace');
-    }
-    return location.pathname.startsWith(path);
+  // 默认当前项目（可从 props 传入）
+  const projectId = currentProject?.id || 'default-project';
+  const projectName = currentProject?.name || '烟火序肥牛火锅';
+
+  // 检查当前步骤是否激活
+  const isStepActive = (step: number) => {
+    const params = new URLSearchParams(location.search);
+    const currentStep = parseInt(params.get('step') || '0', 10);
+    return location.pathname.includes('/workspace') && currentStep === step;
+  };
+
+  // 跳转到项目步骤
+  const navigateToStep = (step: number) => {
+    navigate(`/projects/workspace/${projectId}?step=${step}`);
   };
 
   // 折叠状态
@@ -60,10 +73,10 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse }) 
         <nav className="flex-1 py-2 overflow-y-auto">
           {projectSteps.map(item => (
             <button
-              key={item.path}
-              onClick={() => navigate(item.path)}
+              key={item.step}
+              onClick={() => navigateToStep(item.step)}
               className={`w-full h-11 flex items-center justify-center ${
-                isActive(item.path) 
+                isStepActive(item.step) 
                   ? 'text-purple-600 bg-purple-50' 
                   : 'text-gray-500 hover:bg-gray-50'
               }`}
@@ -136,8 +149,8 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse }) 
             className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors"
           >
             <div className="flex items-center gap-2 min-w-0">
-              <FolderOpen className="w-5 h-5 text-purple-500 flex-shrink-0" />
-              <span className="text-sm font-medium text-gray-800 truncate">烟火序肥牛火锅</span>
+              <Briefcase className="w-5 h-5 text-purple-500 flex-shrink-0" />
+              <span className="text-sm font-medium text-gray-800 truncate">{projectName}</span>
             </div>
             <ChevronDown className={`w-4 h-4 text-gray-400 flex-shrink-0 transition-transform ${projectExpanded ? 'rotate-180' : ''}`} />
           </button>
@@ -147,10 +160,10 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse }) 
             <div className="mt-1 ml-2 space-y-0.5">
               {projectSteps.map(item => (
                 <button
-                  key={item.path}
-                  onClick={() => navigate(item.path)}
+                  key={item.step}
+                  onClick={() => navigateToStep(item.step)}
                   className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg ${
-                    isActive(item.path) 
+                    isStepActive(item.step) 
                       ? 'bg-purple-50 text-purple-600' 
                       : 'text-gray-600 hover:bg-gray-50'
                   }`}

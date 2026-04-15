@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { 
   ArrowLeft, Save, Home, Cloud, CloudOff,
   Building2, Target, Users, FileText, Lightbulb,
@@ -41,11 +41,29 @@ const AUTO_SAVE_INTERVAL = 30000 // 30秒
 
 const WorkspacePage: React.FC = () => {
   const { projectId } = useParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
   const isNewProject = projectId === 'new'
   const currentProjectId = isNewProject ? 'new' : projectId || 'new'
 
-  const [currentStep, setCurrentStep] = useState(0)
+  // 从 URL 读取步骤，默认为 0
+  const stepFromUrl = parseInt(searchParams.get('step') || '0', 10)
+  const [currentStep, setCurrentStepState] = useState(Math.max(0, Math.min(stepFromUrl, STEPS.length - 1)))
+  
+  // 设置步骤并更新 URL
+  const setCurrentStep = useCallback((step: number) => {
+    setCurrentStepState(step)
+    setSearchParams({ step: String(step) })
+  }, [setSearchParams])
+  
+  // 监听 URL 参数变化，同步步骤
+  useEffect(() => {
+    const newStep = Math.max(0, Math.min(stepFromUrl, STEPS.length - 1))
+    if (newStep !== currentStep) {
+      setCurrentStepState(newStep)
+    }
+  }, [stepFromUrl])
+  
   const [project, setProject] = useState<Project | null>(null)
   const [clientInfo, setClientInfo] = useState<Partial<ClientInfo>>({})
   const [requirements, setRequirements] = useState<Partial<Requirements>>({})
