@@ -178,8 +178,7 @@ const HomeLoginPage: React.FC = () => {
           <div className="mt-10 flex items-center gap-2">
             <img src="/guide-logo.svg" alt="StratoMind" className="h-8 w-auto" />
           </div>
-          <p className="text-xs text-gray-400 mt-2">你的AI创意合伙人</p>
-          <p className="text-xs text-gray-300 mt-4">© StratoMind. All Rights Reserved.</p>
+          <p className="text-xs text-gray-500 mt-4">© StratoMind. All Rights Reserved.</p>
         </div>
       )}
 
