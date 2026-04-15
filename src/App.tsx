@@ -20,7 +20,11 @@ import Layout from './components/Layout'
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<LandingPage />} />
+      {/* 官网落地页 */}
+      <Route path="/landing" element={<LandingPage />} />
+      
+      {/* 工作台入口 - 恢复原来的路由 */}
+      <Route path="/" element={<HomeLoginPage />} />
       <Route path="/home" element={<HomeLoginPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />

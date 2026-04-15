@@ -17,10 +17,10 @@ import {
 import { Project, ClientInfo, Requirements, Competitor, Brief, Strategy } from '../types'
 
 const STEPS = [
-  { key: 'clientInfo', name: '客户背景', icon: Building2 },
-  { key: 'requirements', name: '项目需求', icon: Target },
-  { key: 'competitors', name: '竞品分析', icon: Users },
-  { key: 'brief', name: '创意简报', icon: FileText },
+  { key: 'clientInfo', name: '背景', icon: Building2 },
+  { key: 'requirements', name: '需求', icon: Target },
+  { key: 'competitors', name: '竞品', icon: Users },
+  { key: 'brief', name: '简报', icon: FileText },
   { key: 'strategy', name: '策略', icon: Lightbulb },
 ]
 
@@ -593,26 +593,30 @@ const WorkspacePage: React.FC = () => {
 
       {/* 步骤指示器 - 移动端适配 */}
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-3 sm:px-4">
-          <div className="flex items-center overflow-x-auto py-3 sm:py-4 scrollbar-hide">
+        <div className="max-w-4xl mx-auto px-2 sm:px-4">
+          <div className="flex items-center -mx-1 py-2 sm:py-3">
             {STEPS.map((step, index) => {
               const Icon = step.icon
               const completed = isStepCompleted(index)
               const active = index === currentStep
               
               return (
-                <div key={step.key} className="flex items-center flex-shrink-0">
+                <div key={step.key} className="flex items-center flex-1 min-w-0 px-1">
                   <button
                     onClick={() => setCurrentStep(index)}
-                    className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors whitespace-nowrap ${
+                    className={`flex flex-col items-center justify-center w-full py-1.5 rounded-lg transition-all min-w-0 ${
                       active ? 'bg-gray-900 text-white' : completed ? 'bg-green-100 text-green-700' : 'text-gray-400 hover:bg-gray-100'
                     }`}
                   >
-                    {completed ? <Check className="w-3 h-3 sm:w-4 sm:h-4" /> : <Icon className="w-3 h-3 sm:w-4 sm:h-4" />}
-                    <span className="text-xs sm:text-sm font-medium">{step.name}</span>
+                    <div className="flex items-center gap-1">
+                      {completed ? <Check className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" /> : <Icon className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />}
+                      <span className="text-xs sm:text-sm font-medium truncate max-w-[50px] sm:max-w-none">{step.name}</span>
+                    </div>
                   </button>
                   {index < STEPS.length - 1 && (
-                    <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-gray-300 mx-0.5 sm:mx-1 flex-shrink-0" />
+                    <div className={`w-2 sm:w-3 flex-shrink-0 ${active ? 'text-white' : 'text-gray-300'}`}>
+                      <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
+                    </div>
                   )}
                 </div>
               )
