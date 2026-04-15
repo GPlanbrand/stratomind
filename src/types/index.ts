@@ -7,26 +7,90 @@ export interface Project {
   status: 'active' | 'completed' | 'archived'
 }
 
+// 4A标准客户背景信息
 export interface ClientInfo {
-  companyName: string
-  industry: string
-  companySize: string
-  description: string
-  targetMarket: string
-  keyProducts: string[]
-  brandPosition: string
+  // 客户基础信息
+  clientName: string                    // 客户名称（必填）
+  industry: string                      // 所属行业
+  companySize: string                   // 公司规模
+  establishedYear: string               // 成立时间
+  companyNature: string                 // 企业性质（国企/民企/外企/合资）
+  
+  // 品牌资产
+  brandStructure: string                // 主品牌/子品牌结构
+  brandHistory: string                  // 品牌历史与沿革
+  coreValue: string                     // 品牌核心价值
+  brandPersonality: string              // 品牌个性
+  brandSlogan: string                   // 品牌口号/Slogan
+  
+  // 业务概况
+  mainBusiness: string                  // 主营业务描述
+  productLines: string[]                // 核心产品/服务线
+  targetMarkets: string                 // 目标市场区域
+  marketPosition: string                // 市场份额/行业地位
+  competitiveAdvantage: string          // 竞争优势
+  
+  // 渠道与终端
+  salesChannels: string[]                // 销售渠道（线上/线下/分销）
+  outletCount: string                   // 终端网点数量
+  keyMarkets: string                    // 重点区域市场
+  
+  // 过往营销
+  marketingHistory: string              // 历史营销活动概述
+  previousAgencies: string              // 过往代理商
+  marketingBudget: string               // 营销投入水平
+  
+  // 附件资料
+  attachments: ClientAttachment[]       // 上传的客户资料
 }
 
+// 客户资料附件
+export interface ClientAttachment {
+  id: string
+  name: string
+  type: 'pdf' | 'word' | 'ppt' | 'image' | 'zip'
+  size: number
+  url?: string
+  uploadedAt: string
+}
+
+// 4A标准项目需求
 export interface Requirements {
-  projectType: string
-  budget: string
-  timeline: string
-  targetAudience: string
-  keyMessage: string
-  deliverables: string[]
-  tone: string
-  channels: string[]
-  brandChallenge?: string
+  // 项目基础
+  projectName: string                   // 项目名称（必填）
+  projectType: string                   // 项目类型（品牌建设/产品推广/活动策划/整合营销/其他）
+  serviceType: string                   // 服务类型（年度全案/单项Campaign/专项服务）
+  projectCycle: string                  // 项目周期
+  budgetRange: string                   // 预算范围
+  
+  // 商业目标
+  businessGoal: string                  // 商业目标（销售/市占/用户增长等）
+  brandGoal: string                     // 品牌目标（知名度/美誉度/忠诚度等）
+  communicationGoal: string              // 传播目标（曝光/互动/转化等）
+  coreKPI: string                       // 核心KPI指标
+  
+  // 目标人群
+  targetPersona: string                 // 核心人群画像
+  mediaHabits: string                   // 人群触媒习惯
+  decisionJourney: string               // 消费决策路径
+  
+  // 传播策略
+  coreMessage: string                   // 核心传播信息
+  communicationTone: string             // 传播调性
+  primaryChannels: string[]             // 主要传播渠道
+  secondaryChannels: string[]          // 次要传播渠道
+  
+  // 创意要求
+  creativeDirection: string             // 创意方向偏好
+  referenceCases: string                // 参考案例
+  taboos: string                        // 禁忌事项
+  
+  // 时间节奏
+  keyMilestones: string                // 关键时间节点
+  milestoneEvents: string               // 里程碑事件
+  
+  // 交付物
+  deliverables: string[]                // 期望交付物
 }
 
 // 4A公司标准竞品分析数据结构
