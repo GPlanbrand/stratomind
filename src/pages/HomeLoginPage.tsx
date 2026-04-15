@@ -171,9 +171,9 @@ const HomeLoginPage: React.FC = () => {
       </div>
 
       {/* 主内容区 */}
-      <div className="fixed inset-0 flex z-10">
+      <div className="relative min-h-screen flex">
         {/* 左侧品牌宣传区域 */}
-        <div className="hidden lg:flex lg:w-1/2 items-center justify-center p-12">
+        <div className="hidden lg:flex lg:w-1/2 items-center justify-center p-12 relative z-10">
           <div className="max-w-md">
             <div className="flex items-center gap-4 mb-8">
               <img src="/logo.svg" alt="AI 创意工作台" className="h-16 w-auto" />
@@ -235,7 +235,7 @@ const HomeLoginPage: React.FC = () => {
         </div>
 
         {/* 右侧登录区域 */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-6 bg-white/95 backdrop-blur-sm">
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-6 bg-white relative z-20">
           <div className="w-full max-w-md">
             {/* 移动端Logo */}
             <div className="lg:hidden flex items-center justify-center gap-2 mb-6">
