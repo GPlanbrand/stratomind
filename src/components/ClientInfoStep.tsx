@@ -130,7 +130,7 @@ const ClientInfoStep: React.FC<Props> = ({ data, onChange }) => {
           </div>
           <h2 className="text-lg sm:text-xl font-semibold text-gray-900">客户背景</h2>
         </div>
-        <p className="text-gray-500 text-xs sm:text-sm">按4A广告公司标准填写客户品牌信息</p>
+        <p className="text-gray-500 text-xs sm:text-sm">按专业填写客户品牌信息</p>
       </div>
 
       {/* 资料上传区 - 左侧固定 */}
@@ -502,7 +502,7 @@ const ClientInfoStep: React.FC<Props> = ({ data, onChange }) => {
             <Lightbulb className="w-4 h-4 text-blue-600" />
           </div>
           <div className="text-sm text-gray-600">
-            <p className="font-medium text-gray-900 mb-1">💡 4A标准提示</p>
+            <p className="font-medium text-gray-900 mb-1">💡 专业提示</p>
             <p>详细的客户背景信息有助于后续制定更精准的品牌策略和创意方向。如有品牌手册、过往案例等资料，建议上传以便AI更好地理解品牌。</p>
           </div>
         </div>

@@ -11,7 +11,7 @@ interface Props {
   onChange: (data: Partial<Brief>) => void
 }
 
-// 4A精简版简报分组
+// 精简版简报分组
 const BRIEF_SECTIONS = [
   { id: 'overview', label: '项目概要', icon: FileText, color: 'blue' },
   { id: 'brand', label: '品牌现状', icon: Target, color: 'purple' },
@@ -111,7 +111,7 @@ const BriefStep: React.FC<Props> = ({ data, onChange }) => {
 
   // 导出简报
   const handleExportBrief = () => {
-    const content = `# 创意简报（4A精简版）
+    const content = `# 创意简报（精简版）
 
 ---
 
@@ -185,7 +185,7 @@ const BriefStep: React.FC<Props> = ({ data, onChange }) => {
 ---
 
 *生成时间：${new Date().toLocaleString('zh-CN')}*
-*基于4A公司标准创意简报框架（精简实用版）*
+*基于专业创意简报框架（精简实用版）*
 `.trim()
 
     const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' })
@@ -326,7 +326,7 @@ const BriefStep: React.FC<Props> = ({ data, onChange }) => {
       case 'audience':
         return (
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">人口属性</label>
                 <input type="text" value={data.targetDemographic || ''}
@@ -523,7 +523,7 @@ const BriefStep: React.FC<Props> = ({ data, onChange }) => {
           </div>
           <div>
             <h2 className="text-2xl font-bold text-gray-900">创意简报</h2>
-            <p className="text-gray-500 text-sm">4A精简版 · 二三四线城市实用框架</p>
+            <p className="text-gray-500 text-sm">精简版 · 二三四线城市实用框架</p>
           </div>
         </div>
       </div>
@@ -558,7 +558,7 @@ const BriefStep: React.FC<Props> = ({ data, onChange }) => {
                   </div>
                   <div className="text-left">
                     <span className="font-semibold text-gray-900">{section.label}</span>
-                    <span className="text-xs text-gray-400 ml-2">4A标准维度</span>
+                    <span className="text-xs text-gray-400 ml-2">专业维度</span>
                   </div>
                 </div>
                 {isExpanded ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
@@ -578,7 +578,7 @@ const BriefStep: React.FC<Props> = ({ data, onChange }) => {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h4 className="font-semibold text-gray-900 mb-1">准备好生成创意简报了吗？</h4>
-            <p className="text-sm text-gray-500">基于已填写的项目信息，AI将生成完整的4A标准创意简报</p>
+            <p className="text-sm text-gray-500">基于已填写的项目信息，AI将生成完整的专业创意简报</p>
           </div>
           <div className="flex items-center gap-3">
             <button onClick={handleExportBrief}
@@ -598,14 +598,14 @@ const BriefStep: React.FC<Props> = ({ data, onChange }) => {
         </div>
       </div>
 
-      {/* 使用说明 */}
-      <div className="mt-6 p-4 bg-blue-50 rounded-xl border border-blue-100">
-        <h4 className="font-semibold text-blue-800 mb-2 flex items-center gap-2">
-          <span className="w-6 h-6 rounded-full bg-blue-500 text-white text-xs flex items-center justify-center">💡</span>
-          4A精简版简报说明
+      {/* 使用说明 - 移动端适配 */}
+      <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-blue-50 rounded-xl border border-blue-100">
+        <h4 className="font-semibold text-blue-800 mb-2 flex items-center gap-2 text-sm sm:text-base">
+          <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-blue-500 text-white text-xs sm:text-sm flex items-center justify-center">💡</span>
+          精简版简报说明
         </h4>
-        <ul className="text-sm text-blue-700 space-y-1">
-          <li>• 本简报基于4A公司标准框架，针对二三四线城市实际情况精简优化</li>
+        <ul className="text-xs sm:text-sm text-blue-700 space-y-1">
+          <li>• 本简报基于专业框架，针对二三四线城市实际情况精简优化</li>
           <li>• 8大模块覆盖品牌策略全流程，可直接指导执行落地</li>
           <li>• 渠道建议包含本地化资源（朋友圈、抖音本地生活、电梯广告等）</li>
           <li>• 点击「AI一键生成」可基于项目信息自动填充简报内容</li>

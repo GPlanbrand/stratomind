@@ -533,85 +533,86 @@ const WorkspacePage: React.FC = () => {
         </div>
       )}
 
-      {/* 顶部导航 */}
+      {/* 顶部导航 - 移动端适配 */}
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+        <div className="max-w-4xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
+          <div className="flex items-center justify-between gap-2">
             <button
               onClick={() => navigate('/projects')}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+              className="flex items-center gap-1 sm:gap-2 text-gray-600 hover:text-gray-900 text-sm"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
               <span className="hidden sm:inline">返回</span>
             </button>
             
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               {/* 自动保存状态 */}
               {autoSaving && (
-                <div className="flex items-center gap-2 text-sm text-blue-500">
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>自动保存中...</span>
+                <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-blue-500">
+                  <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
+                  <span className="hidden sm:inline">自动保存中...</span>
                 </div>
               )}
               {!autoSaving && autoSaveError && (
-                <div className="flex items-center gap-2 text-sm text-red-500">
-                  <AlertCircle className="w-4 h-4" />
-                  <span>{autoSaveError}</span>
+                <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-red-500">
+                  <AlertCircle className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">{autoSaveError}</span>
                 </div>
               )}
               {!autoSaving && !autoSaveError && lastAutoSave && (
-                <div className="flex items-center gap-2 text-sm text-gray-400">
-                  <Cloud className="w-4 h-4 text-green-500" />
-                  <span>已自动保存 {lastAutoSave.toLocaleTimeString()}</span>
+                <div className="flex items-center gap-1 sm:gap-2 text-xs text-gray-400">
+                  <Cloud className="w-3 h-3 sm:w-4 sm:h-4 text-green-500" />
+                  <span className="hidden sm:inline">已保存 {lastAutoSave.toLocaleTimeString()}</span>
                 </div>
               )}
               {!autoSaving && !autoSaveError && !lastAutoSave && (
-                <div className="flex items-center gap-2 text-sm text-gray-400">
-                  <CloudOff className="w-4 h-4" />
-                  <span>未保存</span>
+                <div className="flex items-center gap-1 sm:gap-2 text-xs text-gray-400">
+                  <CloudOff className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">未保存</span>
                 </div>
               )}
               {hasUnsavedChanges && (
                 <span className="text-xs text-amber-500 flex items-center gap-1">
-                  <span className="w-2 h-2 bg-amber-500 rounded-full"></span>
-                  有未保存的更改
+                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-amber-500 rounded-full"></span>
+                  <span className="hidden sm:inline">有未保存的更改</span>
                 </span>
               )}
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex items-center gap-2 px-4 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+                className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50"
               >
-                <Save className="w-4 h-4" />
+                <Save className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span className="hidden sm:inline">{saving ? '保存中...' : '保存'}</span>
+                <span className="sm:hidden">{saving ? '...' : '保存'}</span>
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 步骤指示器 */}
+      {/* 步骤指示器 - 移动端适配 */}
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="flex items-center overflow-x-auto py-4">
+        <div className="max-w-4xl mx-auto px-3 sm:px-4">
+          <div className="flex items-center overflow-x-auto py-3 sm:py-4 scrollbar-hide">
             {STEPS.map((step, index) => {
               const Icon = step.icon
               const completed = isStepCompleted(index)
               const active = index === currentStep
               
               return (
-                <div key={step.key} className="flex items-center">
+                <div key={step.key} className="flex items-center flex-shrink-0">
                   <button
                     onClick={() => setCurrentStep(index)}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors whitespace-nowrap ${
+                    className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors whitespace-nowrap ${
                       active ? 'bg-gray-900 text-white' : completed ? 'bg-green-100 text-green-700' : 'text-gray-400 hover:bg-gray-100'
                     }`}
                   >
-                    {completed ? <Check className="w-4 h-4" /> : <Icon className="w-4 h-4" />}
-                    <span className="text-sm font-medium">{step.name}</span>
+                    {completed ? <Check className="w-3 h-3 sm:w-4 sm:h-4" /> : <Icon className="w-3 h-3 sm:w-4 sm:h-4" />}
+                    <span className="text-xs sm:text-sm font-medium">{step.name}</span>
                   </button>
                   {index < STEPS.length - 1 && (
-                    <ChevronRight className="w-4 h-4 text-gray-300 mx-1" />
+                    <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-gray-300 mx-0.5 sm:mx-1 flex-shrink-0" />
                   )}
                 </div>
               )
@@ -620,38 +621,39 @@ const WorkspacePage: React.FC = () => {
         </div>
       </div>
 
-      {/* 内容区域 */}
-      <div className="max-w-4xl mx-auto px-4 py-8 pb-24">
+      {/* 内容区域 - 移动端适配 */}
+      <div className="max-w-4xl mx-auto px-3 sm:px-4 py-6 sm:py-8 pb-28 sm:pb-24">
         {renderStep()}
       </div>
 
-      {/* 底部操作栏 */}
+      {/* 底部操作栏 - 移动端适配 */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+        <div className="max-w-4xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
+          <div className="flex items-center justify-between gap-3">
             <button
               onClick={handlePrev}
               disabled={currentStep === 0}
-              className="px-4 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 sm:flex-none px-3 sm:px-4 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              上一步
+              <span className="hidden sm:inline">上一步</span>
+              <span className="sm:hidden">← 上一步</span>
             </button>
             
             {currentStep < STEPS.length - 1 ? (
               <button
                 onClick={handleNext}
                 disabled={saving}
-                className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
+                className="flex-1 sm:flex-none px-4 sm:px-6 py-2 text-sm bg-gray-900 text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
               >
-                {saving ? '保存中...' : '下一步'}
+                {saving ? '保存中...' : '下一步 →'}
               </button>
             ) : (
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+                className="flex-1 sm:flex-none px-4 sm:px-6 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
               >
-                {saving ? '保存中...' : '完成'}
+                {saving ? '保存中...' : '完成 ✓'}
               </button>
             )}
           </div>

@@ -7,7 +7,7 @@ export interface Project {
   status: 'active' | 'completed' | 'archived'
 }
 
-// 4A标准客户背景信息
+// 客户背景信息
 export interface ClientInfo {
   // 客户基础信息
   clientName: string                    // 客户名称（必填）
@@ -54,7 +54,7 @@ export interface ClientAttachment {
   uploadedAt: string
 }
 
-// 4A标准项目需求
+// 项目需求
 export interface Requirements {
   // 项目基础
   projectName: string                   // 项目名称（必填）
@@ -93,7 +93,7 @@ export interface Requirements {
   deliverables: string[]                // 期望交付物
 }
 
-// 4A公司标准竞品分析数据结构
+// 竞品分析数据结构
 export interface Competitor {
   // 基础信息
   id: string
@@ -144,7 +144,7 @@ export interface Competitor {
   }
 }
 
-// 4A精简版创意简报数据结构
+// 创意简报数据结构
 export interface Brief {
   // 一、项目概要
   projectName: string              // 项目名称

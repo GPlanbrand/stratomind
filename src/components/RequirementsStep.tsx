@@ -69,7 +69,7 @@ const RequirementsStep: React.FC<Props> = ({ data, onChange }) => {
           </div>
           <h2 className="text-lg sm:text-xl font-semibold text-gray-900">项目需求</h2>
         </div>
-        <p className="text-gray-500 text-xs sm:text-sm">按4A广告公司标准明确项目核心需求和目标</p>
+        <p className="text-gray-500 text-xs sm:text-sm">按专业明确项目核心需求和目标</p>
       </div>
 
       <div className="space-y-4">
@@ -414,7 +414,7 @@ const RequirementsStep: React.FC<Props> = ({ data, onChange }) => {
             <Target className="w-4 h-4 text-blue-600" />
           </div>
           <div className="text-sm text-gray-600">
-            <p className="font-medium text-gray-900 mb-1">💡 4A标准提示</p>
+            <p className="font-medium text-gray-900 mb-1">💡 专业提示</p>
             <p>完整的项目需求信息是产出高质量创意简报的基础。建议重点填写商业目标、核心KPI和传播策略部分，这些将直接影响创意方向和策略制定。</p>
           </div>
         </div>
