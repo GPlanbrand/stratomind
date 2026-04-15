@@ -20,6 +20,9 @@ const HomeLoginPage: React.FC = () => {
   // App推广栏状态
   const [showAppBanner, setShowAppBanner] = useState(true);
 
+  // 手机版引导页状态
+  const [showMobileGuide, setShowMobileGuide] = useState(true);
+
   // 登录方式状态（仅移动端使用）
   const [loginMethod, setLoginMethod] = useState<'account' | 'phone'>('account');
 
@@ -140,8 +143,48 @@ const HomeLoginPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* 手机版引导页 */}
+      {showMobileGuide && (
+        <div className="lg:hidden fixed inset-0 z-50 bg-gradient-to-b from-purple-50 to-white flex flex-col items-center justify-between py-16 px-6">
+          {/* 主内容区 */}
+          <div className="flex-1 flex flex-col items-center justify-center">
+            {/* App图标 */}
+            <div className="w-24 h-24 mb-8">
+              <img src="/app-icon.svg" alt="StratoMind" className="w-full h-full" />
+            </div>
+            
+            {/* 文案 */}
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">使用App登陆更便捷</h2>
+            <p className="text-sm text-gray-500">请下载官方App使用</p>
+          </div>
+
+          {/* 按钮区 */}
+          <div className="w-full max-w-sm space-y-3">
+            <button
+              onClick={() => window.open('#', '_blank')}
+              className="w-full py-3.5 bg-purple-600 text-white rounded-xl font-medium text-base hover:bg-purple-700 transition-colors min-h-[48px]"
+            >
+              立刻下载StratoMind
+            </button>
+            <button
+              onClick={() => setShowMobileGuide(false)}
+              className="w-full py-3.5 bg-gray-100 text-gray-400 rounded-xl font-medium text-base hover:bg-gray-200 transition-colors min-h-[48px]"
+            >
+              先进入网页版
+            </button>
+          </div>
+
+          {/* 底部品牌 */}
+          <div className="mt-8 flex items-center gap-2">
+            <img src="/guide-logo.svg" alt="StratoMind" className="h-6 w-auto" />
+          </div>
+          <p className="text-xs text-gray-400 mt-1">你的AI创意合伙人</p>
+          <p className="text-xs text-gray-300 mt-4">© StratoMind. All Rights Reserved.</p>
+        </div>
+      )}
+
       {/* 移动端顶部 - Logo */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-white border-b border-gray-100">
+      <div className={`lg:hidden fixed top-0 left-0 right-0 z-30 bg-white border-b border-gray-100 transition-all duration-300 ${showMobileGuide ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         <div className="px-4 py-3 flex items-center gap-2">
           <img src="/logo.svg" alt="灵思" className="h-6 w-auto" />
           <span className="text-base font-semibold text-gray-800">灵思，你的AI创意合伙人</span>
