@@ -32,7 +32,7 @@ html, body {
 
 #root {
   min-height: 100vh;
-  overflow: hidden;
+  /* 移除 overflow: hidden，允许fixed元素内部滚动 */
 }
 
 /* 滚动条样式 */

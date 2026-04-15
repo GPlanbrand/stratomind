@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Lightbulb, Wand2, Copy, Download, AlertCircle, CheckCircle } from 'lucide-react'
+import { Lightbulb, Wand2, Copy, Download, AlertCircle, CheckCircle, FileText, Palette, Video, Sparkles } from 'lucide-react'
 import { Strategy } from '../types'
 
 interface Props {
@@ -7,10 +7,129 @@ interface Props {
   onChange: (data: Partial<Strategy>) => void
 }
 
+// Prompt类型
+type PromptType = 'copywriting' | 'creative' | 'video'
+
+const promptTypes: { key: PromptType; label: string; icon: React.ElementType; description: string }[] = [
+  { key: 'copywriting', label: '文案Prompt', icon: FileText, description: '品牌文案、广告语、社媒内容' },
+  { key: 'creative', label: '创意Prompt', icon: Palette, description: '创意概念、视觉方向、海报设计' },
+  { key: 'video', label: '视频Prompt', icon: Video, description: '视频脚本、分镜、短视频内容' },
+]
+
 const StrategyStep: React.FC<Props> = ({ data, onChange }) => {
   const [generating, setGenerating] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const [selectedPromptType, setSelectedPromptType] = useState<PromptType>('copywriting')
+  const [generatedPrompts, setGeneratedPrompts] = useState<Record<PromptType, string>>({
+    copywriting: '',
+    creative: '',
+    video: '',
+  })
+
+  // 生成三类Prompt
+  const generateAllPrompts = () => {
+    const clientInfo = (window as any).__workspaceClientInfo || {}
+    const requirements = (window as any).__workspaceRequirements || {}
+    const brief = (window as any).__workspaceBrief || {}
+    
+    const brandName = clientInfo.companyName || requirements.projectName || '品牌'
+    const industry = clientInfo.industry || requirements.industry || '行业'
+    const targetAudience = brief.targetAudience || requirements.targetAudience || '目标人群'
+    const coreMessage = data.overallStrategy || '核心价值主张'
+    const differentiation = data.differentiation || '差异化优势'
+    const creativeDirection = data.contentStrategy || '创意方向'
+
+    // 文案Prompt
+    const copywritingPrompt = `【文案创作任务】
+
+品牌名称：${brandName}
+所属行业：${industry}
+目标人群：${targetAudience}
+
+核心策略主张：
+${coreMessage}
+
+传播主轴：
+${differentiation}
+
+请根据以上信息，创作以下文案内容：
+
+1. 品牌Slogan（3-5个备选，简洁有力，易于传播）
+2. 品牌故事（200-300字，体现品牌调性）
+3. 社交媒体文案（适合小红书/抖音风格，3-5条）
+4. 产品卖点文案（提炼3个核心卖点）
+
+文案风格要求：
+- 符合品牌调性
+- 语言简洁有感染力
+- 突出差异化优势`
+
+    // 创意Prompt
+    const creativePrompt = `【创意设计任务】
+
+品牌名称：${brandName}
+所属行业：${industry}
+目标人群：${targetAudience}
+
+创意方向：
+${creativeDirection}
+
+传播主轴：
+${differentiation}
+
+请根据以上信息，提供创意设计方案：
+
+1. 视觉风格定义（色彩、字体、图形元素建议）
+2. 海报创意概念（3个方向，含画面描述）
+3. 社交媒体视觉风格（小红书/抖音封面风格建议）
+4. 品牌视觉延展应用（包装、物料等）
+
+创意要求：
+- 差异化明显，避免行业同质化
+- 视觉冲击力强
+- 易于传播和记忆`
+
+    // 视频Prompt
+    const videoPrompt = `【视频创作任务】
+
+品牌名称：${brandName}
+所属行业：${industry}
+目标人群：${targetAudience}
+
+核心策略主张：
+${coreMessage}
+
+创意方向：
+${creativeDirection}
+
+请根据以上信息，创作视频内容方案：
+
+1. 品牌宣传片（30秒版脚本大纲）
+2. 短视频内容规划（抖音/小红书风格，5个选题方向）
+3. 产品展示视频（15秒版分镜脚本）
+4. 口播文案（适合达人带货/种草，3个版本）
+
+视频要求：
+- 前3秒有强吸引力
+- 节奏明快，符合短视频平台调性
+- 结尾有明确行动召唤`
+
+    setGeneratedPrompts({
+      copywriting: copywritingPrompt,
+      creative: creativePrompt,
+      video: videoPrompt,
+    })
+  }
+
+  // 复制当前选中的Prompt
+  const copyCurrentPrompt = () => {
+    const prompt = generatedPrompts[selectedPromptType]
+    if (prompt) {
+      navigator.clipboard.writeText(prompt)
+      alert('Prompt已复制到剪贴板')
+    }
+  }
 
   const copyPrompt = () => {
     const prompt = `品牌策略分析任务：
