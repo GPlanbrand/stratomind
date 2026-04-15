@@ -65,7 +65,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
             className="p-1"
             title="灵思"
           >
-            <img src="/stratomind-logo.svg" alt="灵思" className="h-6" />
+            <img src="/favicon.svg" alt="灵思" className="h-6 w-6" />
           </button>
         </div>
 
