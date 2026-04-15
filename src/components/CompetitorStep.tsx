@@ -106,24 +106,43 @@ const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
 
   // 导出图表为PNG
   const exportChartAsImage = (chartId: string, chartName: string) => {
-    const chartElement = document.getElementById(chartId)
-    if (!chartElement) return
-    
-    // 使用html2canvas将DOM转换为canvas
-    const svgElement = chartElement.querySelector('svg')
-    if (!svgElement) return
+    try {
+      const chartElement = document.getElementById(chartId)
+      if (!chartElement) {
+        alert('图表元素不存在')
+        return
+      }
+      
+      const svgElement = chartElement.querySelector('svg')
+      if (!svgElement) {
+        alert('SVG元素不存在')
+        return
+      }
 
-    const svgData = new XMLSerializer().serializeToString(svgElement)
-    const canvas = document.createElement('canvas')
-    const ctx = canvas.getContext('2d')
-    const img = new Image()
+      const svgData = new XMLSerializer().serializeToString(svgElement)
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
+      const img = new Image()
 
-    // 设置canvas尺寸
-    canvas.width = 800
-    canvas.height = 600
+      if (!ctx) {
+        alert('无法创建画布上下文')
+        return
+      }
 
-    img.onload = () => {
-      if (ctx) {
+      // 设置canvas尺寸
+      canvas.width = 800
+      canvas.height = 600
+
+      // 安全编码SVG为base64
+      let base64Svg
+      try {
+        base64Svg = btoa(unescape(encodeURIComponent(svgData)))
+      } catch (encodeError) {
+        // 如果btoa失败，尝试使用更安全的方式
+        base64Svg = btoa(encodeURIComponent(svgData).replace(/%([0-9A-F]{2})/g, (_, p1) => String.fromCharCode(parseInt(p1, 16))))
+      }
+
+      img.onload = () => {
         // 白色背景
         ctx.fillStyle = '#ffffff'
         ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -135,9 +154,16 @@ const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
         link.href = canvas.toDataURL('image/png')
         link.click()
       }
-    }
 
-    img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)))
+      img.onerror = () => {
+        alert('图片加载失败，无法导出')
+      }
+
+      img.src = 'data:image/svg+xml;base64,' + base64Svg
+    } catch (error) {
+      console.error('导出图表失败:', error)
+      alert('导出失败，请稍后重试')
+    }
   }
 
   return (
