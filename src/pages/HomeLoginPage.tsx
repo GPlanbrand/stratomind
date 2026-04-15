@@ -146,22 +146,19 @@ const HomeLoginPage: React.FC = () => {
       {/* 手机版引导页 */}
       {showMobileGuide && (
         <div className="lg:hidden fixed inset-0 z-50 flex flex-col items-center justify-center px-6" style={{ background: 'linear-gradient(to bottom, #f3e8ff 0%, #ffffff 100%)', overscrollBehavior: 'none', touchAction: 'none' }}>
-          {/* 主内容区 - 上移72px */}
-          <div className="flex flex-col items-center mb-2" style={{ marginTop: '-72px' }}>
-            {/* Logo和文案区 - 再上移72px */}
-            <div className="flex flex-col items-center" style={{ marginTop: '-72px' }}>
-              {/* App图标 */}
-              <div className="w-20 h-20 mb-6">
-                <img src="/app-icon.svg" alt="StratoMind" className="w-full h-full" />
-              </div>
-              
-              {/* 文案 */}
-              <h2 className="text-lg font-semibold text-gray-900 mb-1">使用App登陆更便捷</h2>
-              <p className="text-lg font-semibold text-gray-500">请下载官方App使用</p>
+          {/* Logo和文案区 - 距离按钮90px */}
+          <div className="flex flex-col items-center mb-[90px]">
+            {/* App图标 */}
+            <div className="w-20 h-20 mb-6">
+              <img src="/app-icon.svg" alt="StratoMind" className="w-full h-full" />
             </div>
+            
+            {/* 文案 */}
+            <h2 className="text-lg font-semibold text-gray-900 mb-1">使用App登陆更便捷</h2>
+            <p className="text-lg font-semibold text-gray-500">请下载官方App使用</p>
           </div>
 
-          {/* 按钮区 */}
+          {/* 按钮区 - 位置锁定 */}
           <div className="w-full max-w-[280px] space-y-3">
             <button
               onClick={() => window.open('#', '_blank')}
@@ -177,7 +174,7 @@ const HomeLoginPage: React.FC = () => {
             </button>
           </div>
 
-          {/* 底部品牌 */}
+          {/* 底部品牌 - 位置锁定 */}
           <div className="absolute bottom-8 flex flex-col items-center">
             <img src="/guide-logo.svg" alt="StratoMind" className="h-8 w-auto" />
             <p className="text-xs text-gray-500 mt-2">© StratoMind. All Rights Reserved.</p>
