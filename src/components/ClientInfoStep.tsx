@@ -28,16 +28,16 @@ const ClientInfoStep: React.FC<Props> = ({ data, onChange }) => {
       </div>
 
       <div className="space-y-4 sm:space-y-5">
-        {/* 客户名称 */}
+        {/* 项目名称 */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            客户名称 <span className="text-red-500">*</span>
+            项目名称 <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
             value={data.companyName || ''}
             onChange={(e) => onChange({ ...data, companyName: e.target.value })}
-            placeholder="请输入客户/公司全称"
+            placeholder="请输入项目名称"
             className="w-full px-3 py-2.5 sm:px-4 sm:py-2.5 border border-gray-200 rounded-lg text-gray-900 text-sm sm:text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white min-h-[44px]"
           />
         </div>
