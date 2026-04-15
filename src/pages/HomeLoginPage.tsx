@@ -147,7 +147,7 @@ const HomeLoginPage: React.FC = () => {
       {showMobileGuide && (
         <div className="lg:hidden fixed inset-0 z-50 bg-gradient-to-b from-purple-50 to-white flex flex-col items-center justify-center px-6" style={{ overscrollBehavior: 'none', touchAction: 'none' }}>
           {/* 主内容区 */}
-          <div className="flex flex-col items-center mb-16">
+          <div className="flex flex-col items-center mb-8">
             {/* App图标 */}
             <div className="w-16 h-16 mb-5">
               <img src="/app-icon.svg" alt="StratoMind" className="w-full h-full" />
@@ -158,8 +158,8 @@ const HomeLoginPage: React.FC = () => {
             <p className="text-sm text-gray-500">请下载官方App使用</p>
           </div>
 
-          {/* 按钮区 - 居中 */}
-          <div className="w-full max-w-[260px] space-y-3 mb-16">
+          {/* 按钮区 - 屏幕正中间 */}
+          <div className="w-full max-w-[260px] space-y-3">
             <button
               onClick={() => window.open('#', '_blank')}
               className="w-full py-2.5 bg-purple-600 text-white rounded-xl font-medium text-sm hover:bg-purple-700 transition-colors"
