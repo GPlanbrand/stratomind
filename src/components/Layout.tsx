@@ -75,8 +75,8 @@ const Layout: React.FC = () => {
         </>
       )}
 
-      {/* 顶部功能栏 - workspace页面不显示 */}
-      {!isWorkspacePage && (
+      {/* 顶部功能栏 - 手机端始终显示，桌面端workspace页面不显示 */}
+      {(isMobile || !isWorkspacePage) && (
         <Header 
           collapsed={isMobile ? true : sidebarCollapsed} 
           isMobile={isMobile}
@@ -88,7 +88,7 @@ const Layout: React.FC = () => {
       <main 
         className={`min-h-screen transition-all duration-300 ${
           isMobile ? 'ml-0' : (sidebarCollapsed ? 'ml-16' : 'ml-60')
-        } ${!isWorkspacePage ? 'pt-14' : ''}`}
+        } ${(isMobile || !isWorkspacePage) ? 'pt-14' : ''}`}
       >
         <div className={isWorkspacePage ? '' : 'p-4 sm:p-6 lg:p-8'}>
           <Outlet />
