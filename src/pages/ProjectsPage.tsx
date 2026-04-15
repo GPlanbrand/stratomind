@@ -115,6 +115,9 @@ const ProjectsPage: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       {/* 主内容 */}
       <main className="px-4 py-6 sm:py-8 max-w-6xl mx-auto">
+        {/* 标题 */}
+        <h1 className="text-lg sm:text-xl font-semibold text-gray-900 mb-6 sm:mb-8">全部项目</h1>
+        
         {/* 新建项目按钮 */}
         <div className="mb-6 sm:mb-8">
           <button
