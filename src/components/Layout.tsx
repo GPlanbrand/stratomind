@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { refreshCurrentUser } from '../services/auth';
 import { User } from '../types/user';
 import Sidebar from './Sidebar';
@@ -7,10 +7,14 @@ import Header from './Header';
 
 const Layout: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [user, setUser] = useState<User | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // 判断是否是workspace页面（有独立的顶部导航）
+  const isWorkspacePage = location.pathname.includes('/workspace');
 
   useEffect(() => {
     const currentUser = refreshCurrentUser();
@@ -70,20 +74,22 @@ const Layout: React.FC = () => {
         </>
       )}
 
-      {/* 顶部功能栏 */}
-      <Header 
-        collapsed={isMobile ? true : sidebarCollapsed} 
-        isMobile={isMobile}
-        onMenuClick={toggleSidebar}
-      />
+      {/* 顶部功能栏 - workspace页面不显示 */}
+      {!isWorkspacePage && (
+        <Header 
+          collapsed={isMobile ? true : sidebarCollapsed} 
+          isMobile={isMobile}
+          onMenuClick={toggleSidebar}
+        />
+      )}
 
       {/* 主内容区 */}
       <main 
-        className={`pt-14 min-h-screen transition-all duration-300 ${
+        className={`min-h-screen transition-all duration-300 ${
           isMobile ? 'ml-0' : (sidebarCollapsed ? 'ml-16' : 'ml-60')
-        }`}
+        } ${!isWorkspacePage ? 'pt-14' : ''}`}
       >
-        <div className="p-4 sm:p-6 lg:p-8">
+        <div className={isWorkspacePage ? '' : 'p-4 sm:p-6 lg:p-8'}>
           <Outlet />
         </div>
       </main>

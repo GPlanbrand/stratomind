@@ -41,7 +41,6 @@ function App() {
         <Route path="calendar" element={<CalendarPage />} />
         <Route path="knowledge" element={<KnowledgePage />} />
         <Route path="assistant" element={<AssistantPage />} />
-        <Route path="*" element={<Navigate to="/projects" replace />} />
       </Route>
     </Routes>
   )

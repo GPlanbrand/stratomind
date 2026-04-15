@@ -15,6 +15,7 @@ interface HeaderProps {
   collapsed: boolean;
   isMobile?: boolean;
   onMenuClick?: () => void;
+  projectName?: string;
 }
 
 interface BreadcrumbItem {
@@ -32,7 +33,7 @@ const pageBreadcrumbs: Record<string, BreadcrumbItem[]> = {
   '/projects/member': [{ label: '项目', path: '/projects' }, { label: '会员中心' }],
 };
 
-const Header: React.FC<HeaderProps> = ({ collapsed, isMobile, onMenuClick }) => {
+const Header: React.FC<HeaderProps> = ({ collapsed, isMobile, onMenuClick, projectName }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchOpen, setSearchOpen] = useState(false);
@@ -44,7 +45,11 @@ const Header: React.FC<HeaderProps> = ({ collapsed, isMobile, onMenuClick }) => 
     if (pageBreadcrumbs[location.pathname]) {
       return pageBreadcrumbs[location.pathname];
     }
-    // 前缀匹配
+    // 前缀匹配 - workspace显示项目名称
+    if (location.pathname.includes('/workspace')) {
+      return [{ label: '项目', path: '/projects' }, { label: projectName || '项目详情' }];
+    }
+    // 其他前缀匹配
     for (const [path, items] of Object.entries(pageBreadcrumbs)) {
       if (location.pathname.startsWith(path + '/')) {
         return [...items, { label: '详情' }];
