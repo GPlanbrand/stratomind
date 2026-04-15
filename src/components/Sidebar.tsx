@@ -57,7 +57,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
   // 折叠状态
   if (collapsed) {
     return (
-      <div className="fixed left-0 top-0 h-screen w-16 bg-white border-r border-gray-200 flex flex-col z-40">
+      <div className="fixed left-0 top-0 h-screen w-16 bg-white border-r border-gray-200 flex flex-col z-40 overflow-hidden">
         {/* Logo */}
         <div className="p-2 border-b border-gray-100 flex items-center justify-center">
           <button 
@@ -92,7 +92,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
         </div>
 
         {/* 项目步骤 */}
-        <nav className="flex-1 py-2 scroll-fix">
+        <nav className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain py-2">
           {projectSteps.map(item => (
             <button
               key={item.step}
@@ -139,7 +139,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
 
   // 展开状态
   return (
-    <div className="fixed left-0 top-0 h-screen w-60 bg-white border-r border-gray-200 flex flex-col z-40">
+    <div className="fixed left-0 top-0 h-screen w-60 bg-white border-r border-gray-200 flex flex-col z-40 overflow-hidden">
       {/* Logo */}
       <div className="h-14 flex items-center justify-between px-4 border-b border-gray-200 flex-shrink-0">
         <button onClick={() => navigate('/projects')} className="flex items-center gap-2">
@@ -161,8 +161,8 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
         </button>
       </div>
 
-      {/* 可滚动区域 - 使用scroll-fix类确保滚动正常工作 */}
-      <div className="flex-1 scroll-fix">
+      {/* 可滚动区域 */}
+      <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain">
         {/* 当前项目 */}
         <div className="px-3 py-2">
           <button 
