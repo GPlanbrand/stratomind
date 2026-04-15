@@ -598,13 +598,6 @@ const HomeLoginPage: React.FC = () => {
                     {loading ? '登录中...' : '登 录'}
                   </button>
                   
-                  {/* 忘记密码链接 */}
-                  <div className="text-left">
-                    <a href="/forgot-password" className="text-sm text-blue-500 hover:text-blue-600 hover:underline">
-                      忘记密码?
-                    </a>
-                  </div>
-                  
                   <div className="text-center">
                     <p className="text-xs text-gray-400">
                       演示：demo / demo123
@@ -702,7 +695,10 @@ const HomeLoginPage: React.FC = () => {
 
               {/* 底部链接 */}
               <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between text-xs">
-                <a href="/register" className="text-blue-600 hover:text-blue-700 font-medium">注册新账号</a>
+                <div className="flex items-center gap-4">
+                  <a href="/register" className="text-blue-600 hover:text-blue-700 font-medium">注册新账号</a>
+                  <a href="/forgot-password" className="text-blue-600 hover:text-blue-700">忘记密码?</a>
+                </div>
                 <div className="text-gray-400">
                   <a href="/terms" className="hover:text-gray-600">服务条款</a>
                   <span className="mx-2">|</span>

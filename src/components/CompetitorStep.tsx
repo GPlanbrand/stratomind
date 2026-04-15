@@ -10,6 +10,69 @@ interface Props {
 
 const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
   const [showCharts, setShowCharts] = useState(false)
+  const [searching, setSearching] = useState(false)
+
+  // AI搜索竞品信息
+  const handleSearchCompetitors = async () => {
+    if (data.competitors.length === 0) {
+      alert('请先添加至少一个竞品')
+      return
+    }
+    setSearching(true)
+    try {
+      // 模拟AI搜索（实际项目中可调用后端API）
+      await new Promise(resolve => setTimeout(resolve, 1500))
+      
+      const updatedCompetitors = data.competitors.map((competitor, index) => {
+        // 根据竞品序号生成不同的示例数据
+        const sampleData = [
+          { 
+            brandPositioning: '高端市场领导者，强调技术创新和品质卓越',
+            visualStyle: '简约、科技感、国际范',
+            marketShare: '约25%',
+            targetAudience: '25-40岁追求品质的中高端消费群体'
+          },
+          { 
+            brandPositioning: '性价比之王，主打年轻化和大众市场',
+            visualStyle: '活泼、年轻化、潮流',
+            marketShare: '约35%',
+            targetAudience: '18-30岁追求时尚的年轻消费群体'
+          },
+          { 
+            brandPositioning: '细分市场专家，专注特定垂直领域',
+            visualStyle: '专业、垂直、深度',
+            marketShare: '约15%',
+            targetAudience: '特定兴趣圈层和专业用户'
+          }
+        ]
+        const info = sampleData[index % sampleData.length]
+        return {
+          ...competitor,
+          brandPositioning: competitor.brandPositioning || info.brandPositioning,
+          visualStyle: competitor.visualStyle || info.visualStyle,
+          marketShare: competitor.marketShare || info.marketShare,
+          targetAudience: competitor.targetAudience || info.targetAudience
+        }
+      })
+      
+      onChange({ competitors: updatedCompetitors })
+      alert('竞品信息已自动填充！')
+    } catch (error) {
+      console.error('搜索失败:', error)
+      alert('搜索失败，请稍后重试')
+    } finally {
+      setSearching(false)
+    }
+  }
+
+  // 生成对比矩阵 - 打开图表模态框
+  const handleGenerateMatrix = () => {
+    if (data.competitors.length < 2) {
+      alert('请至少添加2个竞品以生成对比矩阵')
+      return
+    }
+    setShowCharts(true)
+  }
 
   const addCompetitor = () => {
     if (data.competitors.length >= 3) {
@@ -192,11 +255,18 @@ const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
 
           {/* AI搜索和图表按钮 */}
           <div className="flex gap-3 pt-4 border-t border-gray-200">
-            <button className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+            <button 
+              onClick={handleSearchCompetitors}
+              disabled={searching}
+              className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50"
+            >
               <Search className="w-4 h-4" />
-              AI搜索竞品信息
+              {searching ? '搜索中...' : 'AI搜索竞品信息'}
             </button>
-            <button className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
+            <button 
+              onClick={handleGenerateMatrix}
+              className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+            >
               <BarChart3 className="w-4 h-4" />
               生成对比矩阵
             </button>

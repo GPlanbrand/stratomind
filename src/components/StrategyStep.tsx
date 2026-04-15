@@ -1,5 +1,5 @@
-import React from 'react'
-import { Lightbulb, Wand2, Copy } from 'lucide-react'
+import React, { useState } from 'react'
+import { Lightbulb, Wand2, Copy, Download } from 'lucide-react'
 import { Strategy } from '../types'
 
 interface Props {
@@ -8,6 +8,8 @@ interface Props {
 }
 
 const StrategyStep: React.FC<Props> = ({ data, onChange }) => {
+  const [generating, setGenerating] = useState(false)
+
   const copyPrompt = () => {
     const prompt = `品牌策略分析任务：
 核心策略主张：${data.overallStrategy || ''}
@@ -16,6 +18,59 @@ const StrategyStep: React.FC<Props> = ({ data, onChange }) => {
 执行建议：${data.mediaStrategy || ''}`
     navigator.clipboard.writeText(prompt)
     alert('Prompt已复制到剪贴板')
+  }
+
+  // AI生成策略
+  const handleGenerateStrategy = async () => {
+    setGenerating(true)
+    try {
+      // 模拟AI生成（实际项目中可调用后端API）
+      await new Promise(resolve => setTimeout(resolve, 1500))
+      
+      const generatedStrategy: Partial<Strategy> = {
+        overallStrategy: data.overallStrategy || '以"创新、品质、温度"为核心价值主张，打造一个让目标用户感受到专业与关怀兼顾的品牌形象。通过差异化的内容输出和精准的用户触达，建立品牌在细分市场的领导地位。',
+        differentiation: data.differentiation || '聚焦于"个性化体验"和"情感共鸣"两个维度，构建与竞品的差异化优势。以用户真实故事为载体，传递品牌温度，建立深层情感连接。',
+        contentStrategy: data.contentStrategy || '采用"故事化+场景化"的内容策略，通过真实用户案例、行业洞察、生活方式引导等形式，展现品牌的专业价值和生活态度。视觉风格统一采用温暖、现代、国际化的设计语言。',
+        mediaStrategy: data.mediaStrategy || '以社交媒体为核心阵地，配合KOL合作和内容营销实现破圈传播。建议采用"3:3:2:2"的预算分配模式：30%社交媒体投放、30%内容创作、20%KOL合作、20%线下活动体验。'
+      }
+      onChange(generatedStrategy)
+    } catch (error) {
+      console.error('生成失败:', error)
+      alert('生成失败，请稍后重试')
+    } finally {
+      setGenerating(false)
+    }
+  }
+
+  // 导出策略文档
+  const handleExportStrategy = () => {
+    const content = `# 创意策略
+
+## 核心策略主张
+${data.overallStrategy || '（未填写）'}
+
+## 传播主轴
+${data.differentiation || '（未填写）'}
+
+## 创意方向
+${data.contentStrategy || '（未填写）'}
+
+## 执行建议
+${data.mediaStrategy || '（未填写）'}
+
+---
+生成时间：${new Date().toLocaleString('zh-CN')}
+`.trim()
+
+    const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `创意策略_${new Date().toISOString().split('T')[0]}.md`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
   }
 
   return (
@@ -100,9 +155,20 @@ const StrategyStep: React.FC<Props> = ({ data, onChange }) => {
 
         {/* 操作按钮 */}
         <div className="flex gap-3 pt-4">
-          <button className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+          <button 
+            onClick={handleGenerateStrategy}
+            disabled={generating}
+            className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50"
+          >
             <Wand2 className="w-4 h-4" />
-            AI生成策略
+            {generating ? '生成中...' : 'AI生成策略'}
+          </button>
+          <button 
+            onClick={handleExportStrategy}
+            className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+          >
+            <Download className="w-4 h-4" />
+            导出策略
           </button>
         </div>
       </div>
