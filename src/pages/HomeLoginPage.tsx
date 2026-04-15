@@ -17,14 +17,11 @@ const HomeLoginPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // 手机登录引导状态
-  const [showPhoneGuide, setShowPhoneGuide] = useState(false);
-  
   // App推广栏状态
   const [showAppBanner, setShowAppBanner] = useState(true);
 
   // 登录方式状态（仅移动端使用）
-  const [loginMethod, setLoginMethod] = useState<'account' | 'phone' | 'qrcode'>('account');
+  const [loginMethod, setLoginMethod] = useState<'account' | 'phone'>('account');
 
   // Banner数据 - 预留3个位置
   const leftBanners = [
@@ -48,13 +45,6 @@ const HomeLoginPage: React.FC = () => {
     }, 5000);
     return () => clearInterval(timer);
   }, []);
-
-  // 监听手机登录方式切换，显示引导页
-  useEffect(() => {
-    if (loginMethod === 'phone') {
-      setShowPhoneGuide(true);
-    }
-  }, [loginMethod]);
 
   const handleDemoLogin = () => {
     setLoading(true);
@@ -148,10 +138,6 @@ const HomeLoginPage: React.FC = () => {
     setError('验证码错误（演示模式请输入123456）');
   };
 
-  const handleEnterPhoneLogin = () => {
-    setShowPhoneGuide(false);
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* 移动端顶部 - Logo */}
@@ -204,7 +190,7 @@ const HomeLoginPage: React.FC = () => {
             {/* 登录方式切换 - 手机版 */}
             <div className="flex gap-1 p-1 bg-gray-100 rounded-xl mb-6">
               <button
-                onClick={() => { setLoginMethod('account'); setShowPhoneGuide(false); }}
+                onClick={() => setLoginMethod('account')}
                 className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
                   loginMethod === 'account' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
                 }`}
@@ -284,38 +270,8 @@ const HomeLoginPage: React.FC = () => {
               </div>
             )}
 
-            {/* 手机登录引导页 */}
-            {loginMethod === 'phone' && showPhoneGuide && (
-              <div className="py-8 text-center">
-                <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-indigo-100 to-violet-100 rounded-2xl flex items-center justify-center shadow-sm">
-                  <svg className="w-10 h-10 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">使用App登录更便捷</h3>
-                <p className="text-sm text-gray-500 mb-8 px-4 leading-relaxed">
-                  AI 创意工作台已全新升级<br/>
-                  请下载官方App享受完整服务
-                </p>
-                <div className="space-y-3 px-4">
-                  <button
-                    onClick={() => window.open('#', '_blank')}
-                    className="w-full py-3.5 bg-gray-900 text-white rounded-xl font-medium text-base hover:bg-gray-800 transition-colors min-h-[48px] active:scale-[0.98]"
-                  >
-                    立即下载App
-                  </button>
-                  <button
-                    onClick={handleEnterPhoneLogin}
-                    className="w-full py-3.5 bg-white border border-gray-200 text-gray-700 rounded-xl font-medium text-base hover:bg-gray-50 transition-colors min-h-[48px]"
-                  >
-                    先进入网页版
-                  </button>
-                </div>
-              </div>
-            )}
-
             {/* 手机登录表单 */}
-            {loginMethod === 'phone' && !showPhoneGuide && (
+            {loginMethod === 'phone' && (
               <div className="space-y-4">
                 <div>
                   <input
