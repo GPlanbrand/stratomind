@@ -25,9 +25,11 @@ const HomeLoginPage: React.FC = () => {
 
   // 演示登录
   const handleDemoLogin = () => {
-    const result = login('demo', 'demo123');
+    const result = login('demo', '123456');
     if (result.success) {
       navigate('/projects');
+    } else {
+      setError('演示登录失败，请重试');
     }
   };
 
