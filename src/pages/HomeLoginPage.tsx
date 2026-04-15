@@ -145,9 +145,9 @@ const HomeLoginPage: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       {/* 手机版引导页 */}
       {showMobileGuide && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-gradient-to-b from-purple-50 to-white flex flex-col items-center pt-12 pb-8 px-6" style={{ overscrollBehavior: 'none', touchAction: 'none' }}>
+        <div className="lg:hidden fixed inset-0 z-50 bg-gradient-to-b from-purple-50 to-white flex flex-col items-center justify-center px-6" style={{ overscrollBehavior: 'none', touchAction: 'none' }}>
           {/* 主内容区 */}
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center mb-16">
             {/* App图标 */}
             <div className="w-16 h-16 mb-5">
               <img src="/app-icon.svg" alt="StratoMind" className="w-full h-full" />
@@ -158,11 +158,8 @@ const HomeLoginPage: React.FC = () => {
             <p className="text-sm text-gray-500">请下载官方App使用</p>
           </div>
 
-          {/* 弹性空间 */}
-          <div className="flex-1" />
-
-          {/* 按钮区 */}
-          <div className="w-full max-w-[260px] space-y-3 pb-4">
+          {/* 按钮区 - 居中 */}
+          <div className="w-full max-w-[260px] space-y-3 mb-16">
             <button
               onClick={() => window.open('#', '_blank')}
               className="w-full py-2.5 bg-purple-600 text-white rounded-xl font-medium text-sm hover:bg-purple-700 transition-colors"
@@ -178,10 +175,12 @@ const HomeLoginPage: React.FC = () => {
           </div>
 
           {/* 底部品牌 */}
-          <div className="flex items-center gap-2">
-            <img src="/guide-logo.svg" alt="StratoMind" className="h-10 w-auto" />
+          <div className="absolute bottom-8 flex flex-col items-center">
+            <div className="flex items-center gap-2">
+              <img src="/guide-logo.svg" alt="StratoMind" className="h-16 w-auto" />
+            </div>
+            <p className="text-xs text-gray-500 mt-2">© StratoMind. All Rights Reserved.</p>
           </div>
-          <p className="text-xs text-gray-500 mt-2">© StratoMind. All Rights Reserved.</p>
         </div>
       )}
 
