@@ -26,6 +26,7 @@ export interface Requirements {
   deliverables: string[]
   tone: string
   channels: string[]
+  brandChallenge?: string
 }
 
 export interface Competitor {

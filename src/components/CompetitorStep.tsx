@@ -4,8 +4,8 @@ import { Competitor } from '../types'
 import { RadarChartComponent, PositioningMatrix, WordCloudChart, UserJourneyChart } from './CompetitorAnalysisCharts'
 
 interface Props {
-  data: { competitors: Competitor[] }
-  onChange: (data: { competitors: Competitor[] }) => void
+  data: Competitor[]
+  onChange: (data: Competitor[]) => void
 }
 
 const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
@@ -14,7 +14,7 @@ const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
 
   // AI搜索竞品信息
   const handleSearchCompetitors = async () => {
-    if (data.competitors.length === 0) {
+    if (data.length === 0) {
       alert('请先添加至少一个竞品')
       return
     }
@@ -23,7 +23,7 @@ const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
       // 模拟AI搜索（实际项目中可调用后端API）
       await new Promise(resolve => setTimeout(resolve, 1500))
       
-      const updatedCompetitors = data.competitors.map((competitor, index) => {
+      const updatedCompetitors = data.map((competitor, index) => {
         // 根据竞品序号生成不同的示例数据
         const sampleData = [
           { 
@@ -55,7 +55,7 @@ const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
         }
       })
       
-      onChange({ competitors: updatedCompetitors })
+      onChange(updatedCompetitors)
       alert('竞品信息已自动填充！')
     } catch (error) {
       console.error('搜索失败:', error)
@@ -67,7 +67,7 @@ const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
 
   // 生成对比矩阵 - 打开图表模态框
   const handleGenerateMatrix = () => {
-    if (data.competitors.length < 2) {
+    if (data.length < 2) {
       alert('请至少添加2个竞品以生成对比矩阵')
       return
     }
@@ -75,7 +75,7 @@ const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
   }
 
   const addCompetitor = () => {
-    if (data.competitors.length >= 3) {
+    if (data.length >= 3) {
       alert('最多添加3个竞品')
       return
     }
@@ -89,19 +89,17 @@ const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
       weaknesses: [],
       marketShare: ''
     }
-    onChange({ competitors: [...data.competitors, newCompetitor] })
+    onChange([...data, newCompetitor])
   }
 
   const updateCompetitor = (id: string, field: keyof Competitor, value: any) => {
-    onChange({
-      competitors: data.competitors.map(c => 
-        c.id === id ? { ...c, [field]: value } : c
-      )
-    })
+    onChange(data.map(c => 
+      c.id === id ? { ...c, [field]: value } : c
+    ))
   }
 
   const removeCompetitor = (id: string) => {
-    onChange({ competitors: data.competitors.filter(c => c.id !== id) })
+    onChange(data.filter(c => c.id !== id))
   }
 
   // 导出图表为PNG
@@ -178,7 +176,7 @@ const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
         <p className="text-gray-500 text-sm">分析主要竞争对手的市场表现（最多添加3个）</p>
       </div>
 
-      {data.competitors.length === 0 ? (
+      {data.length === 0 ? (
         <div className="text-center py-12 bg-gray-50 rounded-xl border border-gray-200">
           <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
           <p className="text-gray-500 mb-4">还没有添加竞品</p>
@@ -192,7 +190,7 @@ const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
         </div>
       ) : (
         <div className="space-y-4">
-          {data.competitors.map((competitor, index) => (
+          {data.map((competitor, index) => (
             <div key={competitor.id} className="bg-white rounded-xl border border-gray-200 p-5">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-medium text-gray-900 flex items-center gap-2">
@@ -268,7 +266,7 @@ const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
           ))}
 
           <div className="flex gap-3 pt-2">
-            {data.competitors.length < 3 && (
+            {data.length < 3 && (
               <button
                 onClick={addCompetitor}
                 className="flex items-center gap-2 px-4 py-2.5 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all border border-dashed border-gray-300"
