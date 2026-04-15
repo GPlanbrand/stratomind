@@ -146,8 +146,8 @@ const HomeLoginPage: React.FC = () => {
       {/* 手机版引导页 */}
       {showMobileGuide && (
         <div className="lg:hidden fixed inset-0 z-50 flex flex-col items-center justify-center px-6" style={{ background: 'linear-gradient(to bottom, #f3e8ff 0%, #ffffff 100%)', overscrollBehavior: 'none', touchAction: 'none' }}>
-          {/* 主内容区 */}
-          <div className="flex flex-col items-center mb-2">
+          {/* 主内容区 - 上移72px */}
+          <div className="flex flex-col items-center mb-2" style={{ marginTop: '-72px' }}>
             {/* App图标 */}
             <div className="w-20 h-20 mb-6">
               <img src="/app-icon.svg" alt="StratoMind" className="w-full h-full" />
@@ -168,7 +168,7 @@ const HomeLoginPage: React.FC = () => {
             </button>
             <button
               onClick={() => setShowMobileGuide(false)}
-              className="w-full py-3 bg-gray-100 text-purple-400 rounded-xl font-medium text-sm hover:bg-gray-200 transition-colors"
+              className="w-full py-3 bg-gray-200 text-purple-400 rounded-xl font-medium text-sm hover:bg-gray-300 transition-colors"
             >
               先进入网页版
             </button>
