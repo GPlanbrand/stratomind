@@ -543,13 +543,6 @@ const HomeLoginPage: React.FC = () => {
                   </div>
                 )}
 
-                {/* 忘记密码和注册新账号 - 并排显示 */}
-                <div className="flex items-center justify-center gap-4 text-sm">
-                  <a href="/register" className="text-indigo-600 hover:text-indigo-700">注册新账号</a>
-                  <span className="text-gray-300">|</span>
-                  <a href="/forgot-password" className="text-indigo-600 hover:text-indigo-700">忘记密码?</a>
-                </div>
-
                 {/* 登录按钮 - 绿色 */}
                 <button
                   onClick={handleAccountLogin}
@@ -558,6 +551,13 @@ const HomeLoginPage: React.FC = () => {
                 >
                   {loading ? '登录中...' : '登 录'}
                 </button>
+
+                {/* 忘记密码和注册新账号 - 并排显示在登录按钮下方 */}
+                <div className="flex items-center justify-center gap-4 text-sm">
+                  <a href="/register" className="text-indigo-600 hover:text-indigo-700">注册新账号</a>
+                  <span className="text-gray-300">|</span>
+                  <a href="/forgot-password" className="text-indigo-600 hover:text-indigo-700">忘记密码?</a>
+                </div>
                 
                 {/* 服务条款 */}
                 <div className="flex items-center gap-2.5 pt-2">
