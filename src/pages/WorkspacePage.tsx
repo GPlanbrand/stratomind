@@ -567,7 +567,7 @@ const WorkspacePage: React.FC = () => {
               <span className="text-sm sm:text-base font-medium text-gray-900 truncate max-w-[150px] sm:max-w-[300px]">
                 {isNewProject 
                   ? (clientInfo.companyName || '新建项目')
-                  : (project?.name || '加载中...')}
+                  : project?.name}
               </span>
             </div>
             
