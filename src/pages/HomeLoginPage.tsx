@@ -18,6 +18,12 @@ const HomeLoginPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // 手机登录引导状态
+  const [showPhoneGuide, setShowPhoneGuide] = useState(false);
+  
+  // App推广栏状态
+  const [showAppBanner, setShowAppBanner] = useState(true);
+
   const banners = [
     { gradient: 'from-blue-500 via-blue-400 to-cyan-300', title: '智能品牌分析', desc: '深度洞察市场与竞品' },
     { gradient: 'from-purple-500 via-purple-400 to-pink-300', title: '创意策略生成', desc: '一键产出完整方案' },
@@ -31,6 +37,13 @@ const HomeLoginPage: React.FC = () => {
     }, 4000);
     return () => clearInterval(timer);
   }, []);
+
+  // 监听手机登录方式切换，显示引导页
+  useEffect(() => {
+    if (loginMethod === 'phone') {
+      setShowPhoneGuide(true);
+    }
+  }, [loginMethod]);
 
   const handleDemoLogin = () => {
     setLoading(true);
@@ -124,6 +137,10 @@ const HomeLoginPage: React.FC = () => {
     setError('验证码错误（演示模式请输入123456）');
   };
 
+  const handleEnterPhoneLogin = () => {
+    setShowPhoneGuide(false);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* 移动端顶部 - Logo */}
@@ -136,8 +153,45 @@ const HomeLoginPage: React.FC = () => {
         </div>
       </div>
 
+      {/* App下载推广栏 - 手机版 */}
+      <div className="lg:hidden">
+        <div 
+          className={`fixed top-14 left-0 right-0 z-30 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2.5 flex items-center justify-between shadow-lg transition-all duration-300 ${
+            showAppBanner ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
+          }`}
+          style={{ display: 'block' }}
+        >
+          <div className="flex items-center gap-3 flex-1">
+            <div className="w-9 h-9 bg-white rounded-xl flex items-center justify-center shadow-md">
+              <img src="/logo.svg" alt="App Logo" className="w-6 h-6" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-medium leading-tight">AI 创意工作台</div>
+              <div className="text-xs opacity-80 leading-tight">智能品牌策划</div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => window.open('#', '_blank')}
+              className="px-4 py-1.5 bg-white text-blue-600 text-sm font-medium rounded-full hover:bg-blue-50 transition-colors"
+            >
+              获取
+            </button>
+            <button 
+              onClick={() => setShowAppBanner(false)}
+              className="p-1.5 hover:bg-blue-400 rounded-full transition-colors"
+              aria-label="关闭"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* 移动端内容区 - 126邮箱风格，白色背景 */}
-      <div className="lg:hidden min-h-screen pt-14 bg-white">
+      <div className="lg:hidden min-h-screen pt-14 bg-white" style={{ paddingTop: showAppBanner ? 'calc(3.5rem + 56px)' : '56px' }}>
         {/* 登录表单 - 简洁风格 */}
         <div className="px-4 py-6">
           <div className="bg-white">
@@ -147,7 +201,7 @@ const HomeLoginPage: React.FC = () => {
             {/* 登录方式切换 */}
             <div className="flex border-b border-gray-200 mb-5">
               <button
-                onClick={() => setLoginMethod('account')}
+                onClick={() => { setLoginMethod('account'); setShowPhoneGuide(false); }}
                 className={`flex-1 pb-3 text-sm font-medium transition-colors ${
                   loginMethod === 'account' ? 'text-gray-900 border-b-2 border-gray-900' : 'text-gray-400'
                 }`}
@@ -164,7 +218,7 @@ const HomeLoginPage: React.FC = () => {
               </button>
               {/* 手机版隐藏扫码登录 */}
               <button
-                onClick={() => setLoginMethod('qrcode')}
+                onClick={() => { setLoginMethod('qrcode'); setShowPhoneGuide(false); }}
                 className={`hidden md:flex flex-1 pb-3 text-sm font-medium transition-colors items-center justify-center gap-1 ${
                   loginMethod === 'qrcode' ? 'text-gray-900 border-b-2 border-gray-900' : 'text-gray-400'
                 }`}
@@ -226,6 +280,13 @@ const HomeLoginPage: React.FC = () => {
                   {loading ? '登录中...' : '登 录'}
                 </button>
 
+                {/* 忘记密码链接 */}
+                <div className="text-left">
+                  <a href="/forgot-password" className="text-sm text-blue-500 hover:text-blue-600 hover:underline">
+                    忘记密码?
+                  </a>
+                </div>
+
                 <div className="text-center">
                   <p className="text-xs text-gray-400">
                     演示：demo / demo123
@@ -234,8 +295,38 @@ const HomeLoginPage: React.FC = () => {
               </div>
             )}
 
-            {/* 手机登录表单 */}
-            {loginMethod === 'phone' && (
+            {/* 手机登录引导页 */}
+            {loginMethod === 'phone' && showPhoneGuide && (
+              <div className="py-8 text-center">
+                <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">使用App登录更便捷</h3>
+                <p className="text-sm text-gray-500 mb-8 px-4 leading-relaxed">
+                  AI 创意工作台已全新升级<br/>
+                  请下载官方App享受完整服务
+                </p>
+                <div className="space-y-3 px-4">
+                  <button
+                    onClick={() => window.open('#', '_blank')}
+                    className="w-full py-3.5 bg-blue-500 text-white rounded-lg font-medium text-base hover:bg-blue-600 transition-colors min-h-[48px]"
+                  >
+                    立即下载App
+                  </button>
+                  <button
+                    onClick={handleEnterPhoneLogin}
+                    className="w-full py-3.5 bg-gray-100 text-gray-700 rounded-lg font-medium text-base hover:bg-gray-200 transition-colors min-h-[48px]"
+                  >
+                    先进入网页版
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* 手机登录表单 - 引导后显示 */}
+            {loginMethod === 'phone' && !showPhoneGuide && (
               <div className="space-y-4">
                 <div>
                   <input
@@ -292,6 +383,13 @@ const HomeLoginPage: React.FC = () => {
                 >
                   {loading ? '登录中...' : '登 录'}
                 </button>
+
+                {/* 忘记密码链接 */}
+                <div className="text-left">
+                  <a href="/forgot-password" className="text-sm text-blue-500 hover:text-blue-600 hover:underline">
+                    忘记密码?
+                  </a>
+                </div>
 
                 <div className="text-center">
                   <p className="text-xs text-gray-400">
@@ -430,7 +528,7 @@ const HomeLoginPage: React.FC = () => {
 
                 <div className="flex border-b border-gray-200 mb-4">
                   <button
-                    onClick={() => setLoginMethod('account')}
+                    onClick={() => { setLoginMethod('account'); setShowPhoneGuide(false); }}
                     className={`flex-1 pb-3 text-sm font-medium transition-colors ${
                       loginMethod === 'account' ? 'text-gray-900 border-b-2 border-gray-900' : 'text-gray-400 hover:text-gray-600'
                     }`}
@@ -491,6 +589,14 @@ const HomeLoginPage: React.FC = () => {
                     >
                       {loading ? '登录中...' : '登 录'}
                     </button>
+                    
+                    {/* 忘记密码链接 - 桌面端 */}
+                    <div className="text-left">
+                      <a href="/forgot-password" className="text-sm text-blue-500 hover:text-blue-600 hover:underline">
+                        忘记密码?
+                      </a>
+                    </div>
+                    
                     <div className="text-center">
                       <p className="text-xs text-gray-400">
                         演示：demo / demo123
@@ -552,6 +658,14 @@ const HomeLoginPage: React.FC = () => {
                     >
                       {loading ? '登录中...' : '登 录'}
                     </button>
+                    
+                    {/* 忘记密码链接 - 桌面端 */}
+                    <div className="text-left">
+                      <a href="/forgot-password" className="text-sm text-blue-500 hover:text-blue-600 hover:underline">
+                        忘记密码?
+                      </a>
+                    </div>
+                    
                     <div className="text-center">
                       <p className="text-xs text-gray-400">
                         演示验证码：123456
