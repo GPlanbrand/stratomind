@@ -117,9 +117,9 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
 
   // 展开状态
   return (
-    <div className="fixed left-0 top-0 h-screen w-60 bg-white border-r border-gray-200 flex flex-col z-40">
+    <div className="fixed left-0 top-0 h-screen w-60 bg-white border-r border-gray-200 flex flex-col z-40 overflow-hidden">
       {/* Logo */}
-      <div className="h-14 flex items-center justify-between px-4 border-b border-gray-200">
+      <div className="h-14 flex items-center justify-between px-4 border-b border-gray-200 flex-shrink-0">
         <button onClick={() => navigate('/projects')} className="flex items-center gap-2">
           <Sparkles className="w-6 h-6 text-purple-600" />
           <span className="font-semibold text-gray-800">灵思</span>
@@ -130,7 +130,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
       </div>
 
       {/* 新建项目 */}
-      <div className="p-3 border-b border-gray-100">
+      <div className="p-3 border-b border-gray-100 flex-shrink-0">
         <button 
           onClick={() => navigate('/projects/workspace/new')}
           className="w-full flex items-center justify-center gap-2 py-2.5 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors"
@@ -141,7 +141,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
       </div>
 
       {/* 可滚动区域 */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto min-h-0">
         {/* 当前项目 */}
         <div className="px-3 py-2">
           <button 
