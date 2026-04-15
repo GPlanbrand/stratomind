@@ -446,19 +446,19 @@ const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
         </div>
       )}
 
-      {/* 引导页 */}
+      {/* 引导页 - 移动端适配 */}
       {data.length === 0 ? (
-        <div className="text-center py-16 bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl border border-gray-200">
-          <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Users className="w-10 h-10 text-blue-600" />
+        <div className="text-center py-10 sm:py-16 bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl sm:rounded-2xl border border-gray-200 px-4">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+            <Users className="w-8 h-8 sm:w-10 sm:h-10 text-blue-600" />
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">开始竞品分析</h3>
-          <p className="text-gray-500 mb-6 max-w-md mx-auto">
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">开始竞品分析</h3>
+          <p className="text-sm sm:text-base text-gray-500 mb-6 max-w-md mx-auto">
             基于专业框架，从8个维度深度分析竞品，发现市场机会
           </p>
           <button onClick={addCompetitor}
-            className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-medium hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2">
-            <Sparkles className="w-5 h-5" />
+            className="px-6 sm:px-8 py-2.5 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg sm:rounded-xl font-medium hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2 text-sm sm:text-base">
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
             添加第一个竞品
           </button>
         </div>

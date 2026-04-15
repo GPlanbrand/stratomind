@@ -102,14 +102,14 @@ ${data.mediaStrategy || '（未填写）'}
 
   return (
     <div className="max-w-2xl mx-auto">
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center">
-            <Lightbulb className="w-5 h-5 text-red-600" />
+      <div className="mb-6 sm:mb-8">
+        <div className="flex items-center gap-2 sm:gap-3 mb-2">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center">
+            <Lightbulb className="w-4 h-4 sm:w-5 sm:h-5 text-red-600" />
           </div>
-          <h2 className="text-xl font-semibold text-gray-900">创意策略</h2>
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900">创意策略</h2>
         </div>
-        <p className="text-gray-500 text-sm">制定品牌的整体策略和差异化方向</p>
+        <p className="text-gray-500 text-xs sm:text-sm">制定品牌的整体策略和差异化方向</p>
       </div>
 
       {/* 状态提示 */}

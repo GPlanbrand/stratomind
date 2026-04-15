@@ -63,8 +63,8 @@ const RequirementsStep: React.FC<Props> = ({ data, onChange }) => {
   return (
     <div className="max-w-3xl mx-auto">
       <div className="mb-6 sm:mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-blue-50 flex items-center justify-center">
+        <div className="flex items-center gap-2 sm:gap-3 mb-2">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center">
             <Target className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
           </div>
           <h2 className="text-lg sm:text-xl font-semibold text-gray-900">项目需求</h2>
