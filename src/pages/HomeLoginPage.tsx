@@ -149,7 +149,7 @@ const HomeLoginPage: React.FC = () => {
           {/* 主内容区 */}
           <div className="flex-1 flex flex-col items-center justify-center">
             {/* App图标 */}
-            <div className="w-24 h-24 mb-8">
+            <div className="w-28 h-28 mb-10">
               <img src="/app-icon.svg" alt="StratoMind" className="w-full h-full" />
             </div>
             
@@ -162,23 +162,23 @@ const HomeLoginPage: React.FC = () => {
           <div className="w-full max-w-sm space-y-3">
             <button
               onClick={() => window.open('#', '_blank')}
-              className="w-full py-3.5 bg-purple-600 text-white rounded-xl font-medium text-base hover:bg-purple-700 transition-colors min-h-[48px]"
+              className="w-full py-4 bg-purple-600 text-white rounded-2xl font-medium text-base hover:bg-purple-700 transition-colors min-h-[52px]"
             >
               立刻下载StratoMind
             </button>
             <button
               onClick={() => setShowMobileGuide(false)}
-              className="w-full py-3.5 bg-gray-100 text-gray-400 rounded-xl font-medium text-base hover:bg-gray-200 transition-colors min-h-[48px]"
+              className="w-full py-4 bg-gray-50 text-purple-400 rounded-2xl font-medium text-base hover:bg-gray-100 transition-colors min-h-[52px]"
             >
               先进入网页版
             </button>
           </div>
 
           {/* 底部品牌 */}
-          <div className="mt-8 flex items-center gap-2">
-            <img src="/guide-logo.svg" alt="StratoMind" className="h-6 w-auto" />
+          <div className="mt-10 flex items-center gap-2">
+            <img src="/guide-logo.svg" alt="StratoMind" className="h-8 w-auto" />
           </div>
-          <p className="text-xs text-gray-400 mt-1">你的AI创意合伙人</p>
+          <p className="text-xs text-gray-400 mt-2">你的AI创意合伙人</p>
           <p className="text-xs text-gray-300 mt-4">© StratoMind. All Rights Reserved.</p>
         </div>
       )}
