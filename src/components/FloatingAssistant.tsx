@@ -110,6 +110,7 @@ const FloatingAssistant: React.FC = () => {
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
   const lastActivityRef = useRef<number>(Date.now());
 
@@ -188,6 +189,11 @@ const FloatingAssistant: React.FC = () => {
   }, [sceneContext, state, currentBubble]);
 
   // ==================== 交互逻辑 ====================
+
+  // 消息更新时自动滚动到底部
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   // 点击外部关闭
   useEffect(() => {
@@ -367,6 +373,8 @@ const FloatingAssistant: React.FC = () => {
                 </div>
               </div>
             ))}
+            {/* 滚动锚点 */}
+            <div ref={messagesEndRef} />
           </div>
 
           {/* 输入区域 */}
