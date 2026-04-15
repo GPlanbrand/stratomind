@@ -274,7 +274,7 @@ const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
         )
       case 'market':
         return (
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">市场份额</label>
               <input type="text" value={competitor.marketShare}
@@ -491,17 +491,17 @@ const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
                   return (
                     <div key={group.id}>
                       <button onClick={() => toggleGroup(group.id)}
-                        className="w-full px-6 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${getGroupColorClass(group.color)}`}>
+                        className="w-full px-4 sm:px-6 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center ${getGroupColorClass(group.color)}`}>
                             <Icon className="w-4 h-4" />
                           </div>
-                          <span className="font-medium text-gray-900">{group.label}</span>
+                          <span className="font-medium text-gray-900 text-sm sm:text-base">{group.label}</span>
                         </div>
                         {isExpanded ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
                       </button>
                       {isExpanded && (
-                        <div className="px-6 py-4 bg-gray-50/50">
+                        <div className="px-4 sm:px-6 py-4 bg-gray-50/50">
                           {renderGroupContent(competitor, group.id)}
                         </div>
                       )}

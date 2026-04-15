@@ -194,11 +194,11 @@ const ClientInfoStep: React.FC<Props> = ({ data, onChange }) => {
           </div>
         </div>
 
-        {/* 表单填写区 - 右侧 */}
-        <div className="lg:col-span-3">
+        {/* 表单填写区 - 移动端全宽 */}
+        <div className="lg:col-span-3 order-1 lg:order-2 w-full">
           {/* 必填信息 - 始终展开 */}
           <div className="border border-blue-200 rounded-xl overflow-hidden mb-4 bg-blue-50/30">
-            <div className="px-4 py-3 bg-blue-50 border-b border-blue-200">
+            <div className="px-3 sm:px-4 py-2.5 sm:py-3 bg-blue-50 border-b border-blue-200">
               <span className="font-medium text-blue-800">基本信息</span>
               <span className="ml-2 text-xs text-blue-600">（必填项）</span>
             </div>

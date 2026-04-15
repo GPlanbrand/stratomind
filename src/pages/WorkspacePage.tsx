@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { 
-  ArrowLeft, Save, Home, Cloud,
+  ArrowLeft, Save, Home, Cloud, CloudOff,
   Building2, Target, Users, FileText, Lightbulb,
-  Check, ChevronRight
+  Check, ChevronRight, Loader2, AlertCircle
 } from 'lucide-react'
 import ClientInfoStep from '../components/ClientInfoStep'
 import RequirementsStep from '../components/RequirementsStep'
@@ -24,14 +24,26 @@ const STEPS = [
   { key: 'strategy', name: '创意策略', icon: Lightbulb },
 ]
 
+// 自动保存数据接口
+export interface AutoSaveData {
+  projectId: string;
+  lastSaved: string;
+  clientInfo: Partial<ClientInfo>;
+  requirements: Partial<Requirements>;
+  competitors: Competitor[];
+  brief: Partial<Brief>;
+  strategy: Partial<Strategy>;
+}
+
 // localStorage 草稿存储键
 const DRAFT_KEY_PREFIX = 'workspace_draft_'
+const AUTO_SAVE_INTERVAL = 30000 // 30秒
 
 const WorkspacePage: React.FC = () => {
   const { projectId } = useParams()
   const navigate = useNavigate()
   const isNewProject = projectId === 'new'
-  const currentProjectId = projectId === 'new' ? 'new' : projectId
+  const currentProjectId = isNewProject ? 'new' : projectId || 'new'
 
   const [currentStep, setCurrentStep] = useState(0)
   const [project, setProject] = useState<Project | null>(null)
@@ -44,65 +56,164 @@ const WorkspacePage: React.FC = () => {
   const [saving, setSaving] = useState(false)
   const [autoSaving, setAutoSaving] = useState(false)
   const [lastAutoSave, setLastAutoSave] = useState<Date | null>(null)
+  const [autoSaveError, setAutoSaveError] = useState<string | null>(null)
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
   const [draftRestored, setDraftRestored] = useState(false)
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
   // 防抖定时器引用
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
   // 自动保存定时器引用
   const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null)
+  // 用于追踪数据是否变化
+  const lastSavedDataRef = useRef<string>('')
 
-  // 从localStorage读取草稿
-  const loadDraft = useCallback(() => {
-    if (isNewProject) {
-      const draftKey = `${DRAFT_KEY_PREFIX}new`
-      const savedDraft = localStorage.getItem(draftKey)
-      if (savedDraft) {
-        try {
-          const draft = JSON.parse(savedDraft)
-          if (draft.clientInfo?.companyName) {
-            setClientInfo(draft.clientInfo || {})
-            setRequirements(draft.requirements || {})
-            setCompetitors(draft.competitors || [])
-            setBrief(draft.brief || {})
-            setStrategy(draft.strategy || {})
-            setDraftRestored(true)
-            return true
-          }
-        } catch (e) {
-          console.error('读取草稿失败:', e)
+  // 深度比较两个对象是否相等
+  const deepEqual = (a: unknown, b: unknown): boolean => {
+    if (a === b) return true
+    if (a == null || b == null) return false
+    if (typeof a !== typeof b) return false
+    if (typeof a !== 'object') return false
+    
+    const keysA = Object.keys(a as object)
+    const keysB = Object.keys(b as object)
+    
+    if (keysA.length !== keysB.length) return false
+    
+    for (const key of keysA) {
+      if (!keysB.includes(key)) return false
+      const valA = (a as Record<string, unknown>)[key]
+      const valB = (b as Record<string, unknown>)[key]
+      
+      if (Array.isArray(valA) && Array.isArray(valB)) {
+        if (valA.length !== valB.length) return false
+        for (let i = 0; i < valA.length; i++) {
+          if (JSON.stringify(valA[i]) !== JSON.stringify(valB[i])) return false
         }
+      } else if (!deepEqual(valA, valB)) {
+        return false
       }
     }
-    return false
-  }, [isNewProject])
+    return true
+  }
 
-  // 保存草稿到localStorage
-  const saveDraft = useCallback(() => {
-    const draftKey = `${DRAFT_KEY_PREFIX}${currentProjectId || 'new'}`
-    const draft = {
+  // 获取当前数据的快照
+  const getCurrentDataSnapshot = useCallback(() => {
+    return JSON.stringify({
       clientInfo,
       requirements,
       competitors,
       brief,
-      strategy,
-      savedAt: new Date().toISOString()
+      strategy
+    })
+  }, [clientInfo, requirements, competitors, brief, strategy])
+
+  // 检查是否有未保存的更改
+  const checkForChanges = useCallback(() => {
+    const currentData = getCurrentDataSnapshot()
+    return currentData !== lastSavedDataRef.current
+  }, [getCurrentDataSnapshot])
+
+  // 获取草稿键名
+  const getDraftKey = useCallback((pid: string) => {
+    return `${DRAFT_KEY_PREFIX}${pid}`
+  }, [])
+
+  // 从localStorage读取草稿
+  const loadDraft = useCallback((pid: string): boolean => {
+    const draftKey = getDraftKey(pid)
+    const savedDraft = localStorage.getItem(draftKey)
+    if (savedDraft) {
+      try {
+        const draft: AutoSaveData = JSON.parse(savedDraft)
+        // 检查草稿是否有实质内容
+        if (draft.clientInfo?.companyName || draft.requirements?.projectType || 
+            (draft.competitors && draft.competitors.length > 0) || 
+            draft.brief?.projectOverview || draft.strategy?.overallStrategy) {
+          setClientInfo(draft.clientInfo || {})
+          setRequirements(draft.requirements || {})
+          setCompetitors(draft.competitors || [])
+          setBrief(draft.brief || {})
+          setStrategy(draft.strategy || {})
+          
+          // 更新最后保存的数据引用
+          lastSavedDataRef.current = JSON.stringify({
+            clientInfo: draft.clientInfo,
+            requirements: draft.requirements,
+            competitors: draft.competitors,
+            brief: draft.brief,
+            strategy: draft.strategy
+          })
+          
+          return true
+        }
+      } catch (e) {
+        console.error('读取草稿失败:', e)
+      }
     }
-    localStorage.setItem(draftKey, JSON.stringify(draft))
-  }, [currentProjectId, clientInfo, requirements, competitors, brief, strategy])
+    return false
+  }, [getDraftKey])
+
+  // 保存草稿到localStorage
+  const saveDraft = useCallback(() => {
+    const draft: AutoSaveData = {
+      projectId: currentProjectId,
+      lastSaved: new Date().toISOString(),
+      clientInfo,
+      requirements,
+      competitors,
+      brief,
+      strategy
+    }
+    localStorage.setItem(getDraftKey(currentProjectId), JSON.stringify(draft))
+  }, [currentProjectId, clientInfo, requirements, competitors, brief, strategy, getDraftKey])
 
   // 清除草稿
-  const clearDraft = useCallback(() => {
-    const draftKey = `${DRAFT_KEY_PREFIX}${currentProjectId || 'new'}`
-    localStorage.removeItem(draftKey)
-  }, [currentProjectId])
+  const clearDraft = useCallback((pid?: string) => {
+    const targetId = pid || currentProjectId
+    localStorage.removeItem(getDraftKey(targetId))
+  }, [currentProjectId, getDraftKey])
 
-  // 静默自动保存（不显示通知）
+  // 获取草稿的最后保存时间
+  const getDraftLastSavedTime = useCallback((pid: string): Date | null => {
+    const draftKey = getDraftKey(pid)
+    const savedDraft = localStorage.getItem(draftKey)
+    if (savedDraft) {
+      try {
+        const draft: AutoSaveData = JSON.parse(savedDraft)
+        return new Date(draft.lastSaved)
+      } catch {
+        return null
+      }
+    }
+    return null
+  }, [getDraftKey])
+
+  // 静默自动保存（不显示通知，只更新最后保存时间）
+  const performAutoSaveToLocal = useCallback(() => {
+    // 只有数据有变化时才保存
+    if (!checkForChanges()) {
+      return false
+    }
+    
+    saveDraft()
+    lastSavedDataRef.current = getCurrentDataSnapshot()
+    setHasUnsavedChanges(false)
+    return true
+  }, [checkForChanges, saveDraft, getCurrentDataSnapshot])
+
+  // 30秒自动保存到服务器
   const autoSave = useCallback(async () => {
+    // 只有数据有变化时才保存
+    if (!checkForChanges()) {
+      return
+    }
+    
     if (!project?.id && !isNewProject) return
     if (isNewProject && !clientInfo.companyName) return
 
     setAutoSaving(true)
+    setAutoSaveError(null)
     try {
       if (isNewProject && !project?.id) {
         // 新项目且未创建，先创建项目
@@ -138,13 +249,18 @@ const WorkspacePage: React.FC = () => {
         // 清除草稿
         clearDraft()
       }
+      
+      // 更新最后保存的数据引用
+      lastSavedDataRef.current = getCurrentDataSnapshot()
       setLastAutoSave(new Date())
+      setHasUnsavedChanges(false)
     } catch (error) {
       console.error('自动保存失败:', error)
+      setAutoSaveError('自动保存失败')
     } finally {
       setAutoSaving(false)
     }
-  }, [project, clientInfo, requirements, competitors, brief, strategy, currentStep, isNewProject, navigate, clearDraft])
+  }, [project, clientInfo, requirements, competitors, brief, strategy, currentStep, isNewProject, navigate, clearDraft, checkForChanges, getCurrentDataSnapshot])
 
   // 防抖保存草稿（表单变化时）
   const debouncedSaveDraft = useCallback(() => {
@@ -159,31 +275,46 @@ const WorkspacePage: React.FC = () => {
   useEffect(() => {
     // 页面加载时尝试恢复草稿
     if (isNewProject) {
-      loadDraft()
+      const restored = loadDraft('new')
+      if (restored) {
+        setDraftRestored(true)
+        setTimeout(() => setDraftRestored(false), 5000)
+      }
     }
   }, [isNewProject, loadDraft])
 
   useEffect(() => {
-    // 表单内容变化时保存草稿
+    // 表单内容变化时标记为未保存
+    const currentData = getCurrentDataSnapshot()
+    if (currentData !== lastSavedDataRef.current) {
+      setHasUnsavedChanges(true)
+    }
+  }, [clientInfo, requirements, competitors, brief, strategy, getCurrentDataSnapshot])
+
+  useEffect(() => {
+    // 表单内容变化时保存草稿（防抖）
     if (isNewProject && (clientInfo.companyName || requirements.projectType || competitors.length > 0 || brief.projectOverview || strategy.overallStrategy)) {
       debouncedSaveDraft()
     }
   }, [clientInfo, requirements, competitors, brief, strategy, isNewProject, debouncedSaveDraft])
 
   useEffect(() => {
-    // 30秒自动保存
+    // 30秒自动保存定时器
     autoSaveTimerRef.current = setInterval(() => {
       if (project?.id || (isNewProject && clientInfo.companyName)) {
+        // 先保存到本地草稿
+        performAutoSaveToLocal()
+        // 再尝试保存到服务器
         autoSave()
       }
-    }, 30000)
+    }, AUTO_SAVE_INTERVAL)
 
     return () => {
       if (autoSaveTimerRef.current) {
         clearInterval(autoSaveTimerRef.current)
       }
     }
-  }, [project, isNewProject, clientInfo, autoSave])
+  }, [project, isNewProject, clientInfo, autoSave, performAutoSaveToLocal])
 
   useEffect(() => {
     // 切换步骤时自动保存
@@ -191,6 +322,49 @@ const WorkspacePage: React.FC = () => {
       autoSave()
     }
   }, [currentStep])
+
+  // 加载项目数据
+  const loadProject = useCallback(async () => {
+    if (!projectId) return
+    
+    try {
+      const [projectData, stepsData] = await Promise.all([
+        getProject(projectId),
+        getProjectSteps(projectId)
+      ])
+      setProject(projectData)
+      setClientInfo(stepsData.clientInfo || {})
+      setRequirements(stepsData.requirements || {})
+      setCompetitors(stepsData.competitors || [])
+      setBrief(stepsData.brief || {})
+      setStrategy(stepsData.strategy || {})
+      
+      // 更新最后保存的数据引用
+      lastSavedDataRef.current = JSON.stringify({
+        clientInfo: stepsData.clientInfo,
+        requirements: stepsData.requirements,
+        competitors: stepsData.competitors,
+        brief: stepsData.brief,
+        strategy: stepsData.strategy
+      })
+      setLastAutoSave(new Date(projectData.updatedAt))
+      
+      // 检查是否有本地草稿，如果有且比服务器新，提示用户
+      const localDraftTime = getDraftLastSavedTime(projectId)
+      if (localDraftTime && localDraftTime > new Date(projectData.updatedAt)) {
+        // 本地草稿比服务器新，询问用户是否恢复
+        const shouldRestore = window.confirm('检测到本地有未同步的草稿，是否恢复？')
+        if (shouldRestore) {
+          loadDraft(projectId)
+          setDraftRestored(true)
+          setTimeout(() => setDraftRestored(false), 5000)
+        }
+      }
+    } catch (error) {
+      console.error('加载项目失败:', error)
+      showNotification('error', '加载项目失败')
+    }
+  }, [projectId, getDraftLastSavedTime, loadDraft])
 
   useEffect(() => {
     // 清理防抖定时器
@@ -205,25 +379,7 @@ const WorkspacePage: React.FC = () => {
     if (!isNewProject && projectId) {
       loadProject()
     }
-  }, [projectId])
-
-  const loadProject = async () => {
-    try {
-      const [projectData, stepsData] = await Promise.all([
-        getProject(projectId!),
-        getProjectSteps(projectId!)
-      ])
-      setProject(projectData)
-      setClientInfo(stepsData.clientInfo || {})
-      setRequirements(stepsData.requirements || {})
-      setCompetitors(stepsData.competitors || [])
-      setBrief(stepsData.brief || {})
-      setStrategy(stepsData.strategy || {})
-    } catch (error) {
-      console.error('加载项目失败:', error)
-      showNotification('error', '加载项目失败')
-    }
-  }
+  }, [projectId, loadProject])
 
   // 设置AI上下文数据到全局变量，供AI组件使用
   useEffect(() => {
@@ -392,16 +548,34 @@ const WorkspacePage: React.FC = () => {
             <div className="flex items-center gap-4">
               {/* 自动保存状态 */}
               {autoSaving && (
-                <div className="flex items-center gap-2 text-sm text-gray-400">
-                  <Cloud className="w-4 h-4 animate-pulse" />
-                  <span>保存中...</span>
+                <div className="flex items-center gap-2 text-sm text-blue-500">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>自动保存中...</span>
                 </div>
               )}
-              {!autoSaving && lastAutoSave && (
-                <div className="flex items-center gap-2 text-sm text-gray-400">
-                  <Cloud className="w-4 h-4" />
-                  <span>已保存 {lastAutoSave.toLocaleTimeString()}</span>
+              {!autoSaving && autoSaveError && (
+                <div className="flex items-center gap-2 text-sm text-red-500">
+                  <AlertCircle className="w-4 h-4" />
+                  <span>{autoSaveError}</span>
                 </div>
+              )}
+              {!autoSaving && !autoSaveError && lastAutoSave && (
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <Cloud className="w-4 h-4 text-green-500" />
+                  <span>已自动保存 {lastAutoSave.toLocaleTimeString()}</span>
+                </div>
+              )}
+              {!autoSaving && !autoSaveError && !lastAutoSave && (
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <CloudOff className="w-4 h-4" />
+                  <span>未保存</span>
+                </div>
+              )}
+              {hasUnsavedChanges && (
+                <span className="text-xs text-amber-500 flex items-center gap-1">
+                  <span className="w-2 h-2 bg-amber-500 rounded-full"></span>
+                  有未保存的更改
+                </span>
               )}
               <button
                 onClick={handleSave}
