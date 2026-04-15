@@ -1,5 +1,6 @@
 import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
+import LandingPage from './pages/LandingPage'
 import HomeLoginPage from './pages/HomeLoginPage'
 import ProjectsPage from './pages/ProjectsPage'
 import WorkspacePage from './pages/WorkspacePage'
@@ -19,7 +20,8 @@ import Layout from './components/Layout'
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<HomeLoginPage />} />
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/home" element={<HomeLoginPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/terms" element={<TermsPage />} />
