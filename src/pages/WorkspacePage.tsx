@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { 
-  ArrowLeft, Save, Home,
+  ArrowLeft, Save, Home, Cloud,
   Building2, Target, Users, FileText, Lightbulb,
   Check, ChevronRight
 } from 'lucide-react'
@@ -24,10 +24,14 @@ const STEPS = [
   { key: 'strategy', name: '创意策略', icon: Lightbulb },
 ]
 
+// localStorage 草稿存储键
+const DRAFT_KEY_PREFIX = 'workspace_draft_'
+
 const WorkspacePage: React.FC = () => {
   const { projectId } = useParams()
   const navigate = useNavigate()
   const isNewProject = projectId === 'new'
+  const currentProjectId = projectId === 'new' ? 'new' : projectId
 
   const [currentStep, setCurrentStep] = useState(0)
   const [project, setProject] = useState<Project | null>(null)
@@ -38,7 +42,164 @@ const WorkspacePage: React.FC = () => {
   const [strategy, setStrategy] = useState<Partial<Strategy>>({})
   
   const [saving, setSaving] = useState(false)
+  const [autoSaving, setAutoSaving] = useState(false)
+  const [lastAutoSave, setLastAutoSave] = useState<Date | null>(null)
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
+  const [draftRestored, setDraftRestored] = useState(false)
+
+  // 防抖定时器引用
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
+  // 自动保存定时器引用
+  const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null)
+
+  // 从localStorage读取草稿
+  const loadDraft = useCallback(() => {
+    if (isNewProject) {
+      const draftKey = `${DRAFT_KEY_PREFIX}new`
+      const savedDraft = localStorage.getItem(draftKey)
+      if (savedDraft) {
+        try {
+          const draft = JSON.parse(savedDraft)
+          if (draft.clientInfo?.companyName) {
+            setClientInfo(draft.clientInfo || {})
+            setRequirements(draft.requirements || {})
+            setCompetitors(draft.competitors || [])
+            setBrief(draft.brief || {})
+            setStrategy(draft.strategy || {})
+            setDraftRestored(true)
+            return true
+          }
+        } catch (e) {
+          console.error('读取草稿失败:', e)
+        }
+      }
+    }
+    return false
+  }, [isNewProject])
+
+  // 保存草稿到localStorage
+  const saveDraft = useCallback(() => {
+    const draftKey = `${DRAFT_KEY_PREFIX}${currentProjectId || 'new'}`
+    const draft = {
+      clientInfo,
+      requirements,
+      competitors,
+      brief,
+      strategy,
+      savedAt: new Date().toISOString()
+    }
+    localStorage.setItem(draftKey, JSON.stringify(draft))
+  }, [currentProjectId, clientInfo, requirements, competitors, brief, strategy])
+
+  // 清除草稿
+  const clearDraft = useCallback(() => {
+    const draftKey = `${DRAFT_KEY_PREFIX}${currentProjectId || 'new'}`
+    localStorage.removeItem(draftKey)
+  }, [currentProjectId])
+
+  // 静默自动保存（不显示通知）
+  const autoSave = useCallback(async () => {
+    if (!project?.id && !isNewProject) return
+    if (isNewProject && !clientInfo.companyName) return
+
+    setAutoSaving(true)
+    try {
+      if (isNewProject && !project?.id) {
+        // 新项目且未创建，先创建项目
+        const newProject = await createProject({
+          name: clientInfo.companyName + '品牌策划',
+          clientName: clientInfo.companyName,
+        })
+        setProject(newProject)
+        await saveClientInfo(newProject.id, clientInfo)
+        // 更新URL
+        navigate(`/projects/workspace/${newProject.id}`, { replace: true })
+        // 清除草稿
+        clearDraft()
+      } else if (project?.id) {
+        // 已创建的项目，保存当前步骤
+        switch (currentStep) {
+          case 0:
+            await saveClientInfo(project.id, clientInfo)
+            break
+          case 1:
+            await saveRequirements(project.id, requirements)
+            break
+          case 2:
+            await saveCompetitors(project.id, competitors)
+            break
+          case 3:
+            await saveBrief(project.id, brief)
+            break
+          case 4:
+            await saveStrategy(project.id, strategy)
+            break
+        }
+        // 清除草稿
+        clearDraft()
+      }
+      setLastAutoSave(new Date())
+    } catch (error) {
+      console.error('自动保存失败:', error)
+    } finally {
+      setAutoSaving(false)
+    }
+  }, [project, clientInfo, requirements, competitors, brief, strategy, currentStep, isNewProject, navigate, clearDraft])
+
+  // 防抖保存草稿（表单变化时）
+  const debouncedSaveDraft = useCallback(() => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current)
+    }
+    debounceTimerRef.current = setTimeout(() => {
+      saveDraft()
+    }, 1000) // 1秒后保存草稿
+  }, [saveDraft])
+
+  useEffect(() => {
+    // 页面加载时尝试恢复草稿
+    if (isNewProject) {
+      loadDraft()
+    }
+  }, [isNewProject, loadDraft])
+
+  useEffect(() => {
+    // 表单内容变化时保存草稿
+    if (isNewProject && (clientInfo.companyName || requirements.projectType || competitors.length > 0 || brief.projectOverview || strategy.overallStrategy)) {
+      debouncedSaveDraft()
+    }
+  }, [clientInfo, requirements, competitors, brief, strategy, isNewProject, debouncedSaveDraft])
+
+  useEffect(() => {
+    // 30秒自动保存
+    autoSaveTimerRef.current = setInterval(() => {
+      if (project?.id || (isNewProject && clientInfo.companyName)) {
+        autoSave()
+      }
+    }, 30000)
+
+    return () => {
+      if (autoSaveTimerRef.current) {
+        clearInterval(autoSaveTimerRef.current)
+      }
+    }
+  }, [project, isNewProject, clientInfo, autoSave])
+
+  useEffect(() => {
+    // 切换步骤时自动保存
+    if (project?.id) {
+      autoSave()
+    }
+  }, [currentStep])
+
+  useEffect(() => {
+    // 清理防抖定时器
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current)
+      }
+    }
+  }, [])
 
   useEffect(() => {
     if (!isNewProject && projectId) {
@@ -84,6 +245,8 @@ const WorkspacePage: React.FC = () => {
       setProject(newProject)
       // 保存客户信息
       await saveClientInfo(newProject.id, clientInfo)
+      // 清除草稿
+      clearDraft()
       navigate(`/projects/workspace/${newProject.id}`, { replace: true })
       showNotification('success', '项目创建成功')
       return true
@@ -185,6 +348,13 @@ const WorkspacePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* 草稿恢复提示 */}
+      {draftRestored && (
+        <div className="fixed top-16 left-1/2 transform -translate-x-1/2 z-50 px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg text-sm">
+          已自动恢复上次未提交的草稿
+        </div>
+      )}
+
       {/* 通知提示 */}
       {notification && (
         <div className={`fixed top-20 right-4 z-50 px-4 py-3 rounded-lg shadow-lg ${
@@ -207,6 +377,19 @@ const WorkspacePage: React.FC = () => {
             </button>
             
             <div className="flex items-center gap-4">
+              {/* 自动保存状态 */}
+              {autoSaving && (
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <Cloud className="w-4 h-4 animate-pulse" />
+                  <span>保存中...</span>
+                </div>
+              )}
+              {!autoSaving && lastAutoSave && (
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <Cloud className="w-4 h-4" />
+                  <span>已保存 {lastAutoSave.toLocaleTimeString()}</span>
+                </div>
+              )}
               <button
                 onClick={handleSave}
                 disabled={saving}
