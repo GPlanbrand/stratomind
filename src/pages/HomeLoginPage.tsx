@@ -162,13 +162,13 @@ const HomeLoginPage: React.FC = () => {
           <div className="w-full max-w-sm space-y-3">
             <button
               onClick={() => window.open('#', '_blank')}
-              className="w-full py-4 bg-purple-600 text-white rounded-2xl font-medium text-base hover:bg-purple-700 transition-colors min-h-[52px]"
+              className="w-full py-3 bg-purple-600 text-white rounded-xl font-medium text-sm hover:bg-purple-700 transition-colors"
             >
               立刻下载StratoMind
             </button>
             <button
               onClick={() => setShowMobileGuide(false)}
-              className="w-full py-4 bg-gray-50 text-purple-400 rounded-2xl font-medium text-base hover:bg-gray-100 transition-colors min-h-[52px]"
+              className="w-full py-3 bg-gray-50 text-purple-400 rounded-xl font-medium text-sm hover:bg-gray-100 transition-colors"
             >
               先进入网页版
             </button>
