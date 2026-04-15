@@ -127,61 +127,61 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse }) 
         </button>
       </div>
 
-      {/* 当前项目 */}
-      <div className="px-3 py-2">
-        <button 
-          onClick={() => setProjectExpanded(!projectExpanded)}
-          className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors"
-        >
-          <div className="flex items-center gap-2 min-w-0">
-            <FolderOpen className="w-5 h-5 text-purple-500 flex-shrink-0" />
-            <span className="text-sm font-medium text-gray-800 truncate">烟火序肥牛火锅</span>
-          </div>
-          <ChevronDown className={`w-4 h-4 text-gray-400 flex-shrink-0 transition-transform ${projectExpanded ? 'rotate-180' : ''}`} />
-        </button>
-        
-        {/* 项目步骤 */}
-        {projectExpanded && (
-          <div className="mt-1 ml-2 space-y-0.5">
-            {projectSteps.map(item => (
-              <button
-                key={item.path}
-                onClick={() => navigate(item.path)}
-                className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg ${
-                  isActive(item.path) 
-                    ? 'bg-purple-50 text-purple-600' 
-                    : 'text-gray-600 hover:bg-gray-50'
-                }`}
-              >
-                <item.icon className="w-4 h-4" />
-                <span className="text-sm">{item.label}</span>
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* 独立导航 */}
-      <div className="px-3 py-2 border-t border-gray-100">
-        {independentItems.map(item => (
-          <button
-            key={item.path}
-            onClick={() => navigate(item.path)}
-            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl ${
-              location.pathname === item.path ? 'bg-gray-100 text-gray-900' : 'text-gray-500 hover:bg-gray-50'
-            }`}
+      {/* 可滚动区域 */}
+      <div className="flex-1 overflow-y-auto">
+        {/* 当前项目 */}
+        <div className="px-3 py-2">
+          <button 
+            onClick={() => setProjectExpanded(!projectExpanded)}
+            className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors"
           >
-            <item.icon className="w-5 h-5" />
-            <span className="text-sm font-medium">{item.label}</span>
+            <div className="flex items-center gap-2 min-w-0">
+              <FolderOpen className="w-5 h-5 text-purple-500 flex-shrink-0" />
+              <span className="text-sm font-medium text-gray-800 truncate">烟火序肥牛火锅</span>
+            </div>
+            <ChevronDown className={`w-4 h-4 text-gray-400 flex-shrink-0 transition-transform ${projectExpanded ? 'rotate-180' : ''}`} />
           </button>
-        ))}
-      </div>
+          
+          {/* 项目步骤 */}
+          {projectExpanded && (
+            <div className="mt-1 ml-2 space-y-0.5">
+              {projectSteps.map(item => (
+                <button
+                  key={item.path}
+                  onClick={() => navigate(item.path)}
+                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg ${
+                    isActive(item.path) 
+                      ? 'bg-purple-50 text-purple-600' 
+                      : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                >
+                  <item.icon className="w-4 h-4" />
+                  <span className="text-sm">{item.label}</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
-      {/* 弹性空间 */}
-      <div className="flex-1" />
+        {/* 独立导航 */}
+        <div className="px-3 py-2 border-t border-gray-100">
+          {independentItems.map(item => (
+            <button
+              key={item.path}
+              onClick={() => navigate(item.path)}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl ${
+                location.pathname === item.path ? 'bg-gray-100 text-gray-900' : 'text-gray-500 hover:bg-gray-50'
+              }`}
+            >
+              <item.icon className="w-5 h-5" />
+              <span className="text-sm font-medium">{item.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
 
       {/* 用户区域 */}
-      <div className="border-t border-gray-200 p-3">
+      <div className="border-t border-gray-200 p-3 flex-shrink-0">
         <div className="flex items-center justify-between px-3 py-2 bg-gray-50 rounded-xl mb-2">
           <div className="flex items-center gap-1.5">
             <Star className="w-4 h-4 text-amber-500" />

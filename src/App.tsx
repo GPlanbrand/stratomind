@@ -32,7 +32,8 @@ function App() {
       <Route path="/privacy" element={<PrivacyPage />} />
       <Route path="/projects" element={<Layout />}>
         <Route index element={<ProjectsPage />} />
-        <Route path="workspace/:projectId?" element={<WorkspacePage />} />
+        <Route path="workspace/new" element={<WorkspacePage />} />
+        <Route path="workspace/:projectId" element={<WorkspacePage />} />
         <Route path="analysis-charts" element={<AnalysisChartsPage />} />
         <Route path="member" element={<MemberPage />} />
         <Route path="files" element={<FilesPage />} />
