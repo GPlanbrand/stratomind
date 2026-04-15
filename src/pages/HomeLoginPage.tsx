@@ -465,6 +465,42 @@ const HomeLoginPage: React.FC = () => {
           </div>
         </div>
 
+        {/* 左侧产品宣传 */}
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10 px-8 lg:px-16 max-w-xl">
+          <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
+            让品牌策划<br/>更智能、更高效
+          </h1>
+          <p className="text-lg text-white/80 mb-8">
+            一站式品牌创意工作平台，助力企业快速构建品牌策略
+          </p>
+          <div className="space-y-4">
+            <div className="flex items-center gap-3 text-white/90">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>智能竞品分析 · 多维度数据洞察市场格局</span>
+            </div>
+            <div className="flex items-center gap-3 text-white/90">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>创意策略生成 · AI驱动的品牌策略方案</span>
+            </div>
+            <div className="flex items-center gap-3 text-white/90">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>可视化报告 · 专业图表呈现分析结果</span>
+            </div>
+            <div className="flex items-center gap-3 text-white/90">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>团队协作 · 高效协同推进品牌项目</span>
+            </div>
+          </div>
+        </div>
+
         {/* 登录卡片靠右 */}
         <div className="flex items-center justify-end w-full relative z-10 px-8 lg:pr-16">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
