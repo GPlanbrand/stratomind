@@ -92,7 +92,15 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
         </div>
 
         {/* 项目步骤 */}
-        <nav className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain py-2">
+        <nav 
+          className="flex-1 py-2"
+          style={{ 
+            minHeight: 0, 
+            overflowY: 'auto', 
+            overflowX: 'hidden',
+            overscrollBehavior: 'contain'
+          } as React.CSSProperties}
+        >
           {projectSteps.map(item => (
             <button
               key={item.step}
@@ -162,7 +170,15 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
       </div>
 
       {/* 可滚动区域 */}
-      <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain">
+      <div 
+        className="flex-1"
+        style={{ 
+          minHeight: 0, 
+          overflowY: 'auto', 
+          overflowX: 'hidden',
+          overscrollBehavior: 'contain'
+        } as React.CSSProperties}
+      >
         {/* 当前项目 */}
         <div className="px-3 py-2">
           <button 
