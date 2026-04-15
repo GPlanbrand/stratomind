@@ -17,16 +17,17 @@ const BriefStep: React.FC<Props> = ({ data, onChange }) => {
       // 模拟AI生成（实际项目中可调用后端API）
       await new Promise(resolve => setTimeout(resolve, 1500))
       
+      // 生成完整的默认内容
       const generatedBrief: Partial<Brief> = {
-        projectOverview: data.projectOverview || '基于市场洞察和品牌定位，本项目旨在打造具有差异化竞争力的品牌形象，通过创新的传播策略提升品牌在目标市场的认知度和美誉度。',
-        creativeDirection: data.creativeDirection || '采用年轻化、时尚化的视觉风格，结合故事化的内容叙事方式，突出品牌的独特价值和情感连接点。',
-        keyInsights: data.keyInsights?.length ? data.keyInsights : [
+        projectOverview: '基于市场洞察和品牌定位，本项目旨在打造具有差异化竞争力的品牌形象，通过创新的传播策略提升品牌在目标市场的认知度和美誉度。',
+        creativeDirection: '采用年轻化、时尚化的视觉风格，结合故事化的内容叙事方式，突出品牌的独特价值和情感连接点。',
+        keyInsights: [
           '目标用户对品质和性价比有双重需求',
           '竞品在情感化表达方面存在不足',
           '社交媒体是触达目标用户的主要渠道',
           '内容共创可以有效提升用户参与度'
         ],
-        successMetrics: data.successMetrics?.length ? data.successMetrics : [
+        successMetrics: [
           '品牌认知度提升20%',
           '社交媒体互动率提升30%',
           '目标用户转化率提升15%'
