@@ -300,11 +300,11 @@ const HomeLoginPage: React.FC = () => {
                   {loading ? '登录中...' : '登 录'}
                 </button>
 
-                {/* 忘记密码链接 */}
-                <div className="text-center">
-                  <a href="/forgot-password" className="text-sm text-indigo-600 hover:text-indigo-700">
-                    忘记密码?
-                  </a>
+                {/* 注册和忘记密码并排 */}
+                <div className="flex items-center justify-center gap-4 text-sm">
+                  <a href="/register" className="text-indigo-600 hover:text-indigo-700">注册新账号</a>
+                  <span className="text-gray-300">|</span>
+                  <a href="/forgot-password" className="text-indigo-600 hover:text-indigo-700">忘记密码?</a>
                 </div>
 
                 <div className="pt-2 text-center">
@@ -404,11 +404,11 @@ const HomeLoginPage: React.FC = () => {
                   {loading ? '登录中...' : '登 录'}
                 </button>
 
-                {/* 忘记密码链接 */}
-                <div className="text-center">
-                  <a href="/forgot-password" className="text-sm text-indigo-600 hover:text-indigo-700">
-                    忘记密码?
-                  </a>
+                {/* 注册和忘记密码并排 */}
+                <div className="flex items-center justify-center gap-4 text-sm">
+                  <a href="/register" className="text-indigo-600 hover:text-indigo-700">注册新账号</a>
+                  <span className="text-gray-300">|</span>
+                  <a href="/forgot-password" className="text-indigo-600 hover:text-indigo-700">忘记密码?</a>
                 </div>
 
                 <div className="pt-2 text-center">
@@ -437,8 +437,7 @@ const HomeLoginPage: React.FC = () => {
             )}
 
             {/* 底部链接 */}
-            <div className="mt-6 pt-5 border-t border-gray-100 flex items-center justify-between text-xs">
-              <a href="/register" className="text-indigo-600 hover:text-indigo-700 font-medium">注册新账号</a>
+            <div className="mt-6 pt-5 border-t border-gray-100 flex items-center justify-center text-xs">
               <div className="text-gray-400">
                 <a href="/terms" className="hover:text-gray-600">服务条款</a>
                 <span className="mx-2">·</span>
