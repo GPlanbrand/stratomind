@@ -102,9 +102,18 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse }) 
           >
             <Star className="w-5 h-5" />
           </button>
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white text-sm font-medium">
-            {user?.name?.charAt(0)?.toUpperCase() || 'D'}
-          </div>
+          {/* 用户头像 */}
+          {user?.avatar ? (
+            <img 
+              src={user.avatar} 
+              alt={user.name || 'User'} 
+              className="w-9 h-9 rounded-full object-cover ring-2 ring-gray-100"
+            />
+          ) : (
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-base font-semibold shadow-sm">
+              {user?.name?.charAt(0)?.toUpperCase() || 'D'}
+            </div>
+          )}
           <button
             onClick={onToggleCollapse}
             className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
@@ -214,14 +223,24 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse }) 
         {/* 用户信息 */}
         <div className="px-3 py-3 border-t border-gray-200 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white text-sm font-medium">
-              {user?.name?.charAt(0)?.toUpperCase() || 'D'}
-            </div>
-            <span className="text-sm font-medium text-gray-800">{user?.name || 'DASU'}</span>
+            {/* 用户头像 */}
+            {user?.avatar ? (
+              <img 
+                src={user.avatar} 
+                alt={user.name || 'User'} 
+                className="w-9 h-9 rounded-full object-cover ring-2 ring-gray-100"
+              />
+            ) : (
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-base font-semibold shadow-sm">
+                {user?.name?.charAt(0)?.toUpperCase() || 'D'}
+              </div>
+            )}
+            <span className="text-sm font-semibold text-gray-900">{user?.name || 'DASU'}</span>
           </div>
-          <button className="p-1.5 rounded-lg hover:bg-gray-200 text-gray-400 hover:text-gray-600 transition-colors relative">
-            <Bell className="w-4 h-4" />
-            <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full" />
+          {/* 通知图标 */}
+          <button className="relative p-2 rounded-full hover:bg-gray-200 text-gray-500 hover:text-gray-700 transition-colors">
+            <Bell className="w-5 h-5" />
+            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full ring-1 ring-white" />
           </button>
         </div>
       </div>
