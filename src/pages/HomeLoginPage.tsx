@@ -201,7 +201,7 @@ const HomeLoginPage: React.FC = () => {
             <h2 className="text-2xl font-semibold text-gray-900 mb-1">欢迎回来</h2>
             <p className="text-sm text-gray-500 mb-6">登录后开启品牌策划之旅</p>
 
-            {/* 登录方式切换 - 手机版保留 */}
+            {/* 登录方式切换 - 手机版 */}
             <div className="flex gap-1 p-1 bg-gray-100 rounded-xl mb-6">
               <button
                 onClick={() => { setLoginMethod('account'); setShowPhoneGuide(false); }}
@@ -209,7 +209,7 @@ const HomeLoginPage: React.FC = () => {
                   loginMethod === 'account' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
-                账号密码
+                账号登录
               </button>
               <button
                 onClick={() => setLoginMethod('phone')}
@@ -217,18 +217,7 @@ const HomeLoginPage: React.FC = () => {
                   loginMethod === 'phone' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
-                手机验证
-              </button>
-              <button
-                onClick={() => { setLoginMethod('qrcode'); setShowPhoneGuide(false); }}
-                className={`hidden md:flex flex-1 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 items-center justify-center gap-1 ${
-                  loginMethod === 'qrcode' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h2M4 12h2m10 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                </svg>
-                扫码
+                手机登录
               </button>
             </div>
 
@@ -507,78 +496,172 @@ const HomeLoginPage: React.FC = () => {
         <div className="flex items-center justify-end w-full relative z-10 px-16">
           <div className="bg-white rounded-2xl shadow-[0_8px_60px_-15px_rgba(0,0,0,0.15)] border border-gray-100 w-full max-w-[400px] overflow-hidden">
             <div className="p-8">
-              {/* 标题 */}
-              <div className="mb-6">
-                <h2 className="text-2xl font-semibold text-gray-900">账号登录</h2>
+              {/* 登录方式切换Tab */}
+              <div className="flex gap-1 p-1 bg-gray-100 rounded-xl mb-6">
+                <button
+                  onClick={() => setLoginMethod('account')}
+                  className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
+                    loginMethod === 'account' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  账号登录
+                </button>
+                <button
+                  onClick={() => setLoginMethod('phone')}
+                  className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
+                    loginMethod === 'phone' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  手机登录
+                </button>
               </div>
 
               {/* 账号登录表单 */}
-              <div className="space-y-4">
-                {/* 用户名/邮箱 */}
-                <div>
-                  <input
-                    type="text"
-                    value={account}
-                    onChange={(e) => { setAccount(e.target.value); setError(''); }}
-                    className="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-200 transition-all"
-                    placeholder="用户名 / 邮箱"
-                  />
-                </div>
-                
-                {/* 密码 */}
-                <div>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => { setPassword(e.target.value); setError(''); }}
-                    className="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-200 transition-all"
-                    placeholder="密码"
-                  />
-                </div>
-
-                {/* 错误提示 */}
-                {error && (
-                  <div className="text-red-500 text-sm py-2">
-                    {error}
+              {loginMethod === 'account' && (
+                <div className="space-y-4">
+                  {/* 用户名/邮箱 */}
+                  <div>
+                    <input
+                      type="text"
+                      value={account}
+                      onChange={(e) => { setAccount(e.target.value); setError(''); }}
+                      className="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-200 transition-all"
+                      placeholder="用户名 / 邮箱"
+                    />
                   </div>
-                )}
+                  
+                  {/* 密码 */}
+                  <div>
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => { setPassword(e.target.value); setError(''); }}
+                      className="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-200 transition-all"
+                      placeholder="密码"
+                    />
+                  </div>
 
-                {/* 登录按钮 - 绿色 */}
-                <button
-                  onClick={handleAccountLogin}
-                  disabled={loading}
-                  className="w-full py-3.5 bg-green-500 text-white rounded-lg font-medium text-base hover:bg-green-600 transition-colors disabled:opacity-50 active:scale-[0.99]"
-                >
-                  {loading ? '登录中...' : '登 录'}
-                </button>
+                  {/* 错误提示 */}
+                  {error && (
+                    <div className="text-red-500 text-sm py-2">
+                      {error}
+                    </div>
+                  )}
 
-                {/* 忘记密码和注册新账号 - 并排显示在登录按钮下方 */}
-                <div className="flex items-center justify-center gap-4 text-sm">
-                  <a href="/register" className="text-indigo-600 hover:text-indigo-700">注册新账号</a>
-                  <span className="text-gray-300">|</span>
-                  <a href="/forgot-password" className="text-indigo-600 hover:text-indigo-700">忘记密码?</a>
+                  {/* 登录按钮 */}
+                  <button
+                    onClick={handleAccountLogin}
+                    disabled={loading}
+                    className="w-full py-3.5 bg-green-500 text-white rounded-lg font-medium text-base hover:bg-green-600 transition-colors disabled:opacity-50 active:scale-[0.99]"
+                  >
+                    {loading ? '登录中...' : '登 录'}
+                  </button>
+
+                  {/* 忘记密码和注册新账号 */}
+                  <div className="flex items-center justify-center gap-4 text-sm">
+                    <a href="/register" className="text-indigo-600 hover:text-indigo-700">注册新账号</a>
+                    <span className="text-gray-300">|</span>
+                    <a href="/forgot-password" className="text-indigo-600 hover:text-indigo-700">忘记密码?</a>
+                  </div>
+                  
+                  {/* 服务条款 */}
+                  <div className="flex items-center gap-2.5 pt-2">
+                    <input
+                      type="checkbox"
+                      id="agreeTermsDesktop"
+                      checked={agreeTerms}
+                      onChange={(e) => setAgreeTerms(e.target.checked)}
+                      className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                    />
+                    <label htmlFor="agreeTermsDesktop" className="text-xs text-gray-500">
+                      阅读并接受 <a href="/terms" className="text-green-600 hover:underline">《服务条款》</a> 和 <a href="/privacy" className="text-green-600 hover:underline">《隐私政策》</a>
+                    </label>
+                  </div>
+                  
+                  <div className="pt-3 text-center">
+                    <p className="text-xs text-gray-400">
+                      演示：demo / demo123
+                    </p>
+                  </div>
                 </div>
-                
-                {/* 服务条款 */}
-                <div className="flex items-center gap-2.5 pt-2">
-                  <input
-                    type="checkbox"
-                    id="agreeTermsDesktop"
-                    checked={agreeTerms}
-                    onChange={(e) => setAgreeTerms(e.target.checked)}
-                    className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
-                  />
-                  <label htmlFor="agreeTermsDesktop" className="text-xs text-gray-500">
-                    阅读并接受 <a href="/terms" className="text-green-600 hover:underline">《服务条款》</a> 和 <a href="/privacy" className="text-green-600 hover:underline">《隐私政策》</a>
-                  </label>
+              )}
+
+              {/* 手机登录表单 */}
+              {loginMethod === 'phone' && (
+                <div className="space-y-4">
+                  {/* 手机号 */}
+                  <div>
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => { setPhone(e.target.value); setError(''); }}
+                      className="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-200 transition-all"
+                      placeholder="请输入手机号"
+                    />
+                  </div>
+                  
+                  {/* 验证码 */}
+                  <div className="flex gap-3">
+                    <input
+                      type="text"
+                      value={code}
+                      onChange={(e) => { setCode(e.target.value); setError(''); }}
+                      className="flex-1 px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-200 transition-all"
+                      placeholder="验证码"
+                    />
+                    <button
+                      onClick={handleSendCode}
+                      disabled={countdown > 0 || loading}
+                      className="px-5 py-3.5 bg-gray-100 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-200 disabled:opacity-50 min-w-[110px] transition-colors"
+                    >
+                      {countdown > 0 ? `${countdown}秒` : '获取验证码'}
+                    </button>
+                  </div>
+
+                  {/* 错误提示 */}
+                  {error && (
+                    <div className="text-red-500 text-sm py-2">
+                      {error}
+                    </div>
+                  )}
+
+                  {/* 登录按钮 */}
+                  <button
+                    onClick={handlePhoneLogin}
+                    disabled={loading}
+                    className="w-full py-3.5 bg-green-500 text-white rounded-lg font-medium text-base hover:bg-green-600 transition-colors disabled:opacity-50 active:scale-[0.99]"
+                  >
+                    {loading ? '登录中...' : '登 录'}
+                  </button>
+
+                  {/* 忘记密码和注册新账号 */}
+                  <div className="flex items-center justify-center gap-4 text-sm">
+                    <a href="/register" className="text-indigo-600 hover:text-indigo-700">注册新账号</a>
+                    <span className="text-gray-300">|</span>
+                    <a href="/forgot-password" className="text-indigo-600 hover:text-indigo-700">忘记密码?</a>
+                  </div>
+                  
+                  {/* 服务条款 */}
+                  <div className="flex items-center gap-2.5 pt-2">
+                    <input
+                      type="checkbox"
+                      id="agreeTermsDesktopPhone"
+                      checked={agreeTerms}
+                      onChange={(e) => setAgreeTerms(e.target.checked)}
+                      className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                    />
+                    <label htmlFor="agreeTermsDesktopPhone" className="text-xs text-gray-500">
+                      阅读并接受 <a href="/terms" className="text-green-600 hover:underline">《服务条款》</a> 和 <a href="/privacy" className="text-green-600 hover:underline">《隐私政策》</a>
+                    </label>
+                  </div>
+                  
+                  <div className="pt-3 text-center">
+                    <p className="text-xs text-gray-400">
+                      演示验证码：123456
+                    </p>
+                  </div>
                 </div>
-                
-                <div className="pt-3 text-center">
-                  <p className="text-xs text-gray-400">
-                    演示：demo / demo123
-                  </p>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
