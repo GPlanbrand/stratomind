@@ -465,8 +465,8 @@ const HomeLoginPage: React.FC = () => {
           </div>
         </div>
 
-        {/* 登录卡片居中 */}
-        <div className="flex items-center justify-center w-full relative z-10 px-4">
+        {/* 登录卡片靠右 */}
+        <div className="flex items-center justify-end w-full relative z-10 px-8 lg:pr-16">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
             {/* 登录表单内容 */}
             <div className="p-8">
