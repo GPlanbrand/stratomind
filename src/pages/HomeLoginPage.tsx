@@ -146,8 +146,8 @@ const HomeLoginPage: React.FC = () => {
       {/* 手机版引导页 */}
       {showMobileGuide && (
         <div className="lg:hidden fixed inset-0 z-50 flex flex-col items-center justify-center px-6" style={{ background: 'linear-gradient(to bottom, #f3e8ff 0%, #ffffff 100%)', overscrollBehavior: 'none', touchAction: 'none' }}>
-          {/* Logo和文案区 - 距离按钮90px */}
-          <div className="flex flex-col items-center mb-[90px]">
+          {/* Logo和文案区 - 距离按钮120px */}
+          <div className="flex flex-col items-center mb-[120px]">
             {/* App图标 */}
             <div className="w-20 h-20 mb-6">
               <img src="/app-icon.svg" alt="StratoMind" className="w-full h-full" />
