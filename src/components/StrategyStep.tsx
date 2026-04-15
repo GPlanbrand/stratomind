@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Lightbulb, Wand2, Copy, Download } from 'lucide-react'
+import { Lightbulb, Wand2, Copy, Download, AlertCircle, CheckCircle } from 'lucide-react'
 import { Strategy } from '../types'
 
 interface Props {
@@ -9,6 +9,8 @@ interface Props {
 
 const StrategyStep: React.FC<Props> = ({ data, onChange }) => {
   const [generating, setGenerating] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
 
   const copyPrompt = () => {
     const prompt = `品牌策略分析任务：
@@ -23,20 +25,45 @@ const StrategyStep: React.FC<Props> = ({ data, onChange }) => {
   // AI生成策略
   const handleGenerateStrategy = async () => {
     setGenerating(true)
+    setError(null)
+    setSuccess(false)
+    
     try {
-      // 模拟AI生成（实际项目中可调用后端API）
-      await new Promise(resolve => setTimeout(resolve, 1500))
+      // 从全局获取上下文数据
+      const clientInfo = (window as any).__workspaceClientInfo || {}
+      const requirements = (window as any).__workspaceRequirements || {}
+      const brief = (window as any).__workspaceBrief || {}
       
-      const generatedStrategy: Partial<Strategy> = {
-        overallStrategy: data.overallStrategy || '以"创新、品质、温度"为核心价值主张，打造一个让目标用户感受到专业与关怀兼顾的品牌形象。通过差异化的内容输出和精准的用户触达，建立品牌在细分市场的领导地位。',
-        differentiation: data.differentiation || '聚焦于"个性化体验"和"情感共鸣"两个维度，构建与竞品的差异化优势。以用户真实故事为载体，传递品牌温度，建立深层情感连接。',
-        contentStrategy: data.contentStrategy || '采用"故事化+场景化"的内容策略，通过真实用户案例、行业洞察、生活方式引导等形式，展现品牌的专业价值和生活态度。视觉风格统一采用温暖、现代、国际化的设计语言。',
-        mediaStrategy: data.mediaStrategy || '以社交媒体为核心阵地，配合KOL合作和内容营销实现破圈传播。建议采用"3:3:2:2"的预算分配模式：30%社交媒体投放、30%内容创作、20%KOL合作、20%线下活动体验。'
+      // 调用API
+      const response = await fetch('/api/ai/generate-strategy', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          clientInfo,
+          requirements,
+          brief,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || '生成失败')
       }
-      onChange(generatedStrategy)
-    } catch (error) {
-      console.error('生成失败:', error)
-      alert('生成失败，请稍后重试')
+
+      const result = await response.json()
+      
+      if (result.success && result.data) {
+        onChange(result.data)
+        setSuccess(true)
+        setTimeout(() => setSuccess(false), 3000)
+      } else {
+        throw new Error('返回数据格式错误')
+      }
+    } catch (err: any) {
+      console.error('生成失败:', err)
+      setError(err.message || '生成失败，请稍后重试')
     } finally {
       setGenerating(false)
     }
@@ -84,6 +111,20 @@ ${data.mediaStrategy || '（未填写）'}
         </div>
         <p className="text-gray-500 text-sm">制定品牌的整体策略和差异化方向</p>
       </div>
+
+      {/* 状态提示 */}
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700 text-sm">
+          <AlertCircle className="w-4 h-4 flex-shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
+      {success && (
+        <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2 text-green-700 text-sm">
+          <CheckCircle className="w-4 h-4 flex-shrink-0" />
+          <span>生成成功！内容已填充，可根据需要修改。</span>
+        </div>
+      )}
 
       <div className="space-y-5">
         {/* 核心策略主张 */}

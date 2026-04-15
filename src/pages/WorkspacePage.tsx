@@ -225,6 +225,19 @@ const WorkspacePage: React.FC = () => {
     }
   }
 
+  // 设置AI上下文数据到全局变量，供AI组件使用
+  useEffect(() => {
+    const contextData = {
+      __workspaceClientInfo: clientInfo,
+      __workspaceRequirements: requirements,
+      __workspaceCompetitors: competitors,
+      __workspaceBrief: brief,
+      __workspaceStrategy: strategy,
+    }
+    // 设置到全局
+    Object.assign(window, contextData)
+  }, [clientInfo, requirements, competitors, brief, strategy])
+
   const showNotification = (type: 'success' | 'error', message: string) => {
     setNotification({ type, message })
     setTimeout(() => setNotification(null), 3000)

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Users, Plus, Trash2, Search, BarChart3, X, Download, BarChart2, Target, Cloud, TrendingUp } from 'lucide-react'
+import { Users, Plus, Trash2, Search, BarChart3, X, Download, BarChart2, AlertCircle, CheckCircle } from 'lucide-react'
 import { Competitor } from '../types'
 import { RadarChartComponent, PositioningMatrix, WordCloudChart, UserJourneyChart } from './CompetitorAnalysisCharts'
 
@@ -11,55 +11,70 @@ interface Props {
 const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
   const [showCharts, setShowCharts] = useState(false)
   const [searching, setSearching] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
 
   // AI搜索竞品信息
   const handleSearchCompetitors = async () => {
-    if (data.length === 0) {
-      alert('请先添加至少一个竞品')
+    // 检查是否有有效的竞品名称
+    const validCompetitors = data.filter(c => c.name && c.name.trim())
+    if (validCompetitors.length === 0) {
+      alert('请先输入至少一个竞品名称')
       return
     }
     setSearching(true)
+    setError(null)
+    setSuccess(false)
     try {
-      // 模拟AI搜索（实际项目中可调用后端API）
-      await new Promise(resolve => setTimeout(resolve, 1500))
+      // 获取上下文数据
+      const clientInfo = (window as any).__workspaceClientInfo || {}
       
-      const updatedCompetitors = data.map((competitor, index) => {
-        // 根据竞品序号生成不同的示例数据
-        const sampleData = [
-          { 
-            brandPositioning: '高端市场领导者，强调技术创新和品质卓越',
-            visualStyle: '简约、科技感、国际范',
-            marketShare: '约25%',
-            targetAudience: '25-40岁追求品质的中高端消费群体'
-          },
-          { 
-            brandPositioning: '性价比之王，主打年轻化和大众市场',
-            visualStyle: '活泼、年轻化、潮流',
-            marketShare: '约35%',
-            targetAudience: '18-30岁追求时尚的年轻消费群体'
-          },
-          { 
-            brandPositioning: '细分市场专家，专注特定垂直领域',
-            visualStyle: '专业、垂直、深度',
-            marketShare: '约15%',
-            targetAudience: '特定兴趣圈层和专业用户'
-          }
-        ]
-        const info = sampleData[index % sampleData.length]
-        return {
-          ...competitor,
-          brandPositioning: competitor.brandPositioning || info.brandPositioning,
-          visualStyle: competitor.visualStyle || info.visualStyle,
-          marketShare: competitor.marketShare || info.marketShare,
-          targetAudience: competitor.targetAudience || info.targetAudience
-        }
+      // 调用API
+      const response = await fetch('/api/ai/analyze-competitors', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          competitors: validCompetitors.map(c => ({ id: c.id, name: c.name })),
+          clientInfo,
+        }),
       })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || '搜索失败')
+      }
+
+      const result = await response.json()
       
-      onChange(updatedCompetitors)
-      alert('竞品信息已自动填充！')
-    } catch (error) {
-      console.error('搜索失败:', error)
-      alert('搜索失败，请稍后重试')
+      if (result.success && result.data) {
+        // 合并AI分析结果和已有数据
+        const updatedCompetitors = data.map(competitor => {
+          const aiResult = result.data.find((r: any) => r.id === competitor.id)
+          if (aiResult) {
+            return {
+              ...competitor,
+              brandPositioning: competitor.brandPositioning || aiResult.brandPositioning || '',
+              visualStyle: competitor.visualStyle || aiResult.visualStyle || '',
+              marketShare: competitor.marketShare || aiResult.marketShare || '',
+              targetAudience: competitor.targetAudience || aiResult.targetAudience || '',
+              strengths: aiResult.strengths || [],
+              weaknesses: aiResult.weaknesses || [],
+            }
+          }
+          return competitor
+        })
+        
+        onChange(updatedCompetitors)
+        setSuccess(true)
+        setTimeout(() => setSuccess(false), 3000)
+      } else {
+        throw new Error('返回数据格式错误')
+      }
+    } catch (err: any) {
+      console.error('搜索失败:', err)
+      setError(err.message || '搜索失败，请稍后重试')
     } finally {
       setSearching(false)
     }
@@ -175,6 +190,20 @@ const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
         </div>
         <p className="text-gray-500 text-sm">分析主要竞争对手的市场表现（最多添加3个）</p>
       </div>
+
+      {/* 状态提示 */}
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700 text-sm">
+          <AlertCircle className="w-4 h-4 flex-shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
+      {success && (
+        <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2 text-green-700 text-sm">
+          <CheckCircle className="w-4 h-4 flex-shrink-0" />
+          <span>竞品信息已自动填充！</span>
+        </div>
+      )}
 
       {data.length === 0 ? (
         <div className="text-center py-12 bg-gray-50 rounded-xl border border-gray-200">

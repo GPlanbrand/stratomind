@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { FileText, Plus, Trash2, Wand2, Download } from 'lucide-react'
+import { FileText, Plus, Trash2, Wand2, Download, AlertCircle, CheckCircle } from 'lucide-react'
 import { Brief } from '../types'
 
 interface Props {
@@ -9,34 +9,51 @@ interface Props {
 
 const BriefStep: React.FC<Props> = ({ data, onChange }) => {
   const [generating, setGenerating] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
 
   // AI生成简报内容
   const handleGenerateBrief = async () => {
     setGenerating(true)
+    setError(null)
+    setSuccess(false)
+    
     try {
-      // 模拟AI生成（实际项目中可调用后端API）
-      await new Promise(resolve => setTimeout(resolve, 1500))
+      // 从WorkspaceContext获取上下文数据
+      const clientInfo = (window as any).__workspaceClientInfo || {}
+      const requirements = (window as any).__workspaceRequirements || {}
+      const competitors = (window as any).__workspaceCompetitors || []
       
-      // 生成完整的默认内容
-      const generatedBrief: Partial<Brief> = {
-        projectOverview: '基于市场洞察和品牌定位，本项目旨在打造具有差异化竞争力的品牌形象，通过创新的传播策略提升品牌在目标市场的认知度和美誉度。',
-        creativeDirection: '采用年轻化、时尚化的视觉风格，结合故事化的内容叙事方式，突出品牌的独特价值和情感连接点。',
-        keyInsights: [
-          '目标用户对品质和性价比有双重需求',
-          '竞品在情感化表达方面存在不足',
-          '社交媒体是触达目标用户的主要渠道',
-          '内容共创可以有效提升用户参与度'
-        ],
-        successMetrics: [
-          '品牌认知度提升20%',
-          '社交媒体互动率提升30%',
-          '目标用户转化率提升15%'
-        ]
+      // 调用API
+      const response = await fetch('/api/ai/generate-brief', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          clientInfo,
+          requirements,
+          competitors,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || '生成失败')
       }
-      onChange(generatedBrief)
-    } catch (error) {
-      console.error('生成失败:', error)
-      alert('生成失败，请稍后重试')
+
+      const result = await response.json()
+      
+      if (result.success && result.data) {
+        onChange(result.data)
+        setSuccess(true)
+        setTimeout(() => setSuccess(false), 3000)
+      } else {
+        throw new Error('返回数据格式错误')
+      }
+    } catch (err: any) {
+      console.error('生成失败:', err)
+      setError(err.message || '生成失败，请稍后重试')
     } finally {
       setGenerating(false)
     }
@@ -84,6 +101,20 @@ ${(data.successMetrics || []).map((metric, i) => `${i + 1}. ${metric}`).join('\n
         </div>
         <p className="text-gray-500 text-sm">明确项目的创意方向和核心洞察</p>
       </div>
+
+      {/* 状态提示 */}
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700 text-sm">
+          <AlertCircle className="w-4 h-4 flex-shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
+      {success && (
+        <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2 text-green-700 text-sm">
+          <CheckCircle className="w-4 h-4 flex-shrink-0" />
+          <span>生成成功！内容已填充，可根据需要修改。</span>
+        </div>
+      )}
 
       <div className="space-y-5">
         {/* 项目概述 */}
