@@ -333,15 +333,15 @@ const HomeLoginPage: React.FC = () => {
                     value={code}
                     onChange={(e) => { setCode(e.target.value.replace(/\D/g, '').slice(0, 6)); setError(''); }}
                     className="flex-1 px-4 py-3.5 bg-white border border-gray-200 rounded-xl text-gray-900 text-base focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
-                    placeholder="验证码"
+                    placeholder="请输入验证码"
                     maxLength={6}
                   />
                   <button
                     onClick={handleSendCode}
                     disabled={countdown > 0 || loading}
-                    className="px-5 py-3.5 bg-gray-100 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-200 disabled:opacity-50 min-w-[110px] min-h-[48px] transition-colors"
+                    className="px-4 py-3.5 bg-green-500 text-white rounded-xl text-sm font-medium hover:bg-green-600 disabled:bg-gray-300 disabled:text-gray-500 whitespace-nowrap min-h-[48px] transition-all"
                   >
-                    {countdown > 0 ? `${countdown}秒` : '获取验证码'}
+                    {countdown > 0 ? `${countdown}s` : '获取验证码'}
                   </button>
                 </div>
 
@@ -607,14 +607,14 @@ const HomeLoginPage: React.FC = () => {
                       value={code}
                       onChange={(e) => { setCode(e.target.value); setError(''); }}
                       className="flex-1 px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-200 transition-all"
-                      placeholder="验证码"
+                      placeholder="请输入验证码"
                     />
                     <button
                       onClick={handleSendCode}
                       disabled={countdown > 0 || loading}
-                      className="px-5 py-3.5 bg-gray-100 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-200 disabled:opacity-50 min-w-[110px] transition-colors"
+                      className="px-4 py-3.5 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 disabled:bg-gray-300 disabled:text-gray-500 whitespace-nowrap transition-all"
                     >
-                      {countdown > 0 ? `${countdown}秒` : '获取验证码'}
+                      {countdown > 0 ? `${countdown}s` : '获取验证码'}
                     </button>
                   </div>
 
