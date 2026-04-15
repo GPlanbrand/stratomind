@@ -5,7 +5,6 @@ import { login } from '../services/auth';
 const HomeLoginPage: React.FC = () => {
   const navigate = useNavigate();
   const [currentBanner, setCurrentBanner] = useState(0);
-  const [loginMethod, setLoginMethod] = useState<'account' | 'phone' | 'qrcode'>('account');
   
   const [account, setAccount] = useState('');
   const [password, setPassword] = useState('');
@@ -24,37 +23,28 @@ const HomeLoginPage: React.FC = () => {
   // App推广栏状态
   const [showAppBanner, setShowAppBanner] = useState(true);
 
-  // 优化后的淡雅配色Banner
-  const banners = [
-    { 
-      gradient: 'from-slate-100 via-blue-50 to-indigo-100',
-      accent: 'text-indigo-600',
-      title: '智能品牌分析',
-      desc: '深度洞察市场与竞品'
+  // 登录方式状态（仅移动端使用）
+  const [loginMethod, setLoginMethod] = useState<'account' | 'phone' | 'qrcode'>('account');
+
+  // Banner数据 - 预留3个位置
+  const leftBanners = [
+    {
+      title: '让品牌策划更智能',
+      subtitle: '一站式品牌创意工作平台，助力企业快速构建品牌策略',
     },
-    { 
-      gradient: 'from-violet-50 via-purple-50 to-fuchsia-50',
-      accent: 'text-purple-600',
+    {
+      title: '智能数据分析',
+      subtitle: '深度洞察市场与竞品，多维度数据一触即达',
+    },
+    {
       title: '创意策略生成',
-      desc: '一键产出完整方案'
-    },
-    { 
-      gradient: 'from-emerald-50 via-teal-50 to-cyan-50',
-      accent: 'text-teal-600',
-      title: '可视化报告',
-      desc: '多维度图表展示'
-    },
-    { 
-      gradient: 'from-amber-50 via-orange-50 to-yellow-50',
-      accent: 'text-orange-600',
-      title: '团队协作',
-      desc: '高效协同项目推进'
+      subtitle: 'AI驱动创意灵感，一键产出完整品牌方案',
     },
   ];
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentBanner(prev => (prev + 1) % banners.length);
+      setCurrentBanner(prev => (prev + 1) % leftBanners.length);
     }, 5000);
     return () => clearInterval(timer);
   }, []);
@@ -166,60 +156,51 @@ const HomeLoginPage: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       {/* 移动端顶部 - Logo */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-white border-b border-gray-100">
-        <div className="px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <img src="/logo.svg" alt="AI 创意工作台" className="h-7 w-auto" />
-            <span className="text-base font-medium text-gray-900">AI 创意工作台</span>
-          </div>
+        <div className="px-4 py-3 flex items-center">
+          <img src="/logo.svg" alt="AI 创意工作台" className="h-8 w-auto" />
         </div>
       </div>
 
-      {/* App下载推广栏 - 手机版 */}
+      {/* App下载推广栏 - 手机版，参考网易 */}
       <div className="lg:hidden">
         <div 
-          className={`fixed top-14 left-0 right-0 z-30 bg-gradient-to-r from-indigo-600 to-violet-600 text-white px-4 py-2.5 flex items-center justify-between shadow-lg transition-all duration-300 ${
+          className={`fixed top-14 left-0 right-0 z-30 bg-gradient-to-r from-purple-600 to-violet-600 text-white px-3 py-2 flex items-center gap-2 shadow-lg transition-all duration-300 ${
             showAppBanner ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
           }`}
-          style={{ display: 'block' }}
         >
-          <div className="flex items-center gap-3 flex-1">
-            <div className="w-9 h-9 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-md">
-              <img src="/logo.svg" alt="App Logo" className="w-6 h-6" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium leading-tight">AI 创意工作台</div>
-              <div className="text-xs opacity-80 leading-tight">智能品牌策划</div>
-            </div>
+          <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
+            <img src="/app-logo.svg" alt="App Logo" className="w-7 h-7" />
           </div>
-          <div className="flex items-center gap-2">
-            <button 
-              onClick={() => window.open('#', '_blank')}
-              className="px-4 py-1.5 bg-white text-indigo-600 text-sm font-medium rounded-full hover:bg-indigo-50 transition-colors"
-            >
-              获取
-            </button>
-            <button 
-              onClick={() => setShowAppBanner(false)}
-              className="p-1.5 hover:bg-white/20 rounded-full transition-colors"
-              aria-label="关闭"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-medium leading-tight truncate">AI 创意工作台</div>
+            <div className="text-xs opacity-80 leading-tight">智能品牌策划</div>
           </div>
+          <button 
+            onClick={() => window.open('#', '_blank')}
+            className="px-3 py-1 bg-white text-purple-600 text-xs font-medium rounded-full hover:bg-purple-50 transition-colors flex-shrink-0"
+          >
+            获取
+          </button>
+          <button 
+            onClick={() => setShowAppBanner(false)}
+            className="p-1 hover:bg-white/20 rounded-full transition-colors flex-shrink-0"
+            aria-label="关闭"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
       </div>
 
-      {/* 移动端内容区 - 126邮箱风格，白色背景 */}
+      {/* 移动端内容区 - 保留手机登录方式 */}
       <div className="lg:hidden min-h-screen pt-14 bg-white" style={{ paddingTop: showAppBanner ? 'calc(3.5rem + 56px)' : '56px' }}>
-        {/* 登录表单 - 简洁风格 */}
         <div className="px-5 py-8">
           <div className="bg-white">
             <h2 className="text-2xl font-semibold text-gray-900 mb-1">欢迎回来</h2>
             <p className="text-sm text-gray-500 mb-6">登录后开启品牌策划之旅</p>
 
-            {/* 登录方式切换 - 更精致的Tab样式 */}
+            {/* 登录方式切换 - 手机版保留 */}
             <div className="flex gap-1 p-1 bg-gray-100 rounded-xl mb-6">
               <button
                 onClick={() => { setLoginMethod('account'); setShowPhoneGuide(false); }}
@@ -272,7 +253,6 @@ const HomeLoginPage: React.FC = () => {
                   />
                 </div>
 
-                {/* 服务条款 */}
                 <div className="flex items-center gap-2.5">
                   <input
                     type="checkbox"
@@ -300,7 +280,6 @@ const HomeLoginPage: React.FC = () => {
                   {loading ? '登录中...' : '登 录'}
                 </button>
 
-                {/* 注册和忘记密码并排 */}
                 <div className="flex items-center justify-center gap-4 text-sm">
                   <a href="/register" className="text-indigo-600 hover:text-indigo-700">注册新账号</a>
                   <span className="text-gray-300">|</span>
@@ -345,7 +324,7 @@ const HomeLoginPage: React.FC = () => {
               </div>
             )}
 
-            {/* 手机登录表单 - 引导后显示 */}
+            {/* 手机登录表单 */}
             {loginMethod === 'phone' && !showPhoneGuide && (
               <div className="space-y-4">
                 <div>
@@ -376,7 +355,6 @@ const HomeLoginPage: React.FC = () => {
                   </button>
                 </div>
 
-                {/* 服务条款 */}
                 <div className="flex items-center gap-2.5">
                   <input
                     type="checkbox"
@@ -404,7 +382,6 @@ const HomeLoginPage: React.FC = () => {
                   {loading ? '登录中...' : '登 录'}
                 </button>
 
-                {/* 注册和忘记密码并排 */}
                 <div className="flex items-center justify-center gap-4 text-sm">
                   <a href="/register" className="text-indigo-600 hover:text-indigo-700">注册新账号</a>
                   <span className="text-gray-300">|</span>
@@ -457,283 +434,167 @@ const HomeLoginPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 桌面端 - 全新优雅设计：Vercel/Linear风格 */}
+      {/* 桌面端 - 126邮箱风格：左侧Banner轮播 + 右侧登录卡片 */}
       <div className="hidden lg:flex min-h-screen">
-        {/* 全屏淡雅渐变背景 */}
+        {/* 全屏背景 - 预留Banner图片位置（目前用渐变占位） */}
         <div className="fixed inset-0 overflow-hidden">
-          {banners.map((banner, index) => (
+          {leftBanners.map((banner, index) => (
             <div
               key={index}
-              className={`absolute inset-0 bg-gradient-to-br ${banner.gradient} transition-opacity duration-1500 ${
+              className={`absolute inset-0 bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 transition-opacity duration-1000 ${
                 index === currentBanner ? 'opacity-100' : 'opacity-0'
               }`}
             >
               {/* 装饰性光斑 */}
               <div className="absolute inset-0">
-                <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-white/40 rounded-full blur-[120px]"></div>
-                <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-white/30 rounded-full blur-[100px]"></div>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-200/20 rounded-full blur-[150px]"></div>
+                <div className="absolute top-1/3 left-1/4 w-[600px] h-[600px] bg-white/40 rounded-full blur-[150px]"></div>
+                <div className="absolute bottom-1/3 right-1/4 w-[400px] h-[400px] bg-indigo-200/30 rounded-full blur-[100px]"></div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* 顶部Logo - 更精致的样式 */}
-        <div className="fixed top-0 left-0 right-0 z-20 px-10 py-4">
-          <div className="flex items-center gap-2">
-            <img src="/logo.svg" alt="AI 创意工作台" className="h-7 w-auto" />
-            <span className="text-base font-semibold text-gray-800">AI 创意工作台</span>
+        {/* 顶部Logo */}
+        <div className="fixed top-0 left-0 right-0 z-20 px-10 py-5">
+          <div className="flex items-center gap-3">
+            <img src="/logo.svg" alt="AI 创意工作台" className="h-10 w-auto" />
           </div>
         </div>
 
-        {/* 左侧产品宣传区 - 淡雅配色 */}
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10 px-12 max-w-lg">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4 leading-tight">
-            让品牌策划<br/>
-            <span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">更智能、更高效</span>
-          </h1>
-          <p className="text-base text-gray-500 mb-8 leading-relaxed">
-            一站式品牌创意工作平台，助力企业快速构建品牌策略
-          </p>
-          <div className="space-y-4">
-            <div className="flex items-start gap-3 group">
-              <div className="w-10 h-10 rounded-lg bg-white/80 backdrop-blur-sm shadow-sm flex items-center justify-center flex-shrink-0 group-hover:shadow-md transition-shadow border border-gray-100">
-                <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
+        {/* 左侧Banner轮播区 - 126邮箱风格 */}
+        <div className="absolute left-0 top-0 bottom-0 w-[55%] flex items-center z-10">
+          {/* 左侧轮播指示器 - 竖排小圆点 */}
+          <div className="absolute left-8 top-1/2 -translate-y-1/2 flex flex-col gap-3">
+            {leftBanners.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentBanner(index)}
+                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                  index === currentBanner 
+                    ? 'bg-green-500 scale-125' 
+                    : 'bg-gray-400/50 hover:bg-gray-400'
+                }`}
+                aria-label={`切换到第${index + 1}个Banner`}
+              />
+            ))}
+          </div>
+
+          {/* Banner内容 - 居中偏左 */}
+          <div className="ml-20 max-w-xl">
+            {leftBanners.map((banner, index) => (
+              <div
+                key={index}
+                className={`absolute transition-all duration-700 ${
+                  index === currentBanner 
+                    ? 'opacity-100 translate-y-0' 
+                    : 'opacity-0 translate-y-8 pointer-events-none'
+                }`}
+                style={{ 
+                  position: index === 0 ? 'relative' : 'absolute',
+                  left: 0,
+                  top: 0,
+                  right: 0
+                }}
+              >
+                <h1 className="text-4xl font-bold text-gray-900 mb-4 leading-tight">
+                  {banner.title}
+                </h1>
+                <p className="text-base text-gray-500 leading-relaxed">
+                  {banner.subtitle}
+                </p>
               </div>
-              <div className="pt-0.5">
-                <div className="font-semibold text-gray-900">智能竞品分析</div>
-                <div className="text-gray-500 text-sm mt-0.5">多维度数据洞察，一键生成竞品报告</div>
-              </div>
-            </div>
-            <div className="flex items-start gap-3 group">
-              <div className="w-10 h-10 rounded-lg bg-white/80 backdrop-blur-sm shadow-sm flex items-center justify-center flex-shrink-0 group-hover:shadow-md transition-shadow border border-gray-100">
-                <svg className="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <div className="pt-0.5">
-                <div className="font-semibold text-gray-900">AI创意生成</div>
-                <div className="text-gray-500 text-sm mt-0.5">智能生成创意简报与品牌策略方案</div>
-              </div>
-            </div>
-            <div className="flex items-start gap-3 group">
-              <div className="w-10 h-10 rounded-lg bg-white/80 backdrop-blur-sm shadow-sm flex items-center justify-center flex-shrink-0 group-hover:shadow-md transition-shadow border border-gray-100">
-                <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-              <div className="pt-0.5">
-                <div className="font-semibold text-gray-900">一键导出报告</div>
-                <div className="text-gray-500 text-sm mt-0.5">专业文档格式，随时下载分享团队</div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
-        {/* 登录卡片靠右 - 精致玻璃态设计 */}
-        <div className="flex items-center justify-end w-full relative z-10 px-8 lg:pr-20">
-          <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_60px_-15px_rgba(0,0,0,0.1)] border border-white/60 w-full max-w-sm overflow-hidden">
-            {/* 登录表单内容 */}
-            <div className="p-6">
+        {/* 右侧登录卡片 - 126邮箱风格，纯白背景，靠右 */}
+        <div className="flex items-center justify-end w-full relative z-10 px-16">
+          <div className="bg-white rounded-2xl shadow-[0_8px_60px_-15px_rgba(0,0,0,0.15)] border border-gray-100 w-full max-w-[400px] overflow-hidden">
+            <div className="p-8">
+              {/* 标题 */}
               <div className="mb-6">
-                <h2 className="text-xl font-semibold text-gray-900">欢迎回来</h2>
-                <p className="text-sm text-gray-500 mt-0.5">登录后开启品牌策划之旅</p>
-              </div>
-
-              {/* 登录方式切换 - 胶囊式Tab */}
-              <div className="flex gap-1 p-1 bg-gray-100 rounded-lg mb-5">
-                <button
-                  onClick={() => { setLoginMethod('account'); setShowPhoneGuide(false); }}
-                  className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
-                    loginMethod === 'account' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-                  }`}
-                >
-                  账号密码
-                </button>
-                <button
-                  onClick={() => setLoginMethod('phone')}
-                  className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
-                    loginMethod === 'phone' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-                  }`}
-                >
-                  手机验证
-                </button>
-                <button
-                  onClick={() => { setLoginMethod('qrcode'); setShowPhoneGuide(false); }}
-                  className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 items-center justify-center gap-1 ${
-                    loginMethod === 'qrcode' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-                  }`}
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h2M4 12h2m10 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                  </svg>
-                  扫码
-                </button>
+                <h2 className="text-2xl font-semibold text-gray-900">账号登录</h2>
               </div>
 
               {/* 账号登录表单 */}
-              {loginMethod === 'account' && (
-                <div className="space-y-4">
-                  <div>
-                    <input
-                      type="text"
-                      value={account}
-                      onChange={(e) => { setAccount(e.target.value); setError(''); }}
-                      className="w-full px-4 py-3.5 bg-gray-50/80 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
-                      placeholder="用户名 / 邮箱"
-                    />
-                  </div>
-                  <div>
-                    <input
-                      type="password"
-                      value={password}
-                      onChange={(e) => { setPassword(e.target.value); setError(''); }}
-                      className="w-full px-4 py-3.5 bg-gray-50/80 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
-                      placeholder="密码"
-                    />
-                  </div>
-                  <div className="flex items-center gap-2.5">
-                    <input
-                      type="checkbox"
-                      id="agreeTerms"
-                      checked={agreeTerms}
-                      onChange={(e) => setAgreeTerms(e.target.checked)}
-                      className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                    />
-                    <label htmlFor="agreeTerms" className="text-xs text-gray-500">
-                      阅读并接受 <a href="/terms" className="text-indigo-600 hover:underline">《服务条款》</a> 和 <a href="/privacy" className="text-indigo-600 hover:underline">《隐私政策》</a>
-                    </label>
-                  </div>
-                  {error && (
-                    <div className="text-red-500 text-sm text-center py-2.5 bg-red-50 rounded-xl">
-                      {error}
-                    </div>
-                  )}
-                  <button
-                    onClick={handleAccountLogin}
-                    disabled={loading}
-                    className="w-full py-3.5 bg-gray-900 text-white rounded-xl font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 active:scale-[0.99]"
-                  >
-                    {loading ? '登录中...' : '登 录'}
-                  </button>
-                  
-                  {/* 注册和忘记密码 */}
-                  <div className="flex items-center justify-center gap-4 text-sm">
-                    <a href="/register" className="text-indigo-600 hover:text-indigo-700">注册新账号</a>
-                    <span className="text-gray-300">·</span>
-                    <a href="/forgot-password" className="text-indigo-600 hover:text-indigo-700">忘记密码?</a>
-                  </div>
-                  
-                  <div className="pt-2 text-center">
-                    <p className="text-xs text-gray-400">
-                      演示：demo / demo123
-                    </p>
-                  </div>
+              <div className="space-y-4">
+                {/* 用户名/邮箱 */}
+                <div>
+                  <input
+                    type="text"
+                    value={account}
+                    onChange={(e) => { setAccount(e.target.value); setError(''); }}
+                    className="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-200 transition-all"
+                    placeholder="用户名 / 邮箱"
+                  />
                 </div>
-              )}
-
-              {/* 手机登录表单 */}
-              {loginMethod === 'phone' && (
-                <div className="space-y-4">
-                  <div>
-                    <input
-                      type="tel"
-                      value={phone}
-                      onChange={(e) => { setPhone(e.target.value); setError(''); }}
-                      className="w-full px-4 py-3.5 bg-gray-50/80 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
-                      placeholder="手机号"
-                      maxLength={11}
-                    />
-                  </div>
-                  <div className="flex gap-3">
-                    <input
-                      type="text"
-                      value={code}
-                      onChange={(e) => { setCode(e.target.value.replace(/\D/g, '').slice(0, 6)); setError(''); }}
-                      className="flex-1 px-4 py-3.5 bg-gray-50/80 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
-                      placeholder="验证码"
-                      maxLength={6}
-                    />
-                    <button
-                      onClick={handleSendCode}
-                      disabled={countdown > 0 || loading}
-                      className="px-5 py-3.5 bg-gray-100 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap min-w-[120px]"
-                    >
-                      {countdown > 0 ? `${countdown}s` : '获取验证码'}
-                    </button>
-                  </div>
-                  <div className="flex items-center gap-2.5">
-                    <input
-                      type="checkbox"
-                      id="agreeTermsPhone"
-                      checked={agreeTerms}
-                      onChange={(e) => setAgreeTerms(e.target.checked)}
-                      className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                    />
-                    <label htmlFor="agreeTermsPhone" className="text-xs text-gray-500">
-                      阅读并接受 <a href="/terms" className="text-indigo-600 hover:underline">《服务条款》</a> 和 <a href="/privacy" className="text-indigo-600 hover:underline">《隐私政策》</a>
-                    </label>
-                  </div>
-                  {error && (
-                    <div className="text-red-500 text-sm text-center py-2.5 bg-red-50 rounded-xl">
-                      {error}
-                    </div>
-                  )}
-                  <button
-                    onClick={handlePhoneLogin}
-                    disabled={loading}
-                    className="w-full py-3.5 bg-gray-900 text-white rounded-xl font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 active:scale-[0.99]"
-                  >
-                    {loading ? '登录中...' : '登 录'}
-                  </button>
-                  
-                  {/* 忘记密码链接 */}
-                  <div className="text-center">
-                    <a href="/forgot-password" className="text-sm text-indigo-600 hover:text-indigo-700">
-                      忘记密码?
-                    </a>
-                  </div>
-                  
-                  <div className="pt-2 text-center">
-                    <p className="text-xs text-gray-400">
-                      演示验证码：123456
-                    </p>
-                  </div>
+                
+                {/* 密码 */}
+                <div>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => { setPassword(e.target.value); setError(''); }}
+                    className="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-200 transition-all"
+                    placeholder="密码"
+                  />
                 </div>
-              )}
 
-              {/* 扫码登录 */}
-              {loginMethod === 'qrcode' && (
-                <div className="py-6 text-center">
-                  <div className="w-48 h-48 mx-auto bg-gray-50 rounded-2xl flex items-center justify-center mb-4 border border-gray-100">
-                    <div className="text-center">
-                      <svg className="w-16 h-16 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h2M4 12h2m10 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                      </svg>
-                      <p className="text-sm text-gray-500 mt-2">微信扫码功能</p>
-                      <p className="text-xs text-gray-400 mt-1">暂未开放，敬请期待</p>
-                    </div>
+                {/* 错误提示 */}
+                {error && (
+                  <div className="text-red-500 text-sm py-2">
+                    {error}
                   </div>
-                  <p className="text-sm text-gray-500">使用微信扫描上方二维码</p>
-                  <p className="text-xs text-gray-400 mt-1">请在微信中打开"扫一扫"功能</p>
-                </div>
-              )}
+                )}
 
-              {/* 底部链接 */}
-              <div className="mt-6 pt-5 border-t border-gray-100 flex items-center justify-end text-xs">
-                <div className="text-gray-400">
-                  <a href="/terms" className="hover:text-gray-600">服务条款</a>
-                  <span className="mx-2">·</span>
-                  <a href="/privacy" className="hover:text-gray-600">隐私政策</a>
+                {/* 忘记密码 - 登录按钮上方 */}
+                <div className="text-right">
+                  <a href="/forgot-password" className="text-sm text-gray-500 hover:text-green-600 transition-colors">
+                    忘记密码?
+                  </a>
+                </div>
+
+                {/* 登录按钮 - 绿色 */}
+                <button
+                  onClick={handleAccountLogin}
+                  disabled={loading}
+                  className="w-full py-3.5 bg-green-500 text-white rounded-lg font-medium text-base hover:bg-green-600 transition-colors disabled:opacity-50 active:scale-[0.99]"
+                >
+                  {loading ? '登录中...' : '登 录'}
+                </button>
+
+                {/* 注册新账号 - 登录按钮下方 */}
+                <div className="text-center pt-1">
+                  <a href="/register" className="text-sm text-gray-500 hover:text-green-600 transition-colors">
+                    注册新账号
+                  </a>
+                </div>
+                
+                {/* 服务条款 */}
+                <div className="flex items-center gap-2.5 pt-2">
+                  <input
+                    type="checkbox"
+                    id="agreeTermsDesktop"
+                    checked={agreeTerms}
+                    onChange={(e) => setAgreeTerms(e.target.checked)}
+                    className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                  />
+                  <label htmlFor="agreeTermsDesktop" className="text-xs text-gray-500">
+                    阅读并接受 <a href="/terms" className="text-green-600 hover:underline">《服务条款》</a> 和 <a href="/privacy" className="text-green-600 hover:underline">《隐私政策》</a>
+                  </label>
+                </div>
+                
+                <div className="pt-3 text-center">
+                  <p className="text-xs text-gray-400">
+                    演示：demo / demo123
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* 演示体验按钮 - 优雅胶囊式 */}
+        {/* 演示体验按钮 */}
         <div className="fixed bottom-8 right-8 z-20">
           <button
             onClick={handleDemoLogin}
