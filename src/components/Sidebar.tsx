@@ -116,7 +116,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
         {/* 用户 */}
         <div className="py-3 border-t border-gray-200 flex flex-col items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm font-semibold">
-            {user?.name?.charAt(0)?.toUpperCase() || 'D'}
+            {user?.username?.charAt(0)?.toUpperCase() || 'D'}
           </div>
           <button onClick={onToggleCollapse} className="p-1 text-gray-400 hover:text-gray-600">
             <ChevronRight className="w-4 h-4" />
@@ -216,9 +216,9 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm font-semibold">
-              {user?.name?.charAt(0)?.toUpperCase() || 'D'}
+              {user?.username?.charAt(0)?.toUpperCase() || 'D'}
             </div>
-            <span className="text-sm font-medium text-gray-800">{user?.name || 'DASU'}</span>
+            <span className="text-sm font-medium text-gray-800">{user?.username || 'DASU'}</span>
           </div>
           <button className="relative p-1.5 rounded-full hover:bg-gray-100 text-gray-500">
             <Bell className="w-4 h-4" />
