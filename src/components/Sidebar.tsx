@@ -78,6 +78,17 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse }) 
           <Sparkles className="w-6 h-6 text-purple-600" />
         </div>
         
+        {/* 新建项目 */}
+        <div className="px-2 py-2 border-b border-gray-100">
+          <button 
+            onClick={() => navigate('/projects/workspace/new')}
+            className="w-full flex items-center justify-center gap-1 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+            title="添加新项目"
+          >
+            <span className="text-base leading-none">+</span>
+          </button>
+        </div>
+        
         <nav className="flex-1 py-3">
           {workItems.map(item => (
             <button
@@ -136,7 +147,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse }) 
         </button>
       </div>
 
-      {/* 当前项目 */}
+      {/* 当前项目 + 新建 */}
       <div className="px-3 py-3 border-b border-gray-100">
         <button className="w-full flex items-center justify-between px-3 py-2.5 bg-gray-50 rounded-xl hover:bg-gray-100">
           <div className="flex items-center gap-2 min-w-0">
@@ -144,6 +155,13 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse }) 
             <span className="text-sm text-gray-700 truncate">新消费茶饮品牌全案</span>
           </div>
           <ChevronDown className="w-4 h-4 text-gray-400 flex-shrink-0" />
+        </button>
+        <button 
+          onClick={() => navigate('/projects/workspace/new')}
+          className="w-full mt-2 flex items-center justify-center gap-2 px-3 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors"
+        >
+          <span className="text-lg leading-none">+</span>
+          <span className="text-sm font-medium">添加新项目</span>
         </button>
       </div>
 
