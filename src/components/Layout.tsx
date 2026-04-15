@@ -21,29 +21,18 @@ const Layout: React.FC = () => {
       <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="px-4">
           <div className="flex items-center justify-between h-14">
-            {/* Logo + 首页图标 + 名称 */}
-            <div className="flex items-center gap-2 sm:gap-3">
-              {/* 首页图标 */}
-              <button
-                onClick={() => navigate('/projects')}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                title="返回首页"
-              >
-                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-              </button>
-              
-              {/* Logo */}
+            {/* Logo - 可点击跳转首页 */}
+            <button
+              onClick={() => navigate('/projects')}
+              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+            >
               <img 
                 src="/logo.svg" 
                 alt="AI 创意工作台" 
                 className="h-7 w-auto sm:h-8" 
               />
-              
-              {/* 名称 */}
               <span className="text-sm sm:text-base font-medium text-gray-900 hidden xs:inline">AI 创意工作台</span>
-            </div>
+            </button>
 
             <div className="flex items-center gap-2 sm:gap-4">
               {user && (
