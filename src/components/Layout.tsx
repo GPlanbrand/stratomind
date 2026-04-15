@@ -17,37 +17,50 @@ const Layout: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* 移动端顶部栏 */}
+      {/* 顶部导航 */}
       <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="px-4">
-          <div className="flex items-center justify-between h-14 sm:h-16">
-            {/* Logo + 名称 */}
-            <div 
-              className="flex items-center gap-1.5 sm:gap-2 cursor-pointer min-w-0"
-              onClick={() => navigate('/projects')}
-            >
+          <div className="flex items-center justify-between h-14">
+            {/* Logo + 首页图标 + 名称 */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              {/* 首页图标 */}
+              <button
+                onClick={() => navigate('/projects')}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                title="返回首页"
+              >
+                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+              </button>
+              
+              {/* Logo */}
               <img 
                 src="/logo.svg" 
                 alt="AI 创意工作台" 
-                className="h-7 w-auto sm:h-8 flex-shrink-0" 
+                className="h-7 w-auto sm:h-8" 
               />
-              <span className="text-sm sm:text-base font-medium text-gray-900 truncate">AI 创意工作台</span>
+              
+              {/* 名称 */}
+              <span className="text-sm sm:text-base font-medium text-gray-900 hidden xs:inline">AI 创意工作台</span>
             </div>
 
             <div className="flex items-center gap-2 sm:gap-4">
               {user && (
+                /* 积分显示 */
                 <div 
                   className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
                   onClick={() => navigate('/projects/member')}
                 >
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <span className="text-sm sm:text-base font-medium text-gray-900">{user.points}</span>
+                  <span className="text-sm font-medium text-gray-900">{user.points}</span>
                 </div>
               )}
 
               {user ? (
+                /* 用户头像下拉菜单 */
                 <div className="relative">
                   <button
                     onClick={() => setMenuOpen(!menuOpen)}
@@ -56,7 +69,8 @@ const Layout: React.FC = () => {
                     <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gray-100 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium text-gray-600">
                       {user.username.charAt(0).toUpperCase()}
                     </div>
-                    <svg className="w-4 h-4 text-gray-400 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <span className="text-gray-700 text-sm hidden sm:inline">{user.username}</span>
+                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
@@ -94,6 +108,7 @@ const Layout: React.FC = () => {
                   )}
                 </div>
               ) : (
+                /* 登录/注册按钮 */
                 <div className="flex items-center gap-2 sm:gap-3">
                   <Link to="/login" className="px-3 sm:px-4 py-2 text-sm sm:text-base text-gray-700 hover:text-gray-900 font-medium">
                     登录

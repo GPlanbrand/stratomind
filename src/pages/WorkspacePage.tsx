@@ -72,7 +72,7 @@ const WorkspacePage: React.FC = () => {
   const handleCreateProject = async () => {
     if (!clientInfo.companyName) {
       showNotification('error', '请填写公司名称')
-      return
+      return false
     }
 
     try {
@@ -82,18 +82,32 @@ const WorkspacePage: React.FC = () => {
         clientName: clientInfo.companyName,
       })
       setProject(newProject)
-      navigate(`/workspace/${newProject.id}`, { replace: true })
+      // 保存客户信息
+      await saveClientInfo(newProject.id, clientInfo)
+      navigate(`/projects/workspace/${newProject.id}`, { replace: true })
       showNotification('success', '项目创建成功')
+      return true
     } catch (error) {
       console.error('创建项目失败:', error)
       showNotification('error', '创建项目失败')
+      return false
     } finally {
       setSaving(false)
     }
   }
 
   const handleSave = async () => {
-    if (!project?.id) return
+    if (!project?.id) {
+      // 如果项目不存在，先创建
+      const created = await handleCreateProject()
+      if (created && currentStep > 0) {
+        // 创建后自动进入下一步
+        if (currentStep < STEPS.length - 1) {
+          setCurrentStep(currentStep + 1)
+        }
+      }
+      return
+    }
 
     try {
       setSaving(true)
@@ -124,14 +138,13 @@ const WorkspacePage: React.FC = () => {
   }
 
   const handleNext = async () => {
-    if (isNewProject) {
-      await handleCreateProject()
-      return
-    }
-
+    // 保存当前步骤
     await handleSave()
-
-    if (currentStep < STEPS.length - 1) {
+    
+    // 如果是新建项目且当前是第一步，创建项目
+    if (isNewProject && currentStep === 0) {
+      // handleSave已经处理了创建
+    } else if (currentStep < STEPS.length - 1) {
       setCurrentStep(currentStep + 1)
     }
   }
@@ -153,14 +166,14 @@ const WorkspacePage: React.FC = () => {
     }
   }
 
-  const renderStepContent = () => {
+  const renderStep = () => {
     switch (currentStep) {
       case 0:
         return <ClientInfoStep data={clientInfo} onChange={setClientInfo} />
       case 1:
         return <RequirementsStep data={requirements} onChange={setRequirements} />
       case 2:
-        return <CompetitorStep data={{ competitors }} onChange={(data) => setCompetitors(data.competitors)} />
+        return <CompetitorStep data={competitors} onChange={setCompetitors} />
       case 3:
         return <BriefStep data={brief} onChange={setBrief} />
       case 4:
@@ -170,147 +183,110 @@ const WorkspacePage: React.FC = () => {
     }
   }
 
-  const stepColors = ['bg-purple-100 text-purple-600', 'bg-blue-100 text-blue-600', 'bg-green-100 text-green-600', 'bg-orange-100 text-orange-600', 'bg-red-100 text-red-600']
-
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* 通知提示 */}
+      {notification && (
+        <div className={`fixed top-20 right-4 z-50 px-4 py-3 rounded-lg shadow-lg ${
+          notification.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+        }`}>
+          {notification.message}
+        </div>
+      )}
+
       {/* 顶部导航 */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-20">
-        <div className="max-w-6xl mx-auto px-4 py-4">
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            {/* 左侧区域 */}
+            <button
+              onClick={() => navigate('/projects')}
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              <span className="hidden sm:inline">返回</span>
+            </button>
+            
             <div className="flex items-center gap-4">
               <button
-                onClick={() => navigate('/')}
-                className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all"
-                title="返回首页"
+                onClick={handleSave}
+                disabled={saving}
+                className="flex items-center gap-2 px-4 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50"
               >
-                <Home className="w-5 h-5" />
+                <Save className="w-4 h-4" />
+                <span className="hidden sm:inline">{saving ? '保存中...' : '保存'}</span>
               </button>
-              
-              <div className="w-px h-8 bg-gray-200"></div>
-              
-              {/* 当前步骤信息 */}
-              <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-lg ${stepColors[currentStep]} flex items-center justify-center`}>
-                  {React.createElement(STEPS[currentStep].icon, { className: 'w-5 h-5' })}
-                </div>
-                <div>
-                  <h1 className="text-lg font-semibold text-gray-900">
-                    {isNewProject ? '新建项目' : (project?.name || project?.clientName || '项目详情')}
-                  </h1>
-                  <p className="text-sm text-gray-500">{STEPS[currentStep].name}</p>
-                </div>
-              </div>
             </div>
-
-            {/* 右侧操作区 */}
-            {!isNewProject && (
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={handleSave}
-                  disabled={saving}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center gap-2 disabled:opacity-50"
-                >
-                  <Save className="w-4 h-4" />
-                  {saving ? '保存中...' : '保存'}
-                </button>
-              </div>
-            )}
           </div>
+        </div>
+      </div>
 
-          {/* 步骤指示器 */}
-          <div className="mt-4 flex items-center gap-2 overflow-x-auto">
+      {/* 步骤指示器 */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="flex items-center overflow-x-auto py-4">
             {STEPS.map((step, index) => {
               const Icon = step.icon
-              const isCompleted = isStepCompleted(index)
-              const isCurrent = index === currentStep
-
+              const completed = isStepCompleted(index)
+              const active = index === currentStep
+              
               return (
-                <React.Fragment key={step.key}>
+                <div key={step.key} className="flex items-center">
                   <button
-                    onClick={() => !isNewProject && setCurrentStep(index)}
-                    disabled={isNewProject}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                      isCurrent
-                        ? 'bg-gray-900 text-white'
-                        : isCompleted
-                        ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    } ${isNewProject ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                    onClick={() => setCurrentStep(index)}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors whitespace-nowrap ${
+                      active ? 'bg-gray-900 text-white' : completed ? 'bg-green-100 text-green-700' : 'text-gray-400 hover:bg-gray-100'
+                    }`}
                   >
-                    {isCompleted ? (
-                      <span className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
-                        <Check className="w-3 h-3 text-white" />
-                      </span>
-                    ) : (
-                      <Icon className="w-4 h-4" />
-                    )}
-                    <span>{step.name}</span>
+                    {completed ? <Check className="w-4 h-4" /> : <Icon className="w-4 h-4" />}
+                    <span className="text-sm font-medium">{step.name}</span>
                   </button>
                   {index < STEPS.length - 1 && (
-                    <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                    <ChevronRight className="w-4 h-4 text-gray-300 mx-1" />
                   )}
-                </React.Fragment>
+                </div>
               )
             })}
           </div>
         </div>
-      </header>
+      </div>
 
-      {/* 通知消息 */}
-      {notification && (
-        <div className={`fixed top-24 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 ${
-          notification.type === 'success' 
-            ? 'bg-green-600 text-white' 
-            : 'bg-red-600 text-white'
-        }`}>
-          <span className="font-medium">{notification.message}</span>
-        </div>
-      )}
+      {/* 内容区域 */}
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        {renderStep()}
+      </div>
 
-      {/* 主内容 */}
-      <main className="max-w-4xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-xl border border-gray-200 p-8 mb-6">
-          {renderStepContent()}
-        </div>
-
-        {/* 底部导航 */}
-        <div className="bg-white rounded-xl border border-gray-200 p-4 flex items-center justify-between">
-          <button
-            onClick={handlePrev}
-            disabled={currentStep === 0 || isNewProject}
-            className="flex items-center gap-2 px-5 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>上一步</span>
-          </button>
-
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            <span className="font-medium text-gray-900">{currentStep + 1}</span>
-            <span>/</span>
-            <span>{STEPS.length}</span>
-          </div>
-
-          <button
-            onClick={handleNext}
-            disabled={saving}
-            className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50"
-          >
-            <span>
-              {isNewProject ? '创建项目' : currentStep === STEPS.length - 1 ? '完成' : '下一步'}
-            </span>
-            {!isNewProject && currentStep < STEPS.length - 1 && (
-              <ArrowLeft className="w-4 h-4 rotate-180" />
+      {/* 底部操作栏 */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+        <div className="max-w-4xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={handlePrev}
+              disabled={currentStep === 0}
+              className="px-4 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              上一步
+            </button>
+            
+            {currentStep < STEPS.length - 1 ? (
+              <button
+                onClick={handleNext}
+                disabled={saving}
+                className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
+              >
+                {saving ? '保存中...' : '下一步'}
+              </button>
+            ) : (
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+              >
+                {saving ? '保存中...' : '完成'}
+              </button>
             )}
-          </button>
+          </div>
         </div>
-      </main>
-
-      {/* 底部提示 */}
-      <footer className="max-w-6xl mx-auto px-4 py-6 text-center text-gray-400 text-sm">
-        填写完整信息以获得更精准的品牌策略建议
-      </footer>
+      </div>
     </div>
   )
 }

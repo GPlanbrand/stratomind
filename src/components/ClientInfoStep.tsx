@@ -22,7 +22,7 @@ const ClientInfoStep: React.FC<Props> = ({ data, onChange }) => {
           <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
             <Building2 className="w-5 h-5 text-blue-600" />
           </div>
-          <h2 className="text-xl font-semibold text-gray-900">客户现状</h2>
+          <h2 className="text-xl font-semibold text-gray-900">客户背景</h2>
         </div>
         <p className="text-gray-500 text-sm">输入客户公司的基本信息</p>
       </div>
