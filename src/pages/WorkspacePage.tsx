@@ -601,20 +601,20 @@ const WorkspacePage: React.FC = () => {
               const active = index === currentStep
               
               return (
-                <div key={step.key} className="flex items-center flex-1 min-w-0 px-1">
+                <div key={step.key} className="flex items-center flex-1 min-w-0 px-0.5 sm:px-1">
                   <button
                     onClick={() => setCurrentStep(index)}
                     className={`flex flex-col items-center justify-center w-full py-1.5 rounded-lg transition-all min-w-0 ${
                       active ? 'bg-gray-900 text-white' : completed ? 'bg-green-100 text-green-700' : 'text-gray-400 hover:bg-gray-100'
                     }`}
                   >
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-0.5 sm:gap-1">
                       {completed ? <Check className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" /> : <Icon className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />}
-                      <span className="text-xs sm:text-sm font-medium truncate max-w-[50px] sm:max-w-none">{step.name}</span>
+                      <span className="text-[10px] xs:text-xs sm:text-sm font-medium truncate max-w-[40px] xs:max-w-[50px] sm:max-w-none">{step.name}</span>
                     </div>
                   </button>
                   {index < STEPS.length - 1 && (
-                    <div className={`w-2 sm:w-3 flex-shrink-0 ${active ? 'text-white' : 'text-gray-300'}`}>
+                    <div className={`w-1.5 sm:w-3 flex-shrink-0 ${active ? 'text-white' : 'text-gray-300'}`}>
                       <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
                     </div>
                   )}

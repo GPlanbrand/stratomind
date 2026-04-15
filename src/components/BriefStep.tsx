@@ -515,15 +515,15 @@ const BriefStep: React.FC<Props> = ({ data, onChange }) => {
 
   return (
     <div className="max-w-4xl mx-auto">
-      {/* 页面头部 */}
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-pink-600 flex items-center justify-center shadow-lg">
-            <FileText className="w-6 h-6 text-white" />
+      {/* 页面头部 - 移动端适配 */}
+      <div className="mb-6 sm:mb-8">
+        <div className="flex items-center gap-2 sm:gap-3 mb-2">
+          <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-orange-500 to-pink-600 flex items-center justify-center shadow-lg">
+            <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">创意简报</h2>
-            <p className="text-gray-500 text-sm">精简版 · 二三四线城市实用框架</p>
+            <h2 className="text-lg sm:text-2xl font-bold text-gray-900">创意简报</h2>
+            <p className="text-xs sm:text-sm text-gray-500">精简版 · 二三四线城市实用框架</p>
           </div>
         </div>
       </div>
@@ -543,28 +543,28 @@ const BriefStep: React.FC<Props> = ({ data, onChange }) => {
         </div>
       )}
 
-      {/* 简报分组卡片 */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden divide-y divide-gray-100">
+      {/* 简报分组卡片 - 移动端适配 */}
+      <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 shadow-sm overflow-hidden divide-y divide-gray-100">
         {BRIEF_SECTIONS.map((section) => {
           const Icon = section.icon
           const isExpanded = expandedSections[section.id]
           return (
             <div key={section.id}>
               <button onClick={() => toggleSection(section.id)}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
-                <div className="flex items-center gap-4">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${getSectionColorClass(section.color)}`}>
-                    <Icon className="w-5 h-5" />
+                className="w-full px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                <div className="flex items-center gap-2 sm:gap-3 sm:gap-4">
+                  <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center ${getSectionColorClass(section.color)}`}>
+                    <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                   <div className="text-left">
-                    <span className="font-semibold text-gray-900">{section.label}</span>
-                    <span className="text-xs text-gray-400 ml-2">专业维度</span>
+                    <span className="font-semibold text-gray-900 text-sm sm:text-base">{section.label}</span>
+                    <span className="text-xs text-gray-400 ml-1 sm:ml-2 hidden xs:inline">专业维度</span>
                   </div>
                 </div>
-                {isExpanded ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
+                {isExpanded ? <ChevronUp className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" /> : <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />}
               </button>
               {isExpanded && (
-                <div className="px-6 py-5 bg-gray-50/50 border-t border-gray-100">
+                <div className="px-3 sm:px-4 py-4 sm:py-5 bg-gray-50/50 border-t border-gray-100">
                   {renderSectionContent(section.id)}
                 </div>
               )}
@@ -573,25 +573,25 @@ const BriefStep: React.FC<Props> = ({ data, onChange }) => {
         })}
       </div>
 
-      {/* 操作按钮 */}
-      <div className="mt-8 bg-gradient-to-r from-orange-50 to-pink-50 rounded-2xl p-6 border border-orange-100">
-        <div className="flex flex-wrap items-center justify-between gap-4">
+      {/* 操作按钮 - 移动端适配 */}
+      <div className="mt-6 sm:mt-8 bg-gradient-to-r from-orange-50 to-pink-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-orange-100">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h4 className="font-semibold text-gray-900 mb-1">准备好生成创意简报了吗？</h4>
-            <p className="text-sm text-gray-500">基于已填写的项目信息，AI将生成完整的专业创意简报</p>
+            <h4 className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">准备好生成创意简报了吗？</h4>
+            <p className="text-xs sm:text-sm text-gray-500">基于已填写的项目信息，AI将生成完整的专业创意简报</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
             <button onClick={handleExportBrief}
-              className="flex items-center gap-2 px-5 py-2.5 bg-white text-gray-700 rounded-xl font-medium border border-gray-200 hover:bg-gray-50 transition-colors">
-              <Download className="w-5 h-5" />
-              导出简报
+              className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-2 px-3 sm:px-4 sm:px-5 py-2 sm:py-2.5 bg-white text-gray-700 rounded-lg sm:rounded-xl font-medium border border-gray-200 hover:bg-gray-50 transition-colors text-sm">
+              <Download className="w-4 h-4 sm:w-5 sm:h-5" />
+              导出
             </button>
             <button onClick={handleGenerateBrief} disabled={generating}
-              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-pink-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50">
+              className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-lg sm:rounded-xl font-semibold hover:from-orange-600 hover:to-pink-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 text-sm">
               {generating ? (
-                <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />生成中...</>
+                <><div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />生成中...</>
               ) : (
-                <><Wand2 className="w-5 h-5" />AI一键生成</>
+                <><Wand2 className="w-4 h-4 sm:w-5 sm:h-5" />AI生成</>
               )}
             </button>
           </div>

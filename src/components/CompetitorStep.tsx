@@ -416,15 +416,15 @@ const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
 
   return (
     <div className="max-w-6xl mx-auto">
-      {/* 页面头部 */}
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
-            <Users className="w-6 h-6 text-white" />
+      {/* 页面头部 - 移动端适配 */}
+      <div className="mb-6 sm:mb-8">
+        <div className="flex items-center gap-2 sm:gap-3 mb-2">
+          <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
+            <Users className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">竞品深度分析</h2>
-            <p className="text-gray-500 text-sm">专业 · 8维度专业分析框架</p>
+            <h2 className="text-lg sm:text-2xl font-bold text-gray-900">竞品深度分析</h2>
+            <p className="text-xs sm:text-sm text-gray-500">专业 · 8维度专业分析框架</p>
           </div>
         </div>
       </div>

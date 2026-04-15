@@ -117,8 +117,8 @@ const ProjectsPage: React.FC = () => {
       <main className="px-4 py-6 sm:py-8 max-w-6xl mx-auto">
         {/* 标题区域 */}
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-1 sm:mb-2">AI 创意工作台</h1>
-          <p className="text-sm sm:text-base text-gray-500">Brand Strategy Studio</p>
+          <h1 className="text-lg sm:text-2xl font-semibold text-gray-900 mb-0.5 sm:mb-2">AI 创意工作台</h1>
+          <p className="text-xs sm:text-sm text-gray-500">Brand Strategy Studio</p>
         </div>
 
         {/* 新建项目按钮 */}
