@@ -80,7 +80,7 @@ const Header: React.FC<HeaderProps> = ({ collapsed, isMobile, onMenuClick, proje
             <Menu className="w-5 h-5" />
           </button>
           <button 
-            onClick={() => navigate('/projects')}
+            onClick={() => navigate('/')}
             className="flex items-center gap-2"
           >
             <img src="/stratomind-logo.svg" alt="灵思" className="h-6" />

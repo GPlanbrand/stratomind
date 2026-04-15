@@ -296,20 +296,57 @@ ${data.mediaStrategy || '（未填写）'}
 
         {/* Prompt生成 */}
         <div className="bg-gray-50 rounded-xl border border-gray-200 p-4">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-4">
             <label className="text-sm font-medium text-gray-700">生成Prompt</label>
             <button
-              onClick={copyPrompt}
-              className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
+              onClick={generateAllPrompts}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-600 text-white rounded-lg text-sm hover:bg-purple-700 transition-colors"
             >
-              <Copy className="w-4 h-4" />
-              复制
+              <Sparkles className="w-4 h-4" />
+              一键生成
             </button>
           </div>
-          <div className="text-sm text-gray-600 bg-white rounded-lg p-3 border border-gray-200">
-            {data.overallStrategy || data.differentiation || data.contentStrategy || data.mediaStrategy 
-              ? `${data.overallStrategy || ''}\n\n${data.differentiation || ''}\n\n${data.contentStrategy || ''}\n\n${data.mediaStrategy || ''}`
-              : '填写上方内容后将自动生成可复制的Prompt'}
+          
+          {/* Prompt类型选择 */}
+          <div className="flex gap-2 mb-3">
+            {promptTypes.map((type) => {
+              const Icon = type.icon
+              const isActive = selectedPromptType === type.key
+              return (
+                <button
+                  key={type.key}
+                  onClick={() => setSelectedPromptType(type.key)}
+                  className={`flex-1 flex items-center gap-1.5 px-2 py-2 rounded-lg text-xs sm:text-sm transition-colors ${
+                    isActive 
+                      ? 'bg-purple-100 text-purple-700 border border-purple-200' 
+                      : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">{type.label}</span>
+                  <span className="sm:hidden">{type.label.replace('Prompt', '')}</span>
+                </button>
+              )
+            })}
+          </div>
+          
+          {/* Prompt内容展示 */}
+          <div className="relative">
+            <div className="text-xs text-gray-500 mb-1.5">
+              {promptTypes.find(t => t.key === selectedPromptType)?.description}
+            </div>
+            <div className="text-sm text-gray-700 bg-white rounded-lg p-3 border border-gray-200 min-h-[150px] sm:min-h-[200px] whitespace-pre-wrap font-mono text-xs leading-relaxed overflow-y-auto max-h-[250px] sm:max-h-[300px]">
+              {generatedPrompts[selectedPromptType] || '点击「一键生成」生成三类Prompt'}
+            </div>
+            {generatedPrompts[selectedPromptType] && (
+              <button
+                onClick={copyCurrentPrompt}
+                className="absolute top-6 right-2 flex items-center gap-1 px-2 py-1 bg-white border border-gray-200 rounded text-xs text-gray-600 hover:bg-gray-50"
+              >
+                <Copy className="w-3 h-3" />
+                复制
+              </button>
+            )}
           </div>
         </div>
 

@@ -54,13 +54,14 @@ const FloatingAssistant: React.FC = () => {
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed right-6 bottom-6 w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 z-50 ${
+        className={`fixed right-4 w-12 h-12 sm:right-6 sm:w-14 sm:h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 z-50 ${
           isOpen 
             ? 'bg-gray-100 text-gray-600 hover:bg-gray-200' 
             : 'bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:shadow-xl hover:scale-105'
         }`}
+        style={{ bottom: isOpen ? '6rem' : '5.5rem' }}
       >
-        {isOpen ? <X className="w-6 h-6" /> : <Bot className="w-6 h-6" />}
+        {isOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Bot className="w-5 h-5 sm:w-6 sm:h-6" />}
       </button>
 
       {/* 对话框 */}
