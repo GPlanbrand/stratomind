@@ -45,9 +45,9 @@ const Header: React.FC<HeaderProps> = ({ collapsed, isMobile, onMenuClick, proje
     if (pageBreadcrumbs[location.pathname]) {
       return pageBreadcrumbs[location.pathname];
     }
-    // 前缀匹配 - workspace显示项目名称
+    // workspace页面不显示Header的面包屑（由WorkspacePage自己处理）
     if (location.pathname.includes('/workspace')) {
-      return [{ label: '项目', path: '/projects' }, { label: projectName || '项目详情' }];
+      return [];
     }
     // 其他前缀匹配
     for (const [path, items] of Object.entries(pageBreadcrumbs)) {

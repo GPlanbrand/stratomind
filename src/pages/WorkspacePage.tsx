@@ -565,7 +565,9 @@ const WorkspacePage: React.FC = () => {
               </button>
               {/* 项目名称 */}
               <span className="text-sm sm:text-base font-medium text-gray-900 truncate max-w-[150px] sm:max-w-[300px]">
-                {project?.name || clientInfo.companyName || '新项目'}
+                {isNewProject 
+                  ? (clientInfo.companyName || '新建项目')
+                  : (project?.name || '加载中...')}
               </span>
             </div>
             
