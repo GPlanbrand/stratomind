@@ -479,53 +479,53 @@ const HomeLoginPage: React.FC = () => {
         </div>
 
         {/* 顶部Logo - 更精致的样式 */}
-        <div className="fixed top-0 left-0 right-0 z-20 px-10 py-6">
-          <div className="flex items-center gap-2.5">
-            <img src="/logo.svg" alt="AI 创意工作台" className="h-9 w-auto" />
-            <span className="text-lg font-semibold text-gray-800">AI 创意工作台</span>
+        <div className="fixed top-0 left-0 right-0 z-20 px-10 py-4">
+          <div className="flex items-center gap-2">
+            <img src="/logo.svg" alt="AI 创意工作台" className="h-7 w-auto" />
+            <span className="text-base font-semibold text-gray-800">AI 创意工作台</span>
           </div>
         </div>
 
         {/* 左侧产品宣传区 - 淡雅配色 */}
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10 px-16 max-w-xl">
-          <h1 className="text-5xl font-bold text-gray-900 mb-5 leading-tight">
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10 px-12 max-w-lg">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4 leading-tight">
             让品牌策划<br/>
             <span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">更智能、更高效</span>
           </h1>
-          <p className="text-lg text-gray-500 mb-10 leading-relaxed">
+          <p className="text-base text-gray-500 mb-8 leading-relaxed">
             一站式品牌创意工作平台，助力企业快速构建品牌策略
           </p>
-          <div className="space-y-6">
-            <div className="flex items-start gap-4 group">
-              <div className="w-12 h-12 rounded-xl bg-white/80 backdrop-blur-sm shadow-sm flex items-center justify-center flex-shrink-0 group-hover:shadow-md transition-shadow border border-gray-100">
-                <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="space-y-4">
+            <div className="flex items-start gap-3 group">
+              <div className="w-10 h-10 rounded-lg bg-white/80 backdrop-blur-sm shadow-sm flex items-center justify-center flex-shrink-0 group-hover:shadow-md transition-shadow border border-gray-100">
+                <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
               </div>
-              <div className="pt-1">
-                <div className="font-semibold text-gray-900 text-lg">智能竞品分析</div>
+              <div className="pt-0.5">
+                <div className="font-semibold text-gray-900">智能竞品分析</div>
                 <div className="text-gray-500 text-sm mt-0.5">多维度数据洞察，一键生成竞品报告</div>
               </div>
             </div>
-            <div className="flex items-start gap-4 group">
-              <div className="w-12 h-12 rounded-xl bg-white/80 backdrop-blur-sm shadow-sm flex items-center justify-center flex-shrink-0 group-hover:shadow-md transition-shadow border border-gray-100">
-                <svg className="w-6 h-6 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-start gap-3 group">
+              <div className="w-10 h-10 rounded-lg bg-white/80 backdrop-blur-sm shadow-sm flex items-center justify-center flex-shrink-0 group-hover:shadow-md transition-shadow border border-gray-100">
+                <svg className="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <div className="pt-1">
-                <div className="font-semibold text-gray-900 text-lg">AI创意生成</div>
+              <div className="pt-0.5">
+                <div className="font-semibold text-gray-900">AI创意生成</div>
                 <div className="text-gray-500 text-sm mt-0.5">智能生成创意简报与品牌策略方案</div>
               </div>
             </div>
-            <div className="flex items-start gap-4 group">
-              <div className="w-12 h-12 rounded-xl bg-white/80 backdrop-blur-sm shadow-sm flex items-center justify-center flex-shrink-0 group-hover:shadow-md transition-shadow border border-gray-100">
-                <svg className="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-start gap-3 group">
+              <div className="w-10 h-10 rounded-lg bg-white/80 backdrop-blur-sm shadow-sm flex items-center justify-center flex-shrink-0 group-hover:shadow-md transition-shadow border border-gray-100">
+                <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
-              <div className="pt-1">
-                <div className="font-semibold text-gray-900 text-lg">一键导出报告</div>
+              <div className="pt-0.5">
+                <div className="font-semibold text-gray-900">一键导出报告</div>
                 <div className="text-gray-500 text-sm mt-0.5">专业文档格式，随时下载分享团队</div>
               </div>
             </div>
@@ -534,18 +534,16 @@ const HomeLoginPage: React.FC = () => {
 
         {/* 登录卡片靠右 - 精致玻璃态设计 */}
         <div className="flex items-center justify-end w-full relative z-10 px-8 lg:pr-20">
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_8px_60px_-15px_rgba(0,0,0,0.1)] border border-white/60 w-full max-w-md overflow-hidden">
+          <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_60px_-15px_rgba(0,0,0,0.1)] border border-white/60 w-full max-w-sm overflow-hidden">
             {/* 登录表单内容 */}
-            <div className="p-8">
-              <div className="flex items-center justify-between mb-8">
-                <div>
-                  <h2 className="text-2xl font-semibold text-gray-900">欢迎回来</h2>
-                  <p className="text-sm text-gray-500 mt-1">登录后开启品牌策划之旅</p>
-                </div>
+            <div className="p-6">
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold text-gray-900">欢迎回来</h2>
+                <p className="text-sm text-gray-500 mt-0.5">登录后开启品牌策划之旅</p>
               </div>
 
               {/* 登录方式切换 - 胶囊式Tab */}
-              <div className="flex gap-1 p-1 bg-gray-100 rounded-xl mb-6">
+              <div className="flex gap-1 p-1 bg-gray-100 rounded-lg mb-5">
                 <button
                   onClick={() => { setLoginMethod('account'); setShowPhoneGuide(false); }}
                   className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
