@@ -159,7 +159,7 @@ const HomeLoginPage: React.FC = () => {
           </div>
 
           {/* 按钮区 */}
-          <div className="w-full max-w-sm space-y-3">
+          <div className="w-full max-w-[260px] space-y-3">
             <button
               onClick={() => window.open('#', '_blank')}
               className="w-full py-2.5 bg-purple-600 text-white rounded-xl font-medium text-sm hover:bg-purple-700 transition-colors"
