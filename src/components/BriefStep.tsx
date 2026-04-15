@@ -11,9 +11,8 @@ interface Props {
   onChange: (data: Partial<Brief>) => void
 }
 
-// 精简版简报分组
+// 精简版简报分组（项目概要自动从客户背景/项目需求提取）
 const BRIEF_SECTIONS = [
-  { id: 'overview', label: '项目概要', icon: FileText, color: 'blue' },
   { id: 'brand', label: '品牌现状', icon: Target, color: 'purple' },
   { id: 'audience', label: '目标人群', icon: Users, color: 'green' },
   { id: 'competition', label: '竞争格局', icon: TrendingUp, color: 'orange' },
@@ -61,7 +60,7 @@ const BriefStep: React.FC<Props> = ({ data, onChange }) => {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
-    overview: true,
+    brand: true,
     strategy: true,
   })
 
@@ -111,17 +110,28 @@ const BriefStep: React.FC<Props> = ({ data, onChange }) => {
 
   // 导出简报
   const handleExportBrief = () => {
+    // 从全局获取客户背景和项目需求信息
+    const clientInfo = (window as any).__workspaceClientInfo || {}
+    const requirements = (window as any).__workspaceRequirements || {}
+    
+    // 项目概要自动从客户背景和项目需求中提取
+    const projectName = data.projectName || clientInfo.companyName || '（未填写）'
+    const clientName = data.clientName || clientInfo.companyName || '（未填写）'
+    const projectType = data.projectType || requirements.projectType || '（未填写）'
+    const projectCycle = data.projectCycle || requirements.timeline || '（未填写）'
+    const budgetRange = data.budgetRange || requirements.budget || '（未填写）'
+    
     const content = `# 创意简报（精简版）
 
 ---
 
 ## 一、项目概要
 
-- **项目名称**：${data.projectName || '（未填写）'}
-- **客户名称**：${data.clientName || '（未填写）'}
-- **项目类型**：${data.projectType || '（未填写）'}
-- **项目周期**：${data.projectCycle || '（未填写）'}
-- **预算范围**：${data.budgetRange || '（未填写）'}
+- **项目名称**：${projectName}
+- **客户名称**：${clientName}
+- **项目类型**：${projectType}
+- **项目周期**：${projectCycle}
+- **预算范围**：${budgetRange}
 
 ---
 
@@ -238,56 +248,6 @@ const BriefStep: React.FC<Props> = ({ data, onChange }) => {
   // 渲染分组内容
   const renderSectionContent = (sectionId: string) => {
     switch (sectionId) {
-      case 'overview':
-        return (
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">项目名称</label>
-              <input type="text" value={data.projectName || ''}
-                onChange={(e) => onChange({ ...data, projectName: e.target.value })}
-                placeholder="输入项目名称" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">客户名称</label>
-              <input type="text" value={data.clientName || ''}
-                onChange={(e) => onChange({ ...data, clientName: e.target.value })}
-                placeholder="输入客户名称" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">项目类型</label>
-              <select value={data.projectType || ''}
-                onChange={(e) => onChange({ ...data, projectType: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-                <option value="">选择项目类型</option>
-                <option value="品牌定位">品牌定位</option>
-                <option value="营销传播">营销传播</option>
-                <option value="产品推广">产品推广</option>
-                <option value="活动策划">活动策划</option>
-                <option value="数字营销">数字营销</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">项目周期</label>
-              <input type="text" value={data.projectCycle || ''}
-                onChange={(e) => onChange({ ...data, projectCycle: e.target.value })}
-                placeholder="如：1个月/季度" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">预算范围</label>
-              <select value={data.budgetRange || ''}
-                onChange={(e) => onChange({ ...data, budgetRange: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-                <option value="">选择预算档位</option>
-                <option value="5万以下">5万以下（轻量级）</option>
-                <option value="5-15万">5-15万（基础版）</option>
-                <option value="15-50万">15-50万（标准版）</option>
-                <option value="50-100万">50-100万（进阶版）</option>
-                <option value="100万以上">100万以上（旗舰版）</option>
-              </select>
-            </div>
-          </div>
-        )
-
       case 'brand':
         return (
           <div className="space-y-4">
