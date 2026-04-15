@@ -136,13 +136,60 @@ export default async function handler(req: Request) {
         FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
       ALTER TABLE "ai_usage_logs" ADD CONSTRAINT "ai_usage_logs_project_id_fkey" 
         FOREIGN KEY ("project_id") REFERENCES "projects"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+      
+      -- 创建资产库表
+      CREATE TABLE IF NOT EXISTS "assets" (
+        "id" TEXT NOT NULL,
+        "user_id" TEXT NOT NULL,
+        "project_id" TEXT,
+        "name" VARCHAR(200) NOT NULL,
+        "type" VARCHAR(20) NOT NULL,
+        "file_url" VARCHAR(500) NOT NULL,
+        "file_size" INTEGER NOT NULL DEFAULT 0,
+        "tags" TEXT[] DEFAULT ARRAY[]::TEXT[],
+        "description" TEXT,
+        "download_count" INTEGER NOT NULL DEFAULT 0,
+        "is_public" BOOLEAN NOT NULL DEFAULT false,
+        "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updated_at" TIMESTAMP(3) NOT NULL,
+        "deleted_at" TIMESTAMP(3),
+        CONSTRAINT "assets_pkey" PRIMARY KEY ("id")
+      );
+      
+      -- 创建知识库表
+      CREATE TABLE IF NOT EXISTS "knowledge" (
+        "id" TEXT NOT NULL,
+        "user_id" TEXT NOT NULL,
+        "title" VARCHAR(200) NOT NULL,
+        "content" TEXT NOT NULL,
+        "category" VARCHAR(20) NOT NULL,
+        "tags" TEXT[] DEFAULT ARRAY[]::TEXT[],
+        "view_count" INTEGER NOT NULL DEFAULT 0,
+        "is_public" BOOLEAN NOT NULL DEFAULT false,
+        "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updated_at" TIMESTAMP(3) NOT NULL,
+        "deleted_at" TIMESTAMP(3),
+        CONSTRAINT "knowledge_pkey" PRIMARY KEY ("id")
+      );
+      
+      -- 创建额外索引
+      CREATE INDEX IF NOT EXISTS "assets_user_id_idx" ON "assets"("user_id");
+      CREATE INDEX IF NOT EXISTS "assets_project_id_idx" ON "assets"("project_id");
+      CREATE INDEX IF NOT EXISTS "knowledge_user_id_idx" ON "knowledge"("user_id");
+      CREATE INDEX IF NOT EXISTS "knowledge_category_idx" ON "knowledge"("category");
+      
+      -- 添加外键约束
+      ALTER TABLE "assets" ADD CONSTRAINT "assets_user_id_fkey" 
+        FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+      ALTER TABLE "knowledge" ADD CONSTRAINT "knowledge_user_id_fkey" 
+        FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
     `)
 
     return new Response(
       JSON.stringify({
         success: true,
         message: '数据库初始化成功！',
-        tables: ['users', 'projects', 'project_steps', 'points_transactions', 'ai_usage_logs'],
+        tables: ['users', 'projects', 'project_steps', 'points_transactions', 'ai_usage_logs', 'assets', 'knowledge'],
         timestamp: new Date().toISOString()
       }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }

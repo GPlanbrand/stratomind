@@ -146,3 +146,59 @@ model AiUsageLog {
   @@index([projectId])
   @@map("ai_usage_logs")
 }
+
+
+// ==================== 资产库 ====================
+
+model Asset {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  projectId   String?   @map("project_id")
+  
+  // 资产信息
+  name        String    @db.VarChar(200)
+  type        String    @db.VarChar(20) // document, image, video, audio, other
+  fileUrl     String    @map("file_url") @db.VarChar(500)
+  fileSize    Int       @default(0) @map("file_size")
+  
+  // 元数据
+  tags        String[]  @default([])
+  description String?   @db.Text
+  downloadCount Int     @default(0) @map("download_count")
+  isPublic    Boolean   @default(false) @map("is_public")
+  
+  // 时间戳
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  @@index([userId])
+  @@index([projectId])
+  @@map("assets")
+}
+
+// ==================== 知识库 ====================
+
+model Knowledge {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  
+  // 内容信息
+  title       String    @db.VarChar(200)
+  content     String    @db.Text
+  category    String    @db.VarChar(20) // methodology(方法论), case(案例), template(模板), material(素材)
+  
+  // 元数据
+  tags        String[]  @default([])
+  viewCount   Int       @default(0) @map("view_count")
+  isPublic    Boolean   @default(false) @map("is_public")
+  
+  // 时间戳
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  @@index([userId])
+  @@index([category])
+  @@map("knowledge")
+}
