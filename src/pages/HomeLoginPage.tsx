@@ -162,9 +162,10 @@ const HomeLoginPage: React.FC = () => {
               >
                 手机验证
               </button>
+              {/* 手机版隐藏扫码登录 */}
               <button
                 onClick={() => setLoginMethod('qrcode')}
-                className={`flex-1 pb-3 text-sm font-medium transition-colors flex items-center justify-center gap-1 ${
+                className={`hidden md:flex flex-1 pb-3 text-sm font-medium transition-colors items-center justify-center gap-1 ${
                   loginMethod === 'qrcode' ? 'text-gray-900 border-b-2 border-gray-900' : 'text-gray-400'
                 }`}
               >
