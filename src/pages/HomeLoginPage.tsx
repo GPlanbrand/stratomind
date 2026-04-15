@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../services/auth';
 
-// 126邮箱风格登录页
 const HomeLoginPage: React.FC = () => {
   const navigate = useNavigate();
   const [currentBanner, setCurrentBanner] = useState(0);
@@ -20,10 +19,10 @@ const HomeLoginPage: React.FC = () => {
   const [error, setError] = useState('');
 
   const banners = [
-    { gradient: 'from-blue-500 via-blue-400 to-cyan-300', title: '智能品牌分析', desc: '深度洞察市场与竞品' },
-    { gradient: 'from-purple-500 via-purple-400 to-pink-300', title: '创意策略生成', desc: '一键产出完整方案' },
-    { gradient: 'from-emerald-500 via-emerald-400 to-teal-300', title: '可视化报告', desc: '多维度图表展示' },
-    { gradient: 'from-orange-400 via-orange-300 to-amber-200', title: '团队协作', desc: '高效协同项目推进' },
+    'from-blue-500 via-blue-400 to-cyan-300',
+    'from-purple-500 via-purple-400 to-pink-300',
+    'from-emerald-500 via-emerald-400 to-teal-300',
+    'from-orange-400 via-orange-300 to-amber-200',
   ];
 
   useEffect(() => {
@@ -126,52 +125,35 @@ const HomeLoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* 背景Banner轮播 */}
-      <div className="absolute inset-0">
-        {banners.map((banner, index) => (
+    <div className="min-h-screen">
+      {/* 网页版：背景Banner（手机版隐藏） */}
+      <div className="hidden md:block fixed inset-0">
+        {banners.map((gradient, index) => (
           <div
             key={index}
-            className={`absolute inset-0 bg-gradient-to-br ${banner.gradient} transition-opacity duration-1000 ${
+            className={`absolute inset-0 bg-gradient-to-br ${gradient} transition-opacity duration-1000 ${
               index === currentBanner ? 'opacity-100' : 'opacity-0'
-            }`}
-          >
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center text-white px-4">
-                <h1 className="text-3xl md:text-5xl font-bold mb-4 drop-shadow-lg">{banner.title}</h1>
-                <p className="text-lg md:text-xl opacity-90 drop-shadow">{banner.desc}</p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* 轮播指示器 */}
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
-        {banners.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentBanner(index)}
-            className={`w-2 h-2 rounded-full transition-all ${
-              index === currentBanner ? 'bg-white w-6' : 'bg-white/50 hover:bg-white/70'
             }`}
           />
         ))}
       </div>
 
-      {/* 顶部Logo */}
-      <div className="absolute top-4 left-4 md:top-6 md:left-6 z-10">
-        <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2">
-          <img src="/logo.svg" alt="AI 创意工作台" className="h-6 md:h-8 w-auto" />
-          <span className="text-sm md:text-base font-semibold text-white">AI 创意工作台</span>
+      {/* 手机版：白色背景 */}
+      <div className="md:hidden min-h-screen bg-gray-50" />
+
+      {/* 顶部Logo - 手机版居中，网页版左上角 */}
+      <div className="md:absolute md:top-6 md:left-6 z-20 flex justify-center md:justify-start py-6 px-4">
+        <div className="flex items-center gap-2 bg-white md:bg-white/10 md:backdrop-blur-sm rounded-lg px-4 py-2 shadow-sm md:shadow-none">
+          <img src="/logo.svg" alt="AI 创意工作台" className="h-7 md:h-8 w-auto" />
+          <span className="text-sm md:text-base font-semibold text-gray-900 md:text-white">AI 创意工作台</span>
         </div>
       </div>
 
-      {/* 登录框 - 悬浮在右侧 */}
-      <div className="absolute right-4 md:right-12 top-1/2 transform -translate-y-1/2 z-10 w-full max-w-sm px-4 md:px-0">
-        <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
-          {/* 右上角微信扫码区域 */}
-          <div className="relative">
+      {/* 登录框 - 手机版居中，网页版右侧 */}
+      <div className="flex items-center justify-center md:justify-end min-h-screen px-4 py-4 md:py-0 md:pr-12">
+        <div className="w-full max-w-sm bg-white rounded-xl shadow-xl md:shadow-2xl overflow-hidden">
+          {/* 右上角微信扫码（仅网页版） */}
+          <div className="hidden md:block relative">
             <div className="absolute -top-0 -right-0 w-20 h-20 overflow-hidden">
               <div className="absolute top-0 right-0 w-28 h-28 bg-gradient-to-br from-green-500 to-green-600 transform rotate-45 translate-x-14 -translate-y-14"></div>
             </div>
@@ -185,7 +167,7 @@ const HomeLoginPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="p-6 pt-4">
+          <div className="p-6">
             {/* 登录框标题 */}
             <div className="mb-4">
               <h2 className="text-xl font-semibold text-gray-900">账号登录</h2>
@@ -223,14 +205,14 @@ const HomeLoginPage: React.FC = () => {
                   type="text"
                   value={account}
                   onChange={(e) => { setAccount(e.target.value); setError(''); }}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 focus:ring-1 focus:ring-gray-400 transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-all"
                   placeholder="用户名或邮箱"
                 />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => { setPassword(e.target.value); setError(''); }}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 focus:ring-1 focus:ring-gray-400 transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-all"
                   placeholder="密码"
                 />
               </div>
@@ -239,29 +221,27 @@ const HomeLoginPage: React.FC = () => {
             {/* 手机登录表单 */}
             {loginMethod === 'phone' && (
               <div className="space-y-4">
-                <div className="flex gap-3">
-                  <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => { setPhone(e.target.value); setError(''); }}
-                    className="flex-1 px-4 py-3 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 focus:ring-1 focus:ring-gray-400 transition-all"
-                    placeholder="手机号"
-                    maxLength={11}
-                  />
-                </div>
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => { setPhone(e.target.value); setError(''); }}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-all"
+                  placeholder="手机号"
+                  maxLength={11}
+                />
                 <div className="flex gap-3">
                   <input
                     type="text"
                     value={code}
                     onChange={(e) => { setCode(e.target.value.replace(/\D/g, '').slice(0, 6)); setError(''); }}
-                    className="flex-1 px-4 py-3 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 focus:ring-1 focus:ring-gray-400 transition-all"
+                    className="flex-1 px-4 py-3 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-all"
                     placeholder="验证码"
                     maxLength={6}
                   />
                   <button
                     onClick={handleSendCode}
                     disabled={countdown > 0 || loading}
-                    className="px-4 py-3 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+                    className="px-4 py-3 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 transition-colors whitespace-nowrap"
                   >
                     {countdown > 0 ? `${countdown}秒` : '获取验证码'}
                   </button>
@@ -283,7 +263,7 @@ const HomeLoginPage: React.FC = () => {
                 type="checkbox"
                 checked={agreeTerms}
                 onChange={(e) => setAgreeTerms(e.target.checked)}
-                className="w-4 h-4 text-gray-600 border-gray-300 rounded focus:ring-gray-500"
+                className="w-4 h-4 text-gray-600 border-gray-300 rounded"
               />
               <span className="text-sm text-gray-600">
                 阅读并接受 <span className="text-gray-900 cursor-pointer hover:underline">服务条款</span> 和 <span className="text-gray-900 cursor-pointer hover:underline">隐私政策</span>
@@ -294,7 +274,7 @@ const HomeLoginPage: React.FC = () => {
             <button
               onClick={loginMethod === 'account' ? handleAccountLogin : handlePhoneLogin}
               disabled={loading}
-              className="w-full mt-4 py-3 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full mt-4 py-3 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:opacity-50"
             >
               {loading ? '登录中...' : '登录'}
             </button>
@@ -313,17 +293,17 @@ const HomeLoginPage: React.FC = () => {
                 <span className="cursor-pointer hover:text-gray-600">隐私政策</span>
               </div>
             </div>
+
+            {/* 演示体验按钮 */}
+            <button
+              onClick={handleDemoLogin}
+              disabled={loading}
+              className="w-full mt-4 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50"
+            >
+              🚀 演示体验（无需注册）
+            </button>
           </div>
         </div>
-
-        {/* 演示体验按钮 */}
-        <button
-          onClick={handleDemoLogin}
-          disabled={loading}
-          className="w-full mt-4 py-3 bg-white/20 backdrop-blur-sm text-white rounded-lg font-medium hover:bg-white/30 transition-colors border border-white/30"
-        >
-          🚀 演示体验（无需注册）
-        </button>
       </div>
     </div>
   );
