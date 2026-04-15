@@ -100,7 +100,7 @@ const demoRegister = (identifier: string): { success: boolean; message: string; 
     email: 'demo@demo.com',
     password: 'demo123',
     memberLevel: 'vip',
-    points: 1000,
+    points: 600,
     createdAt: new Date().toISOString(),
     signInDays: 0,
     inviteCode: generateInviteCode(),
