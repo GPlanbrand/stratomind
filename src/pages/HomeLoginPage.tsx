@@ -177,7 +177,7 @@ const HomeLoginPage: React.FC = () => {
           {/* 底部品牌 */}
           <div className="absolute bottom-6 flex flex-col items-center">
             <div className="flex items-center gap-1.5 mb-1">
-              <img src="/app-icon.svg" alt="StratoMind" className="h-5 w-5" />
+              <img src="/guide-logo.svg" alt="StratoMind" className="h-5 w-auto" />
               <span className="text-xs text-gray-600">StratoMind®</span>
             </div>
             <p className="text-xs text-gray-400">你的AI创意合伙人</p>
