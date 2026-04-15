@@ -49,6 +49,44 @@ body {
   background: #9ca3af;
 }
 
+/* 侧边栏滚动隔离 - 防止滚动穿透 */
+.overscroll-contain {
+  overscroll-behavior-y: contain;
+}
+
+/* 触摸设备禁用触摸滚动（用于需要原生滚动的场景） */
+.touch-none {
+  touch-action: none;
+}
+
+/* 固定侧边栏滚动容器高度约束 */
+.sidebar-scroll-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar-scroll-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0; /* 关键：允许flex子元素收缩 */
+}
+
+/* 确保body和html不阻止fixed元素的滚动 */
+html, body {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: auto;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+  overflow: hidden;
+}
+
 /* 禁用移动端点击高亮 */
 * {
   -webkit-tap-highlight-color: transparent;

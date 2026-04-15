@@ -140,8 +140,8 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
         </button>
       </div>
 
-      {/* 可滚动区域 */}
-      <div className="flex-1 overflow-y-auto min-h-0">
+      {/* 可滚动区域 - 添加滚动隔离和高度约束 */}
+      <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain touch-none">
         {/* 当前项目 */}
         <div className="px-3 py-2">
           <button 

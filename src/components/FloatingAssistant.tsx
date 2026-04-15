@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Bot, X, Send, Sparkles } from 'lucide-react';
 
 const FloatingAssistant: React.FC = () => {
@@ -7,6 +7,24 @@ const FloatingAssistant: React.FC = () => {
   const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([
     { role: 'assistant', content: '你好！我是灵思AI助手，有什么可以帮你的吗？' }
   ]);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  // 点击外部关闭
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (isOpen && 
+          containerRef.current && 
+          buttonRef.current &&
+          !containerRef.current.contains(e.target as Node) &&
+          !buttonRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpen]);
 
   const handleSend = () => {
     if (!input.trim()) return;
@@ -34,6 +52,7 @@ const FloatingAssistant: React.FC = () => {
     <>
       {/* 浮动按钮 */}
       <button
+        ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
         className={`fixed right-6 bottom-6 w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 z-50 ${
           isOpen 
@@ -46,7 +65,9 @@ const FloatingAssistant: React.FC = () => {
 
       {/* 对话框 */}
       {isOpen && (
-        <div className="fixed right-6 bottom-24 w-80 h-96 bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden z-50 animate-slide-up border border-gray-100">
+        <div 
+          ref={containerRef}
+          className="fixed right-6 bottom-24 w-80 h-96 bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden z-50 animate-slide-up border border-gray-100">
           {/* 头部 */}
           <div className="px-4 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white flex items-center gap-2">
             <Sparkles className="w-5 h-5" />
