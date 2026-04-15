@@ -24,14 +24,15 @@ const Layout: React.FC = () => {
             {/* Logo - 可点击跳转首页 */}
             <button
               onClick={() => navigate('/projects')}
-              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+              className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
             >
               <img 
                 src="/logo.svg" 
-                alt="AI 创意工作台" 
-                className="h-7 w-auto sm:h-8" 
+                alt="灵思" 
+                className="h-6 w-auto sm:h-7" 
               />
-              <span className="text-sm sm:text-base font-medium text-gray-900 hidden xs:inline">AI 创意工作台</span>
+              <span className="text-sm sm:text-base font-semibold text-gray-800">StratoMind</span>
+              <span className="text-xs sm:text-sm text-gray-500 hidden sm:inline">灵思AI创意工作台</span>
             </button>
 
             <div className="flex items-center gap-2 sm:gap-4">

@@ -157,8 +157,9 @@ const HomeLoginPage: React.FC = () => {
       {/* 移动端顶部 - Logo */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-white border-b border-gray-100">
         <div className="px-4 py-3 flex items-center gap-2">
-          <img src="/logo.svg" alt="灵思AI创意工作台" className="h-8 w-auto" />
-          <span className="text-base font-medium text-gray-900">灵思AI创意工作台</span>
+          <img src="/logo.svg" alt="灵思" className="h-6 w-auto" />
+          <span className="text-base font-semibold text-gray-800">StratoMind</span>
+          <span className="text-sm text-gray-500">灵思AI创意工作台</span>
         </div>
       </div>
 
@@ -457,9 +458,10 @@ const HomeLoginPage: React.FC = () => {
 
         {/* 顶部Logo */}
         <div className="fixed top-0 left-0 right-0 z-20 px-10 py-5">
-          <div className="flex items-center gap-3">
-            <img src="/logo.svg" alt="灵思AI创意工作台" className="h-10 w-auto" />
-            <span className="text-lg font-semibold text-gray-800">灵思AI创意工作台</span>
+          <div className="flex items-center gap-2">
+            <img src="/logo.svg" alt="灵思" className="h-8 w-auto" />
+            <span className="text-lg font-semibold text-gray-800">StratoMind</span>
+            <span className="text-base text-gray-500">灵思AI创意工作台</span>
           </div>
         </div>
 
