@@ -1,0 +1,117 @@
+// Prisma Schema for StratoMind
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 用户模型
+model User {
+  id            String    @id @default(cuid())
+  username      String    @unique
+  email         String    @unique
+  password      String
+  avatar        String?
+  memberLevel   String    @default("normal") // normal, silver, gold, diamond
+  points        Int       @default(600)
+  memberExpiresAt DateTime?
+  createdAt     DateTime  @default(now())
+  lastLoginAt   DateTime?
+  signInDays    Int       @default(0)
+  lastSignInDate String?
+  inviteCode    String    @unique
+  invitedBy     String?
+  
+  // 关联
+  projects      Project[]
+  aiLogs        AILog[]
+  assets        Asset[]
+  knowledgeItems KnowledgeItem[]
+  
+  createdAt2    DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  
+  @@map("users")
+}
+
+// 项目模型
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  clientName  String
+  status      String   @default("active") // active, completed, archived
+  userId      String
+  
+  // 项目步骤数据（JSON存储）
+  clientInfo   String?  // JSON string
+  requirements String?  // JSON string
+  competitors  String?  // JSON string (array)
+  brief       String?  // JSON string
+  strategy    String?  // JSON string
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // 关联
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("projects")
+}
+
+// AI日志
+model AILog {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // analyze-competitors, generate-brief, generate-strategy
+  input       String   // JSON string
+  output      String?  // JSON string
+  pointsCost  Int      @default(0)
+  status      String   @default("success") // success, failed
+  error       String?
+  createdAt   DateTime @default(now())
+  
+  // 关联
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("ai_logs")
+}
+
+// 资产库
+model Asset {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  type        String   // image, document, template
+  url         String?
+  size        Int?
+  mimeType    String?
+  metadata    String?  // JSON string
+  createdAt   DateTime @default(now())
+  
+  // 关联
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("assets")
+}
+
+// 知识库
+model KnowledgeItem {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  content     String
+  category    String?
+  tags        String?  // JSON array
+  metadata    String?  // JSON string
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // 关联
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("knowledge_items")
+}
