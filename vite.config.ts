@@ -12,8 +12,18 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: false,
+    // Electron 打包优化
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+        },
+      },
+    },
   },
   server: {
     port: 3000,
   },
+  // Electron 开发模式优化
+  base: './',
 })

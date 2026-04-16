@@ -1,0 +1,90 @@
+# Electron Builder 配置文件
+# 详细配置文档: https://www.electron.build/configuration/configuration
+
+appId: com.lingsi.workspace
+productName: 灵思AI创意工作台
+copyright: Copyright © 2024 灵思AI
+
+# 构建目录
+directories:
+  output: release
+  buildResources: build
+
+# 文件配置
+files:
+  - dist/**/*
+  - public/**/*
+  - node_modules/**/*
+  - "!node_modules/**/.*"
+  - package.json
+
+# 额外资源
+extraResources:
+  - from: public
+    to: public
+    filter:
+      - "**/*"
+
+# Windows 配置
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: build/icon.ico
+  artifactName: ${productName}-${version}-Windows-Setup.${ext}
+
+# Windows NSIS 安装程序配置
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  deleteAppDataOnUninstall: true
+  installerIcon: build/icon.ico
+  uninstallerIcon: build/icon.ico
+  installerHeaderIcon: build/icon.ico
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: 灵思AI创意工作台
+  license: LICENSE.txt
+
+# Mac 配置
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+  icon: build/icon.icns
+  category: public.app-category.productivity
+  artifactName: ${productName}-${version}-macOS.${ext}
+  hardenedRuntime: true
+  gatekeeperAssess: false
+
+# Mac DMG 配置
+dmg:
+  contents:
+    - x: 130
+      y: 220
+    - x: 410
+      y: 220
+      type: link
+      path: /Applications
+  window:
+    width: 540
+    height: 380
+  title: ${productName}-${version}
+
+# Linux 配置
+linux:
+  target:
+    - AppImage
+    - deb
+  icon: build/icons
+  category: Office
+  artifactName: ${productName}-${version}-Linux.${ext}
+
+# 发布配置 (可选)
+#publish:
+#  provider: generic
+#  url: https://example.com/releases/
