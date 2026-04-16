@@ -1,12 +1,21 @@
 {
   "name": "brand-craft-workspace",
-  "version": "1.9.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
+  "description": "灵思AI创意工作台 - 你的AI创意合伙人",
+  "author": "灵思AI",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:electron": "npm run build && electron-builder --config electron-builder.yml",
+    "build:electron:win": "npm run build && electron-builder --config electron-builder.yml --win",
+    "build:electron:mac": "npm run build && electron-builder --config electron-builder.yml --mac",
+    "build:electron:dir": "npm run build && electron-builder --config electron-builder.yml --dir",
+    "start:electron": "ELECTRON_DEV=true electron .",
+    "start:electron:prod": "electron ."
   },
   "dependencies": {
     "axios": "^1.6.2",
@@ -23,9 +32,15 @@
     "@types/react-dom": "^18.2.17",
     "@vitejs/plugin-react": "^4.7.0",
     "autoprefixer": "^10.4.16",
+    "electron": "^28.1.0",
+    "electron-builder": "^24.9.1",
     "postcss": "^8.4.31",
+    "sharp": "^0.33.2",
     "tailwindcss": "^3.3.5",
     "typescript": "^5.3.2",
     "vite": "^5.4.21"
+  },
+  "build": {
+    "extends": "electron-builder.yml"
   }
 }
