@@ -1,0 +1,38 @@
+# Render.com 部署配置
+# 文档: https://render.com/docs/deploys
+
+databaseInternal:
+  # PostgreSQL 数据库配置（如果使用 Render PostgreSQL）
+  # 如果使用外部 Neon 数据库，请删除此部分
+
+services:
+  - type: web
+    name: stratomind-api
+    env: node
+    region: singapore  # 亚太区域，离新加坡 Neon 数据库较近
+    buildCommand: npm install && npx prisma generate && npm run build
+    startCommand: npm run start
+    healthCheckPath: /health
+    
+    # 静态文件服务（不需要）
+    plan: free  # 可选: free, starter, pro
+    
+    # 环境变量（在 Render Dashboard 中设置更安全）
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false  # 需要在 Dashboard 中设置
+      - key: JWT_SECRET
+        sync: false
+      - key: FRONTEND_URL
+        value: https://stratomind.vercel.app
+      - key: PORT
+        value: 10000
+
+# 如果使用 Render 托管的 PostgreSQL，添加以下配置
+# databases:
+#   - name: stratomind-db
+#     plan: free
+#     databaseName: stratomind
+#     ipAllowList: []
