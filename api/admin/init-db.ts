@@ -8,9 +8,6 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export const config = {
-  runtime: 'nodejs' // 使用nodejs运行时以支持Prisma
-}
 
 export default async function handler(req: Request) {
   // CORS

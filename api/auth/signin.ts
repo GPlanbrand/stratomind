@@ -7,9 +7,6 @@ import { prisma } from '../../lib/db'
 import { getUserFromRequest, hasSignedToday, calculateSignInStreak } from '../../lib/auth'
 import { apiSuccess, apiError, apiUnauthorized } from '../../lib/api'
 
-export const config = {
-  runtime: 'edge'
-}
 
 // 签到积分规则
 const POINTS_RULES = {

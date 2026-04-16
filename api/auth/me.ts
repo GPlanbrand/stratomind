@@ -6,9 +6,6 @@
 import { getUserFromRequest } from '../../lib/auth'
 import { apiSuccess, apiError, apiUnauthorized } from '../../lib/api'
 
-export const config = {
-  runtime: 'edge'
-}
 
 export default async function handler(req: Request) {
   // CORS预检

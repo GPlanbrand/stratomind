@@ -7,9 +7,6 @@ import { prisma } from '../../lib/db'
 import { verifyPassword, generateToken } from '../../lib/auth'
 import { apiSuccess, apiError, parseBody } from '../../lib/api'
 
-export const config = {
-  runtime: 'edge'
-}
 
 export default async function handler(req: Request) {
   // CORS预检

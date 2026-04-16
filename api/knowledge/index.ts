@@ -14,9 +14,6 @@ import { apiSuccess, apiError, apiUnauthorized, parseBody } from '../../lib/api'
 // 知识库分类
 const CATEGORIES = ['methodology', 'case', 'template', 'material'] as const
 
-export const config = {
-  runtime: 'edge'
-}
 
 export default async function handler(req: Request) {
   // CORS

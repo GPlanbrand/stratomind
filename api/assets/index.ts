@@ -9,9 +9,6 @@ import { prisma } from '../../lib/db'
 import { getUserFromRequest } from '../../lib/auth'
 import { apiSuccess, apiError, apiUnauthorized, parseBody } from '../../lib/api'
 
-export const config = {
-  runtime: 'edge'
-}
 
 // 资产类型
 const ASSET_TYPES = ['document', 'image', 'video', 'audio', 'other'] as const

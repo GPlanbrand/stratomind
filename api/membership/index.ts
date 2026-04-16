@@ -27,9 +27,6 @@ const MEMBER_PLANS = [
   { id: 'yearly_diamond', name: '钻石年卡', level: 'diamond', price: 999, days: 365 }
 ]
 
-export const config = {
-  runtime: 'edge'
-}
 
 export default async function handler(req: Request) {
   // CORS
