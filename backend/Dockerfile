@@ -1,20 +1,12 @@
-FROM node:18-slim
+FROM node:18-alpine
 
 WORKDIR /app
 
-# 复制package文件
-COPY package*.json ./
-COPY prisma ./prisma/
-
-# 安装依赖
-RUN npm install --legacy-peer-deps
-RUN npx prisma generate
-
-# 复制源代码
+# 复制所有文件
 COPY . .
 
-# 构建TypeScript
-RUN npm run build
+# 安装依赖并构建
+RUN npm install && npx prisma generate && npm run build
 
 # 暴露端口
 EXPOSE 3000
