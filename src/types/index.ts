@@ -192,31 +192,11 @@ export interface Brief {
   phaseBudgetAllocation: string   // 阶段预算分配
 }
 
-// 创意策略数据结构
 export interface Strategy {
-  // 核心策略（已有）
-  overallStrategy: string          // 核心策略主张
-  differentiation: string          // 传播主轴
-  contentStrategy: string          // 创意方向
-  mediaStrategy: string           // 执行建议
-  
-  // 新增增强字段
-  strategyKeywords?: string[]      // 策略关键词标签（AI提取）
-  spreadRhythm?: SpreadRhythm      // 传播节奏建议
-  budgetAllocation?: BudgetAllocation // 预算分配建议
-}
-
-// 传播节奏
-export interface SpreadRhythm {
-  preHeat: string      // 预热期（启动期）
-  outbreak: string     // 爆发期（集中爆发）
-  continuation: string // 延续期（长尾传播）
-}
-
-// 预算分配
-export interface BudgetAllocation {
-  byChannel: string    // 按渠道分配
-  byPhase: string      // 按阶段分配
+  overallStrategy: string
+  differentiation: string
+  contentStrategy: string
+  mediaStrategy: string
 }
 
 export interface ProjectSteps {

@@ -86,7 +86,7 @@ const Layout: React.FC = () => {
 
       {/* 主内容区 */}
       <main 
-        className={`h-screen overflow-y-auto transition-all duration-300 ${
+        className={`min-h-screen transition-all duration-300 ${
           isMobile ? 'ml-0' : (sidebarCollapsed ? 'ml-16' : 'ml-60')
         } ${(isMobile || !isWorkspacePage) ? 'pt-14' : ''}`}
       >

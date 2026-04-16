@@ -556,8 +556,8 @@ const WorkspacePage: React.FC = () => {
         </div>
       )}
 
-      {/* 顶部导航 - 固定定位 */}
-      <div className="fixed top-14 sm:top-0 left-0 right-0 bg-white border-b border-gray-200 z-20">
+      {/* 顶部导航 - 移动端适配 */}
+      <div className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 sm:gap-3">
@@ -622,8 +622,8 @@ const WorkspacePage: React.FC = () => {
         </div>
       </div>
 
-      {/* 步骤指示器 - 固定定位 */}
-      <div className="fixed top-[108px] sm:top-[57px] left-0 right-0 bg-white border-b border-gray-200 z-20">
+      {/* 步骤指示器 - 移动端适配 */}
+      <div className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-2 sm:px-4">
           <div className="flex items-center -mx-1 py-2 sm:py-3">
             {STEPS.map((step, index) => {
@@ -656,8 +656,8 @@ const WorkspacePage: React.FC = () => {
         </div>
       </div>
 
-      {/* 内容区域 - 为固定顶部留出空间 */}
-      <div className="pt-[156px] sm:pt-[105px] max-w-4xl mx-auto px-3 sm:px-4 py-6 sm:py-8 pb-28 sm:pb-24">
+      {/* 内容区域 - 移动端适配 */}
+      <div className="max-w-4xl mx-auto px-3 sm:px-4 py-6 sm:py-8 pb-28 sm:pb-24">
         {renderStep()}
       </div>
 
