@@ -2,15 +2,15 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-COPY package.json ./
-COPY prisma ./prisma/
+COPY package.json package-lock.json* ./
+RUN npm ci --only=production || npm install --only=production
 
-RUN npm install
+COPY prisma ./prisma/
 RUN npx prisma generate
 
-COPY . .
-
-RUN npm run build
+COPY src ./src/
+COPY tsconfig.json ./
+RUN npm install -g typescript && tsc
 
 EXPOSE 3000
 
