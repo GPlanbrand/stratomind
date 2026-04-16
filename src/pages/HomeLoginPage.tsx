@@ -8,7 +8,7 @@ const HomeLoginPage: React.FC = () => {
   
   const [account, setAccount] = useState('');
   const [password, setPassword] = useState('');
-  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [agreeTerms, setAgreeTerms] = useState(true); // 默认已同意，无需勾选
   
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
@@ -64,10 +64,6 @@ const HomeLoginPage: React.FC = () => {
   };
 
   const handleAccountLogin = () => {
-    if (!agreeTerms) {
-      setError('请先阅读并同意服务条款');
-      return;
-    }
     if (!account) {
       setError('请输入用户名或邮箱');
       return;
@@ -112,10 +108,6 @@ const HomeLoginPage: React.FC = () => {
   };
 
   const handlePhoneLogin = () => {
-    if (!agreeTerms) {
-      setError('请先阅读并同意服务条款');
-      return;
-    }
     if (!phone || !/^1[3-9]\d{9}$/.test(phone)) {
       setError('请输入正确的手机号');
       return;
@@ -271,17 +263,10 @@ const HomeLoginPage: React.FC = () => {
                   />
                 </div>
 
-                <div className="flex items-center gap-2.5">
-                  <input
-                    type="checkbox"
-                    id="agreeTermsMobile"
-                    checked={agreeTerms}
-                    onChange={(e) => setAgreeTerms(e.target.checked)}
-                    className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                  />
-                  <label htmlFor="agreeTermsMobile" className="text-xs text-gray-500">
-                    阅读并接受 <a href="/terms" className="text-indigo-600 hover:underline">《服务条款》</a> 和 <a href="/privacy" className="text-indigo-600 hover:underline">《隐私政策》</a>
-                  </label>
+                <div className="text-center">
+                  <p className="text-xs text-gray-500">
+                    登录即表示同意 <a href="/terms" className="text-indigo-600 hover:underline">《服务条款》</a> 和 <a href="/privacy" className="text-indigo-600 hover:underline">《隐私政策》</a>
+                  </p>
                 </div>
 
                 {error && (
@@ -343,17 +328,10 @@ const HomeLoginPage: React.FC = () => {
                   </button>
                 </div>
 
-                <div className="flex items-center gap-2.5">
-                  <input
-                    type="checkbox"
-                    id="agreeTermsPhoneMobile"
-                    checked={agreeTerms}
-                    onChange={(e) => setAgreeTerms(e.target.checked)}
-                    className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                  />
-                  <label htmlFor="agreeTermsPhoneMobile" className="text-xs text-gray-500">
-                    阅读并接受 <a href="/terms" className="text-indigo-600 hover:underline">《服务条款》</a> 和 <a href="/privacy" className="text-indigo-600 hover:underline">《隐私政策》</a>
-                  </label>
+                <div className="text-center">
+                  <p className="text-xs text-gray-500">
+                    登录即表示同意 <a href="/terms" className="text-indigo-600 hover:underline">《服务条款》</a> 和 <a href="/privacy" className="text-indigo-600 hover:underline">《隐私政策》</a>
+                  </p>
                 </div>
 
                 {error && (
@@ -563,17 +541,10 @@ const HomeLoginPage: React.FC = () => {
                   </div>
                   
                   {/* 服务条款 */}
-                  <div className="flex items-center gap-2.5 pt-2">
-                    <input
-                      type="checkbox"
-                      id="agreeTermsDesktop"
-                      checked={agreeTerms}
-                      onChange={(e) => setAgreeTerms(e.target.checked)}
-                      className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
-                    />
-                    <label htmlFor="agreeTermsDesktop" className="text-xs text-gray-500">
-                      阅读并接受 <a href="/terms" className="text-green-600 hover:underline">《服务条款》</a> 和 <a href="/privacy" className="text-green-600 hover:underline">《隐私政策》</a>
-                    </label>
+                  <div className="text-center pt-2">
+                    <p className="text-xs text-gray-500">
+                      登录即表示同意 <a href="/terms" className="text-green-600 hover:underline">《服务条款》</a> 和 <a href="/privacy" className="text-green-600 hover:underline">《隐私政策》</a>
+                    </p>
                   </div>
                   
                   <div className="pt-3 text-center">
@@ -640,17 +611,10 @@ const HomeLoginPage: React.FC = () => {
                   </div>
                   
                   {/* 服务条款 */}
-                  <div className="flex items-center gap-2.5 pt-2">
-                    <input
-                      type="checkbox"
-                      id="agreeTermsDesktopPhone"
-                      checked={agreeTerms}
-                      onChange={(e) => setAgreeTerms(e.target.checked)}
-                      className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
-                    />
-                    <label htmlFor="agreeTermsDesktopPhone" className="text-xs text-gray-500">
-                      阅读并接受 <a href="/terms" className="text-green-600 hover:underline">《服务条款》</a> 和 <a href="/privacy" className="text-green-600 hover:underline">《隐私政策》</a>
-                    </label>
+                  <div className="text-center pt-2">
+                    <p className="text-xs text-gray-500">
+                      登录即表示同意 <a href="/terms" className="text-green-600 hover:underline">《服务条款》</a> 和 <a href="/privacy" className="text-green-600 hover:underline">《隐私政策》</a>
+                    </p>
                   </div>
                   
                   <div className="pt-3 text-center">
