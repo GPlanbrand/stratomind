@@ -1,4 +1,9 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node'
+/**
+ * 创意简报生成接口
+ * POST /api/ai/generate-brief
+ */
+
+import { parseBody } from '../../lib/api'
 
 // 豆包/通义千问 API配置
 const DOUBAO_API_URL = 'https://ark.cn-beijing.volces.com/api/v3/chat/completions'
@@ -17,24 +22,55 @@ function getApiConfig() {
   return null
 }
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+interface RequestBody {
+  clientInfo?: {
+    companyName?: string
+    industry?: string
+    brandPosition?: string
+    description?: string
+    targetMarket?: string
+    companySize?: string
+  }
+  requirements?: {
+    projectType?: string
+    targetAudience?: string
+    keyMessage?: string
+    tone?: string
+    channels?: string[]
+    budget?: string
+    timeline?: string
+  }
+  competitors?: any[]
+}
+
+export default async function handler(req: Request) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: '只支持POST请求' })
+    return new Response(JSON.stringify({ error: '只支持POST请求' }), {
+      status: 405,
+      headers: { 'Content-Type': 'application/json' }
+    })
   }
 
   try {
     const apiConfig = getApiConfig()
     if (!apiConfig) {
-      return res.status(500).json({ 
+      return new Response(JSON.stringify({
         error: '未配置API Key',
         message: '请在Vercel环境变量中配置 DOUBAO_API_KEY 或 QIANWEN_API_KEY'
+      }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
       })
     }
 
-    const { clientInfo, requirements, competitors } = req.body
+    const body = await parseBody<RequestBody>(req)
+    const { clientInfo, requirements, competitors } = body || {}
 
     if (!clientInfo || !requirements) {
-      return res.status(400).json({ error: '缺少必要参数' })
+      return new Response(JSON.stringify({ error: '缺少必要参数' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      })
     }
 
     // 构建竞品摘要
@@ -155,9 +191,12 @@ ${channelSuggestions}
     if (!response.ok) {
       const errorText = await response.text()
       console.error('AI API错误:', response.status, errorText)
-      return res.status(500).json({ 
+      return new Response(JSON.stringify({
         error: 'AI服务调用失败',
         message: `API返回错误: ${response.status}`
+      }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
       })
     }
 
@@ -182,7 +221,6 @@ ${channelSuggestions}
           try {
             parsed = JSON.parse(jsonMatch[0])
           } catch {
-            // 尝试修复
             const fixedContent = jsonMatch[0]
               .replace(/\n/g, '\\n')
               .replace(/\r/g, '')
@@ -192,7 +230,7 @@ ${channelSuggestions}
       }
       
       if (parsed) {
-        return res.status(200).json({
+        return new Response(JSON.stringify({
           success: true,
           data: {
             projectName: parsed.projectName || '',
@@ -225,21 +263,30 @@ ${channelSuggestions}
             channelBudgetRatio: parsed.channelBudgetRatio || '',
             phaseBudgetAllocation: parsed.phaseBudgetAllocation || '',
           }
+        }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
         })
       }
       throw new Error('无法解析AI返回的内容')
     } catch (parseError) {
       console.error('JSON解析失败:', parseError, '原始内容:', content)
-      return res.status(500).json({ 
+      return new Response(JSON.stringify({
         error: '解析AI返回内容失败',
         message: 'AI返回内容格式异常'
+      }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
       })
     }
   } catch (error: any) {
     console.error('生成创意简报失败:', error)
-    return res.status(500).json({ 
+    return new Response(JSON.stringify({
       error: '生成失败',
       message: error.message || '未知错误'
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
     })
   }
 }

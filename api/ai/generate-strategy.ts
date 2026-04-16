@@ -1,4 +1,9 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node'
+/**
+ * 创意策略生成接口
+ * POST /api/ai/generate-strategy
+ */
+
+import { parseBody } from '../../lib/api'
 
 // DeepSeek API配置
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions'
@@ -25,24 +30,56 @@ const industryKeywords: Record<string, string[]> = {
   '汽车': ['性能', '品质', '驾驭', '生活方式'],
 }
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+interface RequestBody {
+  clientInfo?: {
+    companyName?: string
+    brandName?: string
+    industry?: string
+  }
+  requirements?: {
+    industry?: string
+    projectType?: string
+    targetPersona?: string
+    targetAudience?: string
+    budgetRange?: string
+    budget?: string
+    primaryChannels?: string[]
+    channels?: string[]
+  }
+  brief?: {
+    targetDemographic?: string
+  }
+  competitors?: any[]
+}
+
+export default async function handler(req: Request) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: '只支持POST请求' })
+    return new Response(JSON.stringify({ error: '只支持POST请求' }), {
+      status: 405,
+      headers: { 'Content-Type': 'application/json' }
+    })
   }
 
   try {
     const apiKey = process.env.DEEPSEEK_API_KEY
     if (!apiKey) {
-      return res.status(500).json({ 
+      return new Response(JSON.stringify({
         error: '未配置API Key',
         message: '请在Vercel环境变量中配置 DEEPSEEK_API_KEY'
+      }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
       })
     }
 
-    const { clientInfo, requirements, brief, competitors } = req.body
+    const body = await parseBody<RequestBody>(req)
+    const { clientInfo, requirements, brief, competitors } = body || {}
 
     if (!clientInfo && !requirements) {
-      return res.status(400).json({ error: '缺少必要参数' })
+      return new Response(JSON.stringify({ error: '缺少必要参数' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      })
     }
 
     // 提取关键数据
@@ -74,9 +111,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       budget,
       channels,
       competitorAnalysis,
-      clientInfo,
-      requirements,
-      brief,
     })
 
     // 调用DeepSeek API
@@ -119,9 +153,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (!response.ok) {
       const errorText = await response.text()
       console.error('DeepSeek API错误:', response.status, errorText)
-      return res.status(500).json({ 
+      return new Response(JSON.stringify({
         error: 'AI服务调用失败',
         message: `API返回错误: ${response.status}`
+      }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
       })
     }
 
@@ -133,7 +170,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const jsonMatch = content.match(/\{[\s\S]*\}/)
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0])
-        return res.status(200).json({
+        return new Response(JSON.stringify({
           success: true,
           data: {
             overallStrategy: parsed.overallStrategy || '',
@@ -144,21 +181,30 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             spreadRhythm: parsed.spreadRhythm || { preHeat: '', outbreak: '', continuation: '' },
             budgetAllocation: parsed.budgetAllocation || { byChannel: '', byPhase: '' },
           }
+        }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
         })
       }
       throw new Error('无法解析AI返回的内容')
     } catch (parseError) {
       console.error('JSON解析失败:', parseError, '原始内容:', content)
-      return res.status(500).json({ 
+      return new Response(JSON.stringify({
         error: '解析AI返回内容失败',
         message: 'AI返回内容格式异常'
+      }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
       })
     }
   } catch (error: any) {
     console.error('生成创意策略失败:', error)
-    return res.status(500).json({ 
+    return new Response(JSON.stringify({
       error: '生成失败',
       message: error.message || '未知错误'
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
     })
   }
 }
@@ -168,8 +214,8 @@ function analyzeCompetitors(competitors: any[] = [], industryKeys: string[] = []
   if (!competitors || competitors.length === 0) {
     return {
       summary: '暂无竞品数据，需要自主探索差异化方向',
-      competitiveGaps: industryKeys,
-      differentiators: []
+      commonPositioningWords: [],
+      uniqueOpportunities: industryKeys,
     }
   }
 
@@ -179,7 +225,7 @@ function analyzeCompetitors(competitors: any[] = [], industryKeys: string[] = []
   const competitorPositions = competitors.map((c: any) => ({
     name: c.name,
     positioning: c.brandPositioning || c.coreValue || '',
-    differentiation: c.differentiation || c.differentiation || '',
+    differentiation: c.differentiation || '',
     strengths: c.strengths || [],
   }))
 
@@ -189,7 +235,6 @@ function analyzeCompetitors(competitors: any[] = [], industryKeys: string[] = []
     .filter(Boolean)
 
   // 找出差异化机会点
-  const commonWords = new Set(allPositioningWords)
   const uniqueOpportunities = industryKeys.filter(k => !allPositioningWords.includes(k))
 
   return {
@@ -211,9 +256,6 @@ function buildEnhancedPrompt(params: {
   budget: string
   channels: string[]
   competitorAnalysis: ReturnType<typeof analyzeCompetitors>
-  clientInfo: any
-  requirements: any
-  brief: any
 }) {
   const {
     companyName,

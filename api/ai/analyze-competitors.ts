@@ -1,27 +1,60 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node'
+/**
+ * 竞品分析接口
+ * POST /api/ai/analyze-competitors
+ */
+
+import { parseBody } from '../../lib/api'
 
 // DeepSeek API配置
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions'
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+interface Competitor {
+  id?: string
+  name?: string
+  brandPositioning?: string
+  targetAudience?: string
+}
+
+interface RequestBody {
+  competitors?: Competitor[]
+  clientInfo?: {
+    companyName?: string
+    brandPosition?: string
+    description?: string
+    targetMarket?: string
+    industry?: string
+  }
+}
+
+export default async function handler(req: Request) {
   // 只允许POST请求
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: '只支持POST请求' })
+    return new Response(JSON.stringify({ error: '只支持POST请求' }), {
+      status: 405,
+      headers: { 'Content-Type': 'application/json' }
+    })
   }
 
   try {
     const apiKey = process.env.DEEPSEEK_API_KEY
     if (!apiKey) {
-      return res.status(500).json({ 
+      return new Response(JSON.stringify({
         error: '未配置API Key',
         message: '请在Vercel环境变量中配置 DEEPSEEK_API_KEY'
+      }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
       })
     }
 
-    const { competitors, clientInfo } = req.body
+    const body = await parseBody<RequestBody>(req)
+    const { competitors, clientInfo } = body || {}
 
     if (!competitors || !Array.isArray(competitors) || competitors.length === 0) {
-      return res.status(400).json({ error: '缺少竞品列表' })
+      return new Response(JSON.stringify({ error: '缺少竞品列表' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      })
     }
 
     const industry = clientInfo?.industry || '通用'
@@ -32,7 +65,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     } : undefined
 
     // 为每个竞品生成分析
-    const results = []
+    const results: any[] = []
 
     for (const competitor of competitors) {
       const competitorName = competitor.name || '未知品牌'
@@ -115,7 +148,7 @@ ${myBrand ? `
     "innovationPower": 75,
     "pricePower": 60
   }
-}
+}`
 
       // 调用DeepSeek API
       const response = await fetch(DEEPSEEK_API_URL, {
@@ -146,7 +179,8 @@ ${myBrand ? `
         console.error(`竞品 "${competitorName}" 分析失败:`, response.status, errorText)
         // 单个竞品失败不影响其他竞品
         results.push({
-          ...competitor,
+          id: competitor.id,
+          name: competitorName,
           brandPositioning: '分析失败，请稍后重试',
           visualStyle: '',
           marketShare: '',
@@ -160,18 +194,17 @@ ${myBrand ? `
       const result = await response.json()
       const content = result.choices?.[0]?.message?.content || ''
 
-      // 解析JSON响应 - 增强解析逻辑
+      // 解析JSON响应
       try {
-        // 清理可能的markdown代码块标记
         let cleanContent = content
           .replace(/^```json\s*/i, '')
           .replace(/^```\s*/i, '')
           .replace(/\s*```$/i, '')
           .trim()
         
-        let parsed = null
+        let parsed: any = null
         
-        // 尝试多种方式解析JSON
+        // 尝试解析
         try {
           parsed = JSON.parse(cleanContent)
         } catch {
@@ -180,7 +213,6 @@ ${myBrand ? `
             try {
               parsed = JSON.parse(jsonMatch[0])
             } catch {
-              // 尝试修复常见的JSON问题
               const fixedContent = jsonMatch[0]
                 .replace(/\n/g, '\\n')
                 .replace(/\r/g, '')
@@ -206,11 +238,11 @@ ${myBrand ? `
             differentiation: String(parsed.differentiation || '').substring(0, 300),
             brandTone: String(parsed.brandTone || '').substring(0, 100),
             // 产品/服务
-            coreProducts: Array.isArray(parsed.coreProducts) ? parsed.coreProducts.slice(0, 5).map(String) : [],
-            productStrengths: Array.isArray(parsed.productStrengths) ? parsed.productStrengths.slice(0, 5).map(String) : [],
-            productWeaknesses: Array.isArray(parsed.productWeaknesses) ? parsed.productWeaknesses.slice(0, 5).map(String) : [],
+            coreProducts: Array.isArray(parsed.coreProducts) ? parsed.coreProducts.slice(0, 5) : [],
+            productStrengths: Array.isArray(parsed.productStrengths) ? parsed.productStrengths.slice(0, 5) : [],
+            productWeaknesses: Array.isArray(parsed.productWeaknesses) ? parsed.productWeaknesses.slice(0, 5) : [],
             // 营销传播
-            channels: Array.isArray(parsed.channels) ? parsed.channels.slice(0, 5).map(String) : [],
+            channels: Array.isArray(parsed.channels) ? parsed.channels.slice(0, 5) : [],
             marketingStrategy: String(parsed.marketingStrategy || '').substring(0, 300),
             contentStyle: String(parsed.contentStyle || '').substring(0, 200),
             // 视觉形象
@@ -218,10 +250,10 @@ ${myBrand ? `
             visualStyle: String(parsed.visualStyle || '').substring(0, 200),
             brandPersonality: String(parsed.brandPersonality || '').substring(0, 100),
             // SWOT分析
-            strengths: Array.isArray(parsed.strengths) ? parsed.strengths.slice(0, 6).map(String) : [],
-            weaknesses: Array.isArray(parsed.weaknesses) ? parsed.weaknesses.slice(0, 6).map(String) : [],
-            opportunities: Array.isArray(parsed.opportunities) ? parsed.opportunities.slice(0, 6).map(String) : [],
-            threats: Array.isArray(parsed.threats) ? parsed.threats.slice(0, 6).map(String) : [],
+            strengths: Array.isArray(parsed.strengths) ? parsed.strengths.slice(0, 6) : [],
+            weaknesses: Array.isArray(parsed.weaknesses) ? parsed.weaknesses.slice(0, 6) : [],
+            opportunities: Array.isArray(parsed.opportunities) ? parsed.opportunities.slice(0, 6) : [],
+            threats: Array.isArray(parsed.threats) ? parsed.threats.slice(0, 6) : [],
             // 多维度评分
             scores: parsed.scores || {
               productPower: 70,
@@ -237,35 +269,27 @@ ${myBrand ? `
         }
       } catch (parseError: any) {
         console.error(`竞品 "${competitorName}" 解析失败:`, parseError, '原始内容:', content)
-        // 解析失败时返回空结果，不覆盖用户已有数据
         results.push({
           id: competitor.id,
           name: competitorName,
-          // 基础信息
           brandPositioning: '',
           targetAudience: '',
           priceRange: '',
-          // 市场表现
           marketShare: '',
           brandAwareness: '',
           userReputation: '',
-          // 品牌策略
           coreValue: '',
           differentiation: '',
           brandTone: '',
-          // 产品/服务
           coreProducts: [],
           productStrengths: [],
           productWeaknesses: [],
-          // 营销传播
           channels: [],
           marketingStrategy: '',
           contentStyle: '',
-          // 视觉形象
           viSystem: '',
           visualStyle: '',
           brandPersonality: '',
-          // SWOT分析
           strengths: [],
           weaknesses: [],
           opportunities: [],
@@ -276,15 +300,21 @@ ${myBrand ? `
       }
     }
 
-    return res.status(200).json({
+    return new Response(JSON.stringify({
       success: true,
       data: results,
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
     })
   } catch (error: any) {
     console.error('竞品分析失败:', error)
-    return res.status(500).json({ 
+    return new Response(JSON.stringify({
       error: '分析失败',
       message: error.message || '未知错误'
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
     })
   }
 }
