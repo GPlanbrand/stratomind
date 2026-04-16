@@ -1,18 +1,16 @@
-# 强制使用Node.js 18环境
+# 使用 Railway Nixpacks 构建（非 Dockerfile 方式备选）
+# 如果使用 Dockerfile 构建方式，此文件可忽略
+
+providers = ["node"]
+
 [phases.setup]
-nixPkgs = ["nodejs_18", "npm", "yarn", "pnpm"]
+nixPkgs = ["nodejs_18"]
 
-# 安装依赖（包含prisma generate）
 [phases.install]
-cmds = [
-    "npm install",
-    "npx prisma generate"
-]
+cmds = ["npm install"]
 
-# 构建TypeScript
 [phases.build]
 cmds = ["npm run build"]
 
-# 启动命令
 [start]
-cmd = "npm run start"
+cmd = "node dist/index.js"

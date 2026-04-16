@@ -1,22 +1,28 @@
-FROM node:18-alpine
+# 使用 node:18 镜像，比 alpine 更稳定，镜像拉取更快
+FROM node:18-slim
 
 WORKDIR /app
 
-# 先复制 prisma 和 package.json
-COPY prisma ./prisma/
-COPY package.json ./
+# 复制 package 文件
+COPY package*.json ./
 
 # 安装依赖
-RUN npm install
+RUN npm install --prefer-offline
 
-# 生成Prisma客户端（指定schema路径）
+# 复制 prisma schema 并生成客户端
+COPY prisma ./prisma/
 RUN npx prisma generate --schema=./prisma/schema.prisma
 
-# 复制所有其他文件
-COPY . .
+# 复制源代码
+COPY tsconfig.json ./
+COPY src ./src/
 
-# 编译TypeScript
+# 构建 TypeScript
 RUN npm run build
+
+# 创建非 root 用户
+RUN useradd -m -u 1000 nodeapp && chown -R nodeapp:nodeapp /app
+USER nodeapp
 
 EXPOSE 3000
 
