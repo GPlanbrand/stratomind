@@ -2,15 +2,17 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
-RUN npm ci --only=production || npm install --only=production
+# 复制所有文件
+COPY . .
 
-COPY prisma ./prisma/
+# 安装依赖
+RUN npm install
+
+# 生成Prisma客户端
 RUN npx prisma generate
 
-COPY src ./src/
-COPY tsconfig.json ./
-RUN npm install -g typescript && tsc
+# 编译TypeScript
+RUN npm run build
 
 EXPOSE 3000
 
