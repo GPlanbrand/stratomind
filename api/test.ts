@@ -1,11 +1,8 @@
-/**
- * 简单测试接口
- */
-
-export default function handler(req: any, res: any) {
-  res.status(200).json({
+export default async function handler(req: Request) {
+  return new Response(JSON.stringify({
     success: true,
-    message: 'API工作正常！',
-    timestamp: new Date().toISOString()
+    message: 'API正常工作'
+  }), {
+    headers: { 'Content-Type': 'application/json' }
   })
 }
