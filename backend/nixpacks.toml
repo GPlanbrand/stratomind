@@ -1,11 +1,18 @@
+# 强制使用Node.js 18环境
 [phases.setup]
-nixPkgs = ['nodejs_18', 'npm']
+nixPkgs = ["nodejs_18", "npm", "yarn", "pnpm"]
 
+# 安装依赖（包含prisma generate）
 [phases.install]
-cmds = ['npm install']
+cmds = [
+    "npm install",
+    "npx prisma generate"
+]
 
+# 构建TypeScript
 [phases.build]
-cmds = ['npm run build']
+cmds = ["npm run build"]
 
+# 启动命令
 [start]
-cmd = 'npm run start'
+cmd = "npm run start"
