@@ -162,7 +162,11 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
         </div>
 
         {/* 可滚动区域 */}
-        <nav className="flex-1 overflow-y-auto py-2" style={{ minHeight: 0 }}>
+        <nav 
+          className="flex-1 overflow-y-auto py-2 sidebar-scroll" 
+          style={{ minHeight: 0, overscrollBehavior: 'contain' }}
+          onWheel={(e) => e.stopPropagation()}
+        >
           {projectSteps.map(item => (
             <button
               key={item.step}
@@ -231,11 +235,18 @@ const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, cu
         </button>
       </div>
 
-      {/* 可滚动区域 - 简单直接的方式 */}
+      {/* 可滚动区域 - 确保可以正常滚动 */}
       <div 
         ref={scrollContainerRef}
-        className="flex-1 overflow-y-auto"
-        style={{ minHeight: 0 }}
+        className="flex-1 overflow-y-auto sidebar-scroll"
+        style={{ 
+          minHeight: 0,
+          overscrollBehavior: 'contain'
+        }}
+        onWheel={(e) => {
+          // 阻止滚动穿透到主页面
+          e.stopPropagation();
+        }}
       >
         {/* 当前项目 */}
         <div className="px-3 py-2">
