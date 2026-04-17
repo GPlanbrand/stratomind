@@ -19,9 +19,9 @@ COPY src ./src/
 # 构建 TypeScript
 RUN npm run build
 
-# 创建非 root 用户
-RUN useradd -m -u 1000 nodeapp && chown -R nodeapp:nodeapp /app
-USER nodeapp
+# 创建非 root 用户（使用已存在的 node 用户）
+RUN chown -R node:node /app
+USER node
 
 EXPOSE 3000
 
