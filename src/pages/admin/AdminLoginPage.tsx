@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://stratomind-production.up.railway.app';
+const API_BASE = '';
 
 const AdminLoginPage: React.FC = () => {
   const navigate = useNavigate();

@@ -4,7 +4,7 @@ import AdminDashboard from './AdminDashboard';
 import AdminUsersPage from './AdminUsersPage';
 import AdminProjectsPage from './AdminProjectsPage';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://stratomind-production.up.railway.app';
+const API_BASE = '';
 
 type MenuItem = 'dashboard' | 'users' | 'projects';
 
