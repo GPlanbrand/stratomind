@@ -39,6 +39,9 @@ app.use('/api/auth', authRoutes);
 // 需要登录认证的路由
 app.use('/api/projects', projectRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/ai', aiChatRoutes);
+app.use('/api/search', searchRoutes);
+app.use('/api/share', shareRoutes);
 app.use('/api/member', memberRoutes);
 app.use('/api/points', pointsRoutes);
 app.use('/api/assets', assetRoutes);

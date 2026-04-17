@@ -29,9 +29,11 @@ const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction })
   const [isLoading, setIsLoading] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [streamingContent, setStreamingContent] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // 检测移动端
   useEffect(() => {
@@ -71,7 +73,7 @@ const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction })
   // 自动滚动到底部
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, streamingContent]);
 
   // 调整输入框高度
   const adjustTextareaHeight = () => {
@@ -121,7 +123,7 @@ const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction })
     }
   };
 
-  // 发送消息
+  // 发送消息 - 支持流式响应
   const handleSend = async () => {
     if ((!input.trim() && images.length === 0) || isLoading) return;
 
@@ -140,45 +142,128 @@ const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction })
     setImages([]);
     if (textareaRef.current) textareaRef.current.style.height = 'auto';
     setIsLoading(true);
+    setStreamingContent('');
+
+    // 创建AI消息占位符
+    const assistantMessageId = (Date.now() + 1).toString();
+    const assistantMessage: Message = {
+      id: assistantMessageId,
+      role: 'assistant',
+      content: '',
+      timestamp: Date.now()
+    };
+    setMessages(prev => [...prev, assistantMessage]);
+
+    // 创建 AbortController
+    abortControllerRef.current = new AbortController();
 
     try {
       const response = await fetch('/api/ai/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('stratomind_token')}`,
+          'Accept': 'text/event-stream',
+        },
         body: JSON.stringify({
           message: currentInput,
           images: currentImages,
           projectId,
           projectName,
           history: messages.slice(-10).map(m => ({ role: m.role, content: m.content }))
-        })
+        }),
+        signal: abortControllerRef.current.signal,
       });
 
-      const data = await response.json();
-      
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: data.success ? data.data.response : '抱歉，我遇到了一些问题，请稍后再试。',
-        timestamp: Date.now()
-      };
-      
-      setMessages(prev => [...prev, assistantMessage]);
-
-      if (data.data?.action && onAction) {
-        onAction(data.data.action, data.data.data);
+      if (!response.ok) {
+        throw new Error(`请求失败: ${response.status}`);
       }
-    } catch (error) {
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let fullContent = '';
+
+      if (!reader) {
+        throw new Error('无法读取响应流');
+      }
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value);
+        const lines = chunk.split('\n');
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const data = line.slice(6);
+            try {
+              const parsed = JSON.parse(data);
+              
+              if (parsed.content) {
+                fullContent += parsed.content;
+                setStreamingContent(fullContent);
+                // 实时更新消息内容
+                setMessages(prev => prev.map(msg => 
+                  msg.id === assistantMessageId 
+                    ? { ...msg, content: fullContent }
+                    : msg
+                ));
+              }
+              
+              if (parsed.done) {
+                setIsLoading(false);
+                if (parsed.data?.action && onAction) {
+                  onAction(parsed.data.action, parsed.data.data);
+                }
+              }
+              
+              if (parsed.error) {
+                throw new Error(parsed.error);
+              }
+            } catch (e) {
+              // 忽略解析错误
+            }
+          }
+        }
+      }
+
+      // 确保消息内容完整
+      setMessages(prev => prev.map(msg => 
+        msg.id === assistantMessageId 
+          ? { ...msg, content: fullContent || '抱歉，我遇到了一些问题，请稍后再试。' }
+          : msg
+      ));
+
+    } catch (error: any) {
       console.error('AI request failed:', error);
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: '网络错误，请检查网络连接后重试。',
-        timestamp: Date.now()
-      };
-      setMessages(prev => [...prev, errorMessage]);
+      
+      // 如果是被用户取消，不显示错误
+      if (error.name === 'AbortError') {
+        setMessages(prev => prev.filter(msg => msg.id !== assistantMessageId));
+        return;
+      }
+      
+      // 更新错误消息
+      const errorContent = error.message || '网络错误，请检查网络连接后重试。';
+      setMessages(prev => prev.map(msg => 
+        msg.id === assistantMessageId 
+          ? { ...msg, content: errorContent.includes('API') || errorContent.includes('Key') 
+              ? 'AI服务未配置或配置错误，请联系管理员配置 DEEPSEEK_API_KEY 或 DOUBAO_API_KEY' 
+              : errorContent }
+          : msg
+      ));
     } finally {
       setIsLoading(false);
+      setStreamingContent('');
+      abortControllerRef.current = null;
+    }
+  };
+
+  // 停止生成
+  const handleStop = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
     }
   };
 
@@ -347,11 +432,15 @@ const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction })
                           : 'bg-white border border-gray-200 text-gray-800 rounded-bl-md'
                       }`}>
                         <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                        {/* 光标闪烁效果（流式输出时） */}
+                        {msg.role === 'assistant' && isLoading && msg.content === streamingContent && (
+                          <span className="inline-block w-2 h-4 bg-violet-500 ml-1 animate-pulse" />
+                        )}
                       </div>
                     )}
                     
                     {/* 操作按钮 */}
-                    {msg.role === 'assistant' && msg.content && (
+                    {msg.role === 'assistant' && msg.content && !isLoading && (
                       <div className="flex items-center gap-1 pl-1">
                         <button
                           onClick={() => copyMessage(msg.content, msg.id)}
@@ -370,12 +459,20 @@ const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction })
             {/* 加载指示器 */}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="flex items-center gap-2 bg-white border border-gray-200 px-4 py-3 rounded-2xl rounded-bl-md shadow-sm">
+                <div className="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl rounded-bl-md shadow-sm">
                   <div className="flex gap-1">
                     <span className="w-1.5 h-1.5 bg-violet-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                     <span className="w-1.5 h-1.5 bg-violet-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
                     <span className="w-1.5 h-1.5 bg-violet-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
+                  <span className="text-xs text-gray-500">AI正在思考...</span>
+                  {/* 停止按钮 */}
+                  <button
+                    onClick={handleStop}
+                    className="ml-2 px-2 py-1 text-xs text-red-500 hover:bg-red-50 rounded transition-colors"
+                  >
+                    停止
+                  </button>
                 </div>
               </div>
             )}
@@ -449,22 +546,32 @@ const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction })
               </button>
             )}
 
-            {/* 发送按钮 */}
-            <button
-              onClick={handleSend}
-              disabled={(!input.trim() && images.length === 0) || isLoading}
-              className={`p-2.5 rounded-xl transition-all flex-shrink-0 shadow-sm ${
-                input.trim() || images.length > 0
-                  ? 'bg-gradient-to-br from-violet-500 to-purple-600 text-white hover:shadow-md'
-                  : 'bg-gray-200 text-gray-400'
-              } disabled:cursor-not-allowed disabled:shadow-none`}
-            >
-              <Send className="w-5 h-5" />
-            </button>
+            {/* 发送/停止按钮 */}
+            {isLoading ? (
+              <button
+                onClick={handleStop}
+                className="p-2.5 rounded-xl transition-all flex-shrink-0 bg-red-500 text-white hover:bg-red-600 shadow-sm"
+                title="停止生成"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            ) : (
+              <button
+                onClick={handleSend}
+                disabled={(!input.trim() && images.length === 0) || isLoading}
+                className={`p-2.5 rounded-xl transition-all flex-shrink-0 shadow-sm ${
+                  input.trim() || images.length > 0
+                    ? 'bg-gradient-to-br from-violet-500 to-purple-600 text-white hover:shadow-md'
+                    : 'bg-gray-200 text-gray-400'
+                } disabled:cursor-not-allowed disabled:shadow-none`}
+              >
+                <Send className="w-5 h-5" />
+              </button>
+            )}
           </div>
 
           {/* 快捷提示 */}
-          {isExpanded && !input.trim() && images.length === 0 && (
+          {isExpanded && !input.trim() && images.length === 0 && !isLoading && (
             <div className="mt-3 flex items-center gap-2 flex-wrap">
               <span className="text-xs text-gray-400">试试：</span>
               {['帮我写一段品牌slogan', '分析竞品数据', '生成创意简报'].map((tip) => (
