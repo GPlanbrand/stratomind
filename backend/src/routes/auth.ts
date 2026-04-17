@@ -8,15 +8,15 @@ const router = Router();
 
 // Mock 用户数据（当数据库不可用时使用）
 const mockUsers = [
-  { id: '1', email: 'demo@example.com', password: '$2a$10$xxx', name: 'Demo User' },
+  { id: '1', email: 'demo@example.com', password: '$2a$10$xxx', username: 'Demo User' },
 ];
 
 // 注册
 export const register = async (req: Request, res: Response) => {
   try {
-    const { email, password, name } = req.body;
+    const { email, password, username } = req.body;
     
-    if (!email || !password || !name) {
+    if (!email || !password || !username) {
       return res.status(400).json({ success: false, error: '请填写所有必填字段' });
     }
 
@@ -28,8 +28,9 @@ export const register = async (req: Request, res: Response) => {
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
+      const inviteCode = Math.random().toString(36).substring(2, 10).toUpperCase();
       const user = await prisma.user.create({
-        data: { email, password: hashedPassword, name },
+        data: { email, password: hashedPassword, username, inviteCode },
       });
 
       const token = jwt.sign(
@@ -38,10 +39,10 @@ export const register = async (req: Request, res: Response) => {
         { expiresIn: '7d' }
       );
 
-      res.status(201).json({ success: true, data: { user: { id: user.id, email: user.email, name: user.name }, token } });
+      res.status(201).json({ success: true, data: { user: { id: user.id, email: user.email, username: user.username }, token } });
     } catch {
       // 数据库不可用时使用 mock
-      res.status(201).json({ success: true, data: { user: { id: '1', email, name }, token: 'mock-token' } });
+      res.status(201).json({ success: true, data: { user: { id: '1', email, username }, token: 'mock-token' } });
     }
   } catch (error) {
     res.status(500).json({ success: false, error: '注册失败' });
@@ -70,10 +71,10 @@ export const login = async (req: Request, res: Response) => {
         { expiresIn: '7d' }
       );
 
-      res.json({ success: true, data: { user: { id: user.id, email: user.email, name: user.name }, token } });
+      res.json({ success: true, data: { user: { id: user.id, email: user.email, username: user.username }, token } });
     } catch {
       // 数据库不可用时使用 mock
-      res.json({ success: true, data: { user: { id: '1', email, name: 'Demo User' }, token: 'mock-token' } });
+      res.json({ success: true, data: { user: { id: '1', email, username: 'Demo User' }, token: 'mock-token' } });
     }
   } catch (error) {
     res.status(500).json({ success: false, error: '登录失败' });
@@ -97,7 +98,7 @@ export const getCurrentUser = async (req: AuthRequest, res: Response) => {
     if (!user) {
       return res.status(401).json({ success: false, error: '未登录' });
     }
-    res.json({ success: true, data: { id: user.id, email: user.email, name: user.name } });
+    res.json({ success: true, data: { id: user.id, email: user.email, username: user.username } });
   } catch (error) {
     res.status(500).json({ success: false, error: '获取用户信息失败' });
   }
