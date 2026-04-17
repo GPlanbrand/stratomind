@@ -17,6 +17,7 @@ import KnowledgePage from './pages/KnowledgePage'
 import AssistantPage from './pages/AssistantPage'
 import RequirementParser from './components/RequirementParser'
 import ProjectReportPage from './pages/ProjectReportPage'
+import DocumentPreview from './pages/DocumentPreview'
 import Layout from './components/Layout'
 // Admin pages
 import AdminLoginPage from './pages/admin/AdminLoginPage'
@@ -48,6 +49,7 @@ function App() {
         <Route path="assistant" element={<AssistantPage />} />
         <Route path="requirement-parser" element={<RequirementParser />} />
         <Route path="report/:projectId" element={<ProjectReportPage />} />
+        <Route path="preview/:projectId" element={<DocumentPreview />} />
       </Route>
       
       {/* 管理后台 */}

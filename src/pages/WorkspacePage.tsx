@@ -3,7 +3,8 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { 
   ArrowLeft, Save, Home, Cloud, CloudOff,
   Building2, Target, Users, FileText, Lightbulb,
-  Check, ChevronRight, Loader2, AlertCircle, Printer
+  Check, ChevronRight, Loader2, AlertCircle,
+  Printer, Eye, Shield
 } from 'lucide-react'
 import ClientInfoStep from '../components/ClientInfoStep'
 import RequirementsStep from '../components/RequirementsStep'
@@ -618,14 +619,25 @@ const WorkspacePage: React.FC = () => {
                 <span className="sm:hidden">{saving ? '...' : '保存'}</span>
               </button>
               {!isNewProject && projectId && (
-                <button
-                  onClick={() => navigate(`/projects/report/${projectId}`)}
-                  className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm bg-gray-900 text-white rounded-lg hover:bg-gray-800"
-                >
-                  <Printer className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="hidden sm:inline">导出报告</span>
-                  <span className="sm:hidden">报告</span>
-                </button>
+                <>
+                  <button
+                    onClick={() => navigate(`/projects/preview/${projectId}`)}
+                    className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm border border-blue-200 text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100"
+                    title="文档预览与合规检测"
+                  >
+                    <Shield className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <span className="hidden sm:inline">合规检测</span>
+                    <span className="sm:hidden">检测</span>
+                  </button>
+                  <button
+                    onClick={() => navigate(`/projects/report/${projectId}`)}
+                    className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm bg-gray-900 text-white rounded-lg hover:bg-gray-800"
+                  >
+                    <Printer className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <span className="hidden sm:inline">导出报告</span>
+                    <span className="sm:hidden">报告</span>
+                  </button>
+                </>
               )}
             </div>
           </div>
