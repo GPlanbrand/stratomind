@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, FolderOpen, Gem, Coins, Bot, 
   Folder, BookOpen, ScrollText, Settings, ChevronLeft, ChevronRight, 
-  Shield, ChevronDown, Plus, HelpCircle, Headphones, Zap
+  Shield, Plus, HelpCircle, Headphones, Search, Bell, LogOut,
+  FileText, CreditCard, Activity, ChevronDown
 } from 'lucide-react';
 import AdminDashboard from './AdminDashboard';
 import AdminUsersPage from './AdminUsersPage';
@@ -21,13 +22,11 @@ import AdminManagePage from './AdminManagePage';
 type MenuItem = 'dashboard' | 'users' | 'projects' | 'members' | 'points' | 
                  'recharges' | 'ai-logs' | 'files' | 'knowledge' | 'logs' | 'settings' | 'admins';
 
-// 菜单分组配置
 interface MenuGroup {
   id: string;
   name: string;
   icon: React.ElementType;
   items: { id: MenuItem; label: string; icon: React.ElementType }[];
-  quickAction?: { label: string; icon: React.ElementType; onClick: () => void };
 }
 
 const API_BASE = '';
@@ -37,8 +36,9 @@ const AdminPage: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState<MenuItem>('dashboard');
   const [adminUsername, setAdminUsername] = useState('');
   const [adminRole, setAdminRole] = useState<string>('');
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
@@ -61,7 +61,6 @@ const AdminPage: React.FC = () => {
     navigate('/admin/login');
   };
 
-  // 切换分组折叠状态
   const toggleGroup = (groupId: string) => {
     setCollapsedGroups(prev => ({
       ...prev,
@@ -69,7 +68,6 @@ const AdminPage: React.FC = () => {
     }));
   };
 
-  // 所有菜单分组
   const menuGroups: MenuGroup[] = [
     {
       id: 'overview',
@@ -87,12 +85,7 @@ const AdminPage: React.FC = () => {
         { id: 'users', label: '用户管理', icon: Users },
         { id: 'members', label: '会员管理', icon: Gem },
         { id: 'points', label: '积分管理', icon: Coins }
-      ],
-      quickAction: {
-        label: '新建用户',
-        icon: Plus,
-        onClick: () => setActiveMenu('users')
-      }
+      ]
     },
     {
       id: 'content',
@@ -102,25 +95,15 @@ const AdminPage: React.FC = () => {
         { id: 'projects', label: '项目管理', icon: FolderOpen },
         { id: 'files', label: '文件管理', icon: Folder },
         { id: 'knowledge', label: '知识库管理', icon: BookOpen }
-      ],
-      quickAction: {
-        label: '新建项目',
-        icon: Plus,
-        onClick: () => setActiveMenu('projects')
-      }
+      ]
     },
     {
       id: 'finance',
       name: '财务中心',
-      icon: Coins,
+      icon: CreditCard,
       items: [
         { id: 'recharges', label: '充值记录', icon: Coins }
-      ],
-      quickAction: {
-        label: '充值积分',
-        icon: Plus,
-        onClick: () => setActiveMenu('recharges')
-      }
+      ]
     },
     {
       id: 'ai',
@@ -142,12 +125,10 @@ const AdminPage: React.FC = () => {
     }
   ];
 
-  // 根据角色过滤菜单
   const filteredGroups = adminRole === 'superadmin' 
     ? menuGroups 
     : menuGroups.filter(g => g.id !== 'system' || !g.items.some(i => i.id === 'admins'));
 
-  // 获取当前页面标题
   const getPageTitle = () => {
     for (const group of filteredGroups) {
       const item = group.items.find(i => i.id === activeMenu);
@@ -156,10 +137,9 @@ const AdminPage: React.FC = () => {
     return '仪表盘';
   };
 
-  // 快捷操作
   const quickActions = [
     { label: '新建用户', icon: Plus, action: () => setActiveMenu('users') },
-    { label: '新建项目', icon: Plus, action: () => setActiveMenu('projects') },
+    { label: '新建项目', icon: FileText, action: () => setActiveMenu('projects') },
     { label: '充值积分', icon: Coins, action: () => setActiveMenu('recharges') },
   ];
 
@@ -182,20 +162,18 @@ const AdminPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* 侧边栏 */}
+    <div className="min-h-screen bg-[#f9fafb] flex">
+      {/* 侧边栏 - 极简设计 */}
       <aside
         className={`${
-          sidebarOpen ? 'w-64' : 'w-20'
-        } bg-white border-r border-gray-200 flex flex-col transition-all duration-300 shadow-sm`}
+          sidebarCollapsed ? 'w-[72px]' : 'w-[240px]'
+        } bg-white border-r border-[#e5e7eb] flex flex-col transition-all duration-300`}
       >
         {/* Logo区域 */}
-        <div className="h-16 border-b border-gray-200 flex items-center px-4 gap-3">
-          <img src="/logo.svg" alt="Logo" className="h-8 w-auto flex-shrink-0" />
-          {sidebarOpen && (
-            <div className="overflow-hidden">
-              <span className="font-semibold text-gray-900 whitespace-nowrap">管理后台</span>
-            </div>
+        <div className="h-[60px] border-b border-[#e5e7eb] flex items-center px-4 gap-3">
+          <img src="/logo.svg" alt="Logo" className="h-7 w-auto flex-shrink-0" />
+          {!sidebarCollapsed && (
+            <span className="font-semibold text-[#111827] text-sm whitespace-nowrap">管理后台</span>
           )}
         </div>
 
@@ -206,123 +184,98 @@ const AdminPage: React.FC = () => {
             const isActiveGroup = group.items.some(item => item.id === activeMenu);
             
             return (
-              <div key={group.id} className="mb-2">
+              <div key={group.id} className="mb-1">
                 {/* 分组标题 */}
                 <button
                   onClick={() => toggleGroup(group.id)}
-                  className={`w-full flex items-center justify-between px-4 py-2.5 text-left transition-all ${
-                    sidebarOpen ? '' : 'justify-center'
+                  className={`w-full flex items-center px-4 py-2.5 text-left transition-colors hover:bg-[#f9fafb] ${
+                    sidebarCollapsed ? 'justify-center' : 'justify-between'
                   }`}
                 >
-                  {sidebarOpen ? (
-                    <>
-                      <div className={`flex items-center gap-2 ${isActiveGroup ? 'text-purple-600' : 'text-gray-500'}`}>
-                        <group.icon className="w-4 h-4" />
-                        <span className={`text-xs font-medium ${isActiveGroup ? 'text-purple-600' : 'text-gray-400'}`}>
-                          {group.name}
-                        </span>
-                      </div>
-                      <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isCollapsed ? '-rotate-90' : ''}`} />
-                    </>
+                  {sidebarCollapsed ? (
+                    <group.icon className={`w-5 h-5 ${isActiveGroup ? 'text-[#7c3aed]' : 'text-[#6b7280]'}`} />
                   ) : (
-                    <group.icon className={`w-5 h-5 ${isActiveGroup ? 'text-purple-600' : 'text-gray-400'}`} />
+                    <>
+                      <div className={`flex items-center gap-2 ${isActiveGroup ? 'text-[#7c3aed]' : 'text-[#6b7280]'}`}>
+                        <group.icon className="w-4 h-4" />
+                        <span className="text-xs font-medium">{group.name}</span>
+                      </div>
+                      <ChevronDown className={`w-3.5 h-3.5 text-[#9ca3af] transition-transform duration-200 ${isCollapsed ? '-rotate-90' : ''}`} />
+                    </>
                   )}
                 </button>
 
                 {/* 分组菜单项 */}
-                <div className={`${isCollapsed ? 'hidden' : ''}`}>
-                  {group.items.map((item) => (
-                    <button
-                      key={item.id}
-                      onClick={() => setActiveMenu(item.id)}
-                      className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors ${
-                        activeMenu === item.id
-                          ? 'bg-purple-50 text-purple-600 border-r-2 border-purple-600'
-                          : 'text-gray-600 hover:bg-gray-50'
-                      } ${!sidebarOpen ? 'justify-center' : ''}`}
-                      title={!sidebarOpen ? item.label : undefined}
-                    >
-                      <item.icon className="w-4 h-4 flex-shrink-0" />
-                      {sidebarOpen && (
-                        <span className="font-medium whitespace-nowrap text-sm">{item.label}</span>
-                      )}
-                    </button>
-                  ))}
-
-                  {/* 分组快捷操作 */}
-                  {sidebarOpen && group.quickAction && (
-                    <button
-                      onClick={group.quickAction.onClick}
-                      className="w-full flex items-center gap-2 px-4 py-2 ml-4 text-xs text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
-                    >
-                      <group.quickAction.icon className="w-3 h-3" />
-                      <span>{group.quickAction.label}</span>
-                    </button>
-                  )}
-                </div>
+                {!isCollapsed && (
+                  <div>
+                    {group.items.map((item) => (
+                      <button
+                        key={item.id}
+                        onClick={() => setActiveMenu(item.id)}
+                        className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-all ${
+                          sidebarCollapsed ? 'justify-center px-0' : 'px-4'
+                        } ${
+                          activeMenu === item.id
+                            ? 'bg-[#7c3aed] text-white'
+                            : 'text-[#6b7280] hover:bg-[#f3f4f6]'
+                        }`}
+                        title={sidebarCollapsed ? item.label : undefined}
+                      >
+                        <item.icon className="w-4 h-4 flex-shrink-0" />
+                        {!sidebarCollapsed && (
+                          <span className="font-medium whitespace-nowrap text-sm">{item.label}</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             );
           })}
         </nav>
 
         {/* 底部区域 */}
-        <div className="border-t border-gray-200">
-          {sidebarOpen ? (
+        <div className="border-t border-[#e5e7eb]">
+          {!sidebarCollapsed && (
             <>
-              {/* 帮助链接 */}
-              <a href="#" className="flex items-center gap-2 px-4 py-3 text-gray-500 hover:text-purple-600 hover:bg-gray-50 transition-colors">
-                <HelpCircle className="w-4 h-4" />
-                <span className="text-sm">帮助文档</span>
-              </a>
-              <a href="#" className="flex items-center gap-2 px-4 py-3 text-gray-500 hover:text-purple-600 hover:bg-gray-50 transition-colors">
-                <Headphones className="w-4 h-4" />
-                <span className="text-sm">在线客服</span>
-              </a>
-              {/* 版本信息 */}
-              <div className="px-4 py-3 text-xs text-gray-400">
+              <div className="px-4 py-3 text-[11px] text-[#9ca3af]">
                 <div className="flex items-center gap-1">
                   <span>StratoMind</span>
-                  <span className="text-gray-300">|</span>
+                  <span className="text-[#d1d5db]">|</span>
                   <span>v2.0.0</span>
                 </div>
               </div>
             </>
-          ) : (
-            <div className="flex flex-col items-center py-3 gap-3">
-              <HelpCircle className="w-4 h-4 text-gray-400" />
-              <Headphones className="w-4 h-4 text-gray-400" />
-            </div>
           )}
         </div>
 
         {/* 折叠按钮 */}
         <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="border-t border-gray-200 p-3 text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-colors flex items-center justify-center"
+          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+          className="border-t border-[#e5e7eb] h-10 flex items-center justify-center text-[#9ca3af] hover:text-[#7c3aed] hover:bg-[#f9fafb] transition-colors"
         >
-          {sidebarOpen ? (
-            <>
-              <ChevronLeft className="w-4 h-4" />
-            </>
-          ) : (
+          {sidebarCollapsed ? (
             <ChevronRight className="w-4 h-4" />
+          ) : (
+            <ChevronLeft className="w-4 h-4" />
           )}
         </button>
       </aside>
 
       {/* 主内容区 */}
       <div className="flex-1 flex flex-col">
-        {/* 顶部导航 */}
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 shadow-sm">
-          <div className="flex items-center gap-4">
-            <h1 className="text-lg font-semibold text-gray-900">{getPageTitle()}</h1>
+        {/* 顶部导航 - 极简设计 */}
+        <header className="h-[60px] bg-white border-b border-[#e5e7eb] flex items-center justify-between px-6">
+          <div className="flex items-center gap-6">
+            <h1 className="text-base font-semibold text-[#111827]">{getPageTitle()}</h1>
+            
             {/* 快捷操作 */}
-            <div className="hidden lg:flex items-center gap-2 ml-6">
+            <div className="hidden xl:flex items-center gap-2">
               {quickActions.map((action, idx) => (
                 <button
                   key={idx}
                   onClick={action.action}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-purple-600 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-[#7c3aed] bg-[#faf5ff] hover:bg-[#ede9fe] rounded-md transition-colors"
                 >
                   <action.icon className="w-3.5 h-3.5" />
                   <span>{action.label}</span>
@@ -331,19 +284,58 @@ const AdminPage: React.FC = () => {
             </div>
           </div>
           
+          {/* 右侧用户区域 */}
           <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-500">
-              欢迎，<span className="font-medium text-gray-900">{adminUsername}</span>
-              {adminRole === 'superadmin' && (
-                <span className="ml-2 px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs rounded-full">超级管理员</span>
-              )}
-            </span>
-            <button
-              onClick={handleLogout}
-              className="text-sm text-gray-500 hover:text-red-500 transition-colors"
-            >
-              退出登录
+            {/* 搜索 */}
+            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-[#f9fafb] rounded-md border border-[#e5e7eb]">
+              <Search className="w-4 h-4 text-[#9ca3af]" />
+              <input 
+                type="text" 
+                placeholder="搜索..." 
+                className="bg-transparent border-none outline-none text-sm text-[#374151] w-32 placeholder:text-[#9ca3af]"
+              />
+            </div>
+
+            {/* 通知 */}
+            <button className="relative p-2 text-[#6b7280] hover:text-[#7c3aed] hover:bg-[#f9fafb] rounded-md transition-colors">
+              <Bell className="w-4 h-4" />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-[#ef4444] rounded-full"></span>
             </button>
+
+            {/* 用户菜单 */}
+            <div className="relative">
+              <button
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                className="flex items-center gap-2 p-1 hover:bg-[#f9fafb] rounded-md transition-colors"
+              >
+                <div className="w-8 h-8 rounded-full bg-[#7c3aed] flex items-center justify-center text-white text-sm font-medium">
+                  {adminUsername.charAt(0).toUpperCase()}
+                </div>
+                <ChevronDown className="w-4 h-4 text-[#6b7280]" />
+              </button>
+
+              {/* 下拉菜单 */}
+              {userMenuOpen && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setUserMenuOpen(false)}></div>
+                  <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-lg border border-[#e5e7eb] shadow-lg z-20 py-1">
+                    <div className="px-4 py-3 border-b border-[#e5e7eb]">
+                      <p className="text-sm font-medium text-[#111827]">{adminUsername}</p>
+                      <p className="text-xs text-[#6b7280] mt-0.5">
+                        {adminRole === 'superadmin' ? '超级管理员' : '管理员'}
+                      </p>
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-[#ef4444] hover:bg-[#fef2f2] transition-colors"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>退出登录</span>
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </header>
 

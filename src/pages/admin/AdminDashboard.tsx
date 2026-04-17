@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Users, FolderOpen, Coins, Bot, TrendingUp, TrendingDown,
   Activity, Clock, UserPlus, FileText, Zap, Download,
-  CreditCard, ChevronRight
+  CreditCard, ChevronRight, ArrowUpRight, ArrowDownRight
 } from 'lucide-react';
 import { 
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
@@ -11,7 +11,6 @@ import {
 
 const API_BASE = '';
 
-// 统计数据接口
 interface Stats {
   totalUsers: number;
   totalProjects: number;
@@ -33,7 +32,6 @@ interface Stats {
   vipUsers: number;
 }
 
-// 趋势数据接口
 interface TrendData {
   date: string;
   users: number;
@@ -42,13 +40,11 @@ interface TrendData {
   recharges: number;
 }
 
-// 会员等级数据
 interface LevelData {
   name: string;
   value: number;
 }
 
-// 动态数据接口
 interface Activity {
   id: string;
   type: 'user' | 'project' | 'ai' | 'recharge' | 'member';
@@ -57,12 +53,14 @@ interface Activity {
   time: string;
 }
 
-// Props接口
 interface AdminDashboardProps {
   onNavigate?: (menu: string) => void;
 }
 
 const COLORS = ['#7c3aed', '#a78bfa', '#c4b5fd', '#ddd6fe'];
+const PURPLE = '#7c3aed';
+const PURPLE_LIGHT = '#a78bfa';
+const PURPLE_BG = '#faf5ff';
 
 const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
   const [stats, setStats] = useState<Stats>({
@@ -75,7 +73,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
   const [levelData, setLevelData] = useState<LevelData[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
-  const [dateRange, setDateRange] = useState<'today' | 'week' | 'month'>('week');
+  const [dateRange, setDateRange] = useState<'7d' | '30d'>('7d');
 
   useEffect(() => {
     fetchDashboardData();
@@ -116,32 +114,28 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
     }
   };
 
-  // 计算趋势百分比
   const calcTrend = (current: number, previous: number): { value: number; isUp: boolean } => {
     if (previous === 0) return { value: current > 0 ? 100 : 0, isUp: true };
     const change = ((current - previous) / previous * 100);
     return { value: Math.abs(change), isUp: change >= 0 };
   };
 
-  // 获取动态图标
   const getActivityIcon = (type: string) => {
-    const icons: Record<string, { icon: React.ElementType; color: string }> = {
-      user: { icon: UserPlus, color: 'text-purple-500 bg-purple-100' },
-      project: { icon: FileText, color: 'text-blue-500 bg-blue-100' },
-      ai: { icon: Bot, color: 'text-pink-500 bg-pink-100' },
-      recharge: { icon: Coins, color: 'text-yellow-500 bg-yellow-100' },
-      member: { icon: Zap, color: 'text-amber-500 bg-amber-100' }
+    const icons: Record<string, { icon: React.ElementType; bg: string; color: string }> = {
+      user: { icon: UserPlus, bg: 'bg-[#faf5ff]', color: 'text-[#7c3aed]' },
+      project: { icon: FileText, bg: 'bg-[#eff6ff]', color: 'text-[#3b82f6]' },
+      ai: { icon: Bot, bg: 'bg-[#fdf2f8]', color: 'text-[#ec4899]' },
+      recharge: { icon: Coins, bg: 'bg-[#fef3c7]', color: 'text-[#f59e0b]' },
+      member: { icon: Zap, bg: 'bg-[#fff7ed]', color: 'text-[#f97316]' }
     };
     return icons[type] || icons.user;
   };
 
-  // 统计卡片配置
   const statCards = [
     { 
       title: '总用户', 
       value: stats.totalUsers, 
       icon: Users, 
-      gradient: 'from-violet-500 to-purple-600',
       trend: calcTrend(stats.todayNewUsers, stats.weekNewUsers / 7),
       subtitle: '今日新增'
     },
@@ -149,7 +143,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
       title: '总项目', 
       value: stats.totalProjects, 
       icon: FolderOpen, 
-      gradient: 'from-blue-500 to-cyan-600',
       trend: calcTrend(stats.todayNewProjects, stats.weekNewProjects / 7),
       subtitle: '进行中'
     },
@@ -157,7 +150,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
       title: '总充值', 
       value: `¥${stats.totalRecharges.toLocaleString()}`, 
       icon: Coins, 
-      gradient: 'from-emerald-500 to-teal-600',
       trend: calcTrend(stats.todayRecharges, stats.weekRecharges / 7),
       subtitle: '今日充值'
     },
@@ -165,35 +157,19 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
       title: 'AI调用', 
       value: stats.totalAILogs.toLocaleString(), 
       icon: Bot, 
-      gradient: 'from-pink-500 to-rose-600',
       trend: calcTrend(stats.todayAILogs, stats.weekAILogs / 7),
       subtitle: '今日调用'
-    },
-    { 
-      title: 'VIP用户', 
-      value: stats.vipUsers, 
-      icon: Zap, 
-      gradient: 'from-amber-500 to-orange-600',
-      subtitle: '活跃用户'
-    },
-    { 
-      title: '本周活跃', 
-      value: stats.activeProjects, 
-      icon: Activity, 
-      gradient: 'from-indigo-500 to-purple-600',
-      subtitle: '活跃项目'
     }
   ];
 
-  // 格式化日期显示
   const formatDate = (date: string) => date.slice(5);
 
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-          <div className="text-gray-500">加载中...</div>
+          <div className="w-8 h-8 border-2 border-[#7c3aed] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+          <div className="text-[#6b7280]">加载中...</div>
         </div>
       </div>
     );
@@ -201,22 +177,22 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
 
   return (
     <div className="space-y-6">
-      {/* 时间筛选 */}
+      {/* 标题栏 */}
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-gray-900">数据概览</h2>
-        <div className="flex gap-1 bg-gray-100 p-1 rounded-lg">
+        <h2 className="text-lg font-semibold text-[#111827]">数据概览</h2>
+        {/* 时间切换 - 7天/30天 */}
+        <div className="flex gap-1 bg-[#f9fafb] p-1 rounded-md border border-[#e5e7eb]">
           {[
-            { key: 'today', label: '今日' },
-            { key: 'week', label: '本周' },
-            { key: 'month', label: '本月' }
+            { key: '7d', label: '7天' },
+            { key: '30d', label: '30天' }
           ].map(btn => (
             <button
               key={btn.key}
               onClick={() => setDateRange(btn.key as any)}
-              className={`px-4 py-1.5 text-sm rounded-md transition-all ${
+              className={`px-4 py-1.5 text-sm rounded transition-all ${
                 dateRange === btn.key 
-                  ? 'bg-white text-purple-600 shadow-sm font-medium' 
-                  : 'text-gray-500 hover:text-gray-700'
+                  ? 'bg-white text-[#7c3aed] shadow-sm font-medium border border-[#e5e7eb]' 
+                  : 'text-[#6b7280] hover:text-[#111827]'
               }`}
             >
               {btn.label}
@@ -225,55 +201,49 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
         </div>
       </div>
 
-      {/* 核心统计卡片 */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      {/* 统计卡片 - 4列响应式 */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((card, index) => (
           <div 
             key={index} 
-            className={`bg-gradient-to-br ${card.gradient} rounded-xl p-4 text-white shadow-sm hover:shadow-md transition-shadow`}
+            className="bg-white rounded-xl p-5 border border-[#e5e7eb] hover:border-[#a78bfa] transition-colors"
           >
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-white/80 text-xs font-medium">{card.title}</span>
-              <card.icon className="w-4 h-4 text-white/60" />
-            </div>
-            <p className="text-2xl font-bold mb-1">{card.value}</p>
-            {card.trend && (
-              <div className="flex items-center gap-1 text-xs">
-                {card.trend.isUp ? (
-                  <TrendingUp className="w-3 h-3 text-green-300" />
-                ) : (
-                  <TrendingDown className="w-3 h-3 text-red-300" />
-                )}
-                <span className={card.trend.isUp ? 'text-green-300' : 'text-red-300'}>
-                  {card.trend.value.toFixed(0)}%
-                </span>
-                <span className="text-white/60">{card.subtitle}</span>
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-xs font-medium text-[#6b7280]">{card.title}</span>
+              <div className="w-9 h-9 rounded-lg bg-[#faf5ff] flex items-center justify-center">
+                <card.icon className="w-4 h-4 text-[#7c3aed]" />
               </div>
-            )}
-            {!card.trend && (
-              <p className="text-xs text-white/60">{card.subtitle}</p>
-            )}
+            </div>
+            <p className="text-2xl font-bold text-[#111827] mb-2">{card.value}</p>
+            <div className="flex items-center gap-2">
+              {card.trend.isUp ? (
+                <ArrowUpRight className="w-3.5 h-3.5 text-[#10b981]" />
+              ) : (
+                <ArrowDownRight className="w-3.5 h-3.5 text-[#ef4444]" />
+              )}
+              <span className={`text-xs font-medium ${card.trend.isUp ? 'text-[#10b981]' : 'text-[#ef4444]'}`}>
+                {card.trend.value.toFixed(0)}%
+              </span>
+              <span className="text-xs text-[#9ca3af]">{card.subtitle}</span>
+            </div>
           </div>
         ))}
       </div>
 
       {/* 图表区域 */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* 用户增长趋势 */}
-        <div className="lg:col-span-2 bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+        <div className="lg:col-span-2 bg-white rounded-xl p-5 border border-[#e5e7eb]">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base font-semibold text-gray-900 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-purple-600" />
-              增长趋势
-            </h3>
+            <h3 className="text-sm font-semibold text-[#111827]">增长趋势</h3>
           </div>
           <ResponsiveContainer width="100%" height={280}>
             <LineChart data={trendData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis dataKey="date" tick={{ fontSize: 10 }} tickFormatter={formatDate} />
-              <YAxis tick={{ fontSize: 10 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+              <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#6b7280' }} tickFormatter={formatDate} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: '#6b7280' }} axisLine={false} tickLine={false} />
               <Tooltip 
-                contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: 12 }}
+                contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: 12, boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
                 labelFormatter={(label) => `${label}`}
               />
               <Legend wrapperStyle={{ fontSize: 12 }} />
@@ -284,7 +254,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
                 strokeWidth={2} 
                 dot={{ fill: '#7c3aed', r: 3 }}
                 name="新增用户"
-                activeDot={{ r: 5 }}
+                activeDot={{ r: 5, fill: '#7c3aed' }}
               />
               <Line 
                 type="monotone" 
@@ -293,26 +263,23 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
                 strokeWidth={2} 
                 dot={{ fill: '#3b82f6', r: 3 }}
                 name="创建项目"
-                activeDot={{ r: 5 }}
+                activeDot={{ r: 5, fill: '#3b82f6' }}
               />
             </LineChart>
           </ResponsiveContainer>
         </div>
 
         {/* 会员等级分布 */}
-        <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-          <h3 className="text-base font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Users className="w-5 h-5 text-purple-600" />
-            会员分布
-          </h3>
-          <ResponsiveContainer width="100%" height={220}>
+        <div className="bg-white rounded-xl p-5 border border-[#e5e7eb]">
+          <h3 className="text-sm font-semibold text-[#111827] mb-4">会员分布</h3>
+          <ResponsiveContainer width="100%" height={180}>
             <PieChart>
               <Pie
                 data={levelData.filter(l => l.value > 0)}
                 cx="50%"
                 cy="50%"
-                innerRadius={50}
-                outerRadius={80}
+                innerRadius={45}
+                outerRadius={70}
                 paddingAngle={2}
                 dataKey="value"
               >
@@ -326,68 +293,68 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
           <div className="flex flex-wrap justify-center gap-3 mt-2">
             {levelData.map((item, index) => (
               <div key={item.name} className="flex items-center gap-1.5">
-                <div className="w-2.5 h-2.5 rounded" style={{ backgroundColor: COLORS[index] }} />
-                <span className="text-xs text-gray-600">{item.name}</span>
+                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[index] }} />
+                <span className="text-xs text-[#6b7280]">{item.name}</span>
               </div>
             ))}
           </div>
-          <div className="mt-2 text-center text-xs text-gray-500">
+          <div className="mt-3 text-center text-xs text-[#9ca3af]">
             共 {levelData.reduce((sum, l) => sum + l.value, 0)} 位会员
           </div>
         </div>
       </div>
 
       {/* AI使用趋势 + 最新动态 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* AI使用趋势 */}
-        <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+        <div className="bg-white rounded-xl p-5 border border-[#e5e7eb]">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base font-semibold text-gray-900 flex items-center gap-2">
-              <Bot className="w-5 h-5 text-pink-600" />
-              AI使用趋势
-            </h3>
+            <h3 className="text-sm font-semibold text-[#111827]">AI使用趋势</h3>
           </div>
-          <ResponsiveContainer width="100%" height={220}>
+          <ResponsiveContainer width="100%" height={200}>
             <BarChart data={trendData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis dataKey="date" tick={{ fontSize: 10 }} tickFormatter={formatDate} />
-              <YAxis tick={{ fontSize: 10 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+              <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#6b7280' }} tickFormatter={formatDate} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: '#6b7280' }} axisLine={false} tickLine={false} />
               <Tooltip 
-                contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: 12 }}
+                contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: 12, boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
                 labelFormatter={(label) => `${label}`}
               />
-              <Bar dataKey="aiCalls" fill="#ec4899" radius={[4, 4, 0, 0]} name="AI调用" />
+              <Bar dataKey="aiCalls" fill="#7c3aed" radius={[4, 4, 0, 0]} name="AI调用" />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
-        {/* 最新动态 */}
-        <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+        {/* 最新动态 - 时间线样式 */}
+        <div className="bg-white rounded-xl p-5 border border-[#e5e7eb]">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base font-semibold text-gray-900 flex items-center gap-2">
-              <Clock className="w-5 h-5 text-purple-600" />
-              最新动态
-            </h3>
-            <button className="text-xs text-purple-600 hover:text-purple-700 flex items-center gap-1">
+            <h3 className="text-sm font-semibold text-[#111827]">最新动态</h3>
+            <button className="text-xs text-[#7c3aed] hover:text-[#6d28d9] flex items-center gap-1">
               查看全部 <ChevronRight className="w-3 h-3" />
             </button>
           </div>
-          <div className="space-y-3 max-h-48 overflow-y-auto">
+          <div className="space-y-3 max-h-[220px] overflow-y-auto">
             {activities.length === 0 ? (
-              <p className="text-gray-400 text-sm text-center py-6">暂无动态</p>
+              <p className="text-[#9ca3af] text-sm text-center py-8">暂无动态</p>
             ) : (
-              activities.map((activity) => {
+              activities.map((activity, index) => {
                 const iconConfig = getActivityIcon(activity.type);
                 return (
-                  <div key={activity.id} className="flex items-start gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors">
-                    <div className={`w-8 h-8 rounded-lg ${iconConfig.color} flex items-center justify-center flex-shrink-0`}>
-                      <iconConfig.icon className="w-4 h-4" />
+                  <div key={activity.id} className="flex items-start gap-3 relative">
+                    {/* 时间线 */}
+                    <div className="flex flex-col items-center">
+                      <div className={`w-8 h-8 rounded-lg ${iconConfig.bg} flex items-center justify-center`}>
+                        <iconConfig.icon className={`w-4 h-4 ${iconConfig.color}`} />
+                      </div>
+                      {index < activities.length - 1 && (
+                        <div className="w-px h-6 bg-[#e5e7eb] mt-2"></div>
+                      )}
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm text-gray-900 truncate">{activity.title}</p>
-                      <p className="text-xs text-gray-500 truncate">{activity.description}</p>
+                    <div className="flex-1 min-w-0 pt-1">
+                      <p className="text-sm text-[#111827] truncate">{activity.title}</p>
+                      <p className="text-xs text-[#9ca3af] truncate mt-0.5">{activity.description}</p>
                     </div>
-                    <span className="text-xs text-gray-400 flex-shrink-0">{activity.time}</span>
+                    <span className="text-xs text-[#9ca3af] flex-shrink-0 pt-1">{activity.time}</span>
                   </div>
                 );
               })
@@ -396,12 +363,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
         </div>
       </div>
 
-      {/* 快捷操作区 */}
-      <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-        <h3 className="text-base font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <Zap className="w-5 h-5 text-amber-500" />
-          快捷操作
-        </h3>
+      {/* 快捷操作 */}
+      <div className="bg-white rounded-xl p-5 border border-[#e5e7eb]">
+        <h3 className="text-sm font-semibold text-[#111827] mb-4">快捷操作</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
             { label: '新建用户', icon: UserPlus, color: 'purple', action: () => onNavigate?.('users') },
@@ -412,56 +376,28 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
             <button
               key={idx}
               onClick={action.action}
-              className={`flex items-center justify-center gap-2 p-4 rounded-xl border-2 border-dashed transition-all group ${
-                action.color === 'purple' ? 'border-purple-200 hover:border-purple-400 hover:bg-purple-50' :
-                action.color === 'blue' ? 'border-blue-200 hover:border-blue-400 hover:bg-blue-50' :
-                action.color === 'green' ? 'border-green-200 hover:border-green-400 hover:bg-green-50' :
-                'border-gray-200 hover:border-gray-400 hover:bg-gray-50'
+              className={`flex items-center justify-center gap-2 p-4 rounded-xl border transition-all group ${
+                action.color === 'purple' ? 'border-[#e9d5ff] hover:border-[#7c3aed] hover:bg-[#faf5ff]' :
+                action.color === 'blue' ? 'border-[#bfdbfe] hover:border-[#3b82f6] hover:bg-[#eff6ff]' :
+                action.color === 'green' ? 'border-[#a7f3d0] hover:border-[#10b981] hover:bg-[#ecfdf5]' :
+                'border-[#e5e7eb] hover:border-[#6b7280] hover:bg-[#f9fafb]'
               }`}
             >
               <action.icon className={`w-5 h-5 ${
-                action.color === 'purple' ? 'text-purple-500 group-hover:text-purple-600' :
-                action.color === 'blue' ? 'text-blue-500 group-hover:text-blue-600' :
-                action.color === 'green' ? 'text-green-500 group-hover:text-green-600' :
-                'text-gray-500 group-hover:text-gray-600'
+                action.color === 'purple' ? 'text-[#7c3aed]' :
+                action.color === 'blue' ? 'text-[#3b82f6]' :
+                action.color === 'green' ? 'text-[#10b981]' :
+                'text-[#6b7280]'
               }`} />
               <span className={`font-medium text-sm ${
-                action.color === 'purple' ? 'text-purple-600' :
-                action.color === 'blue' ? 'text-blue-600' :
-                action.color === 'green' ? 'text-green-600' :
-                'text-gray-600'
+                action.color === 'purple' ? 'text-[#7c3aed]' :
+                action.color === 'blue' ? 'text-[#3b82f6]' :
+                action.color === 'green' ? 'text-[#10b981]' :
+                'text-[#6b7280]'
               }`}>{action.label}</span>
             </button>
           ))}
         </div>
-      </div>
-
-      {/* 待办事项 */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {[
-          { title: '待处理用户', count: 0, desc: '新注册待审核', color: 'purple' },
-          { title: '待审核项目', count: 0, desc: '项目待审批', color: 'blue' },
-          { title: '系统告警', count: 0, desc: '异常待处理', color: 'red' }
-        ].map((item, idx) => (
-          <div 
-            key={idx}
-            className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-          >
-            <div className="flex items-start justify-between">
-              <div>
-                <h4 className="font-medium text-gray-900">{item.title}</h4>
-                <p className="text-sm text-gray-500 mt-1">{item.desc}</p>
-              </div>
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                item.color === 'purple' ? 'bg-purple-100 text-purple-600' :
-                item.color === 'blue' ? 'bg-blue-100 text-blue-600' :
-                'bg-red-100 text-red-600'
-              }`}>
-                <span className="text-lg font-bold">{item.count}</span>
-              </div>
-            </div>
-          </div>
-        ))}
       </div>
     </div>
   );
