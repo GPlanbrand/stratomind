@@ -24,6 +24,5 @@ export default defineConfig({
   server: {
     port: 3000,
   },
-  // Electron 开发模式优化
-  base: './',
+  base: '/',
 })
