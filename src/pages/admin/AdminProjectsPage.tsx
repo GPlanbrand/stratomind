@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Folder, Edit2, X, Download, Eye, FileText, Users, Clock, TrendingUp, MoreVertical, Trash2, Archive, CheckCircle } from 'lucide-react';
+import { Folder, Edit2, X, Download, Eye, FileText, Clock, TrendingUp, Trash2, Archive, CheckCircle } from 'lucide-react';
 
 const API_BASE = '';
 
