@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   Search, 
@@ -8,8 +8,11 @@ import {
   ChevronRight,
   X,
   Menu,
-  Sparkles
+  Sparkles,
+  Folder
 } from 'lucide-react';
+import FilesPanel from './FilesPanel';
+import { getCurrentUser } from '../services/auth';
 
 interface HeaderProps {
   collapsed: boolean;
@@ -38,6 +41,12 @@ const Header: React.FC<HeaderProps> = ({ collapsed, isMobile, onMenuClick, proje
   const location = useLocation();
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showFilesPanel, setShowFilesPanel] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  useEffect(() => {
+    setCurrentUser(getCurrentUser());
+  }, []);
 
   // 获取当前面包屑
   const getBreadcrumbs = (): BreadcrumbItem[] => {
@@ -201,12 +210,12 @@ const Header: React.FC<HeaderProps> = ({ collapsed, isMobile, onMenuClick, proje
 
         {/* 文件夹 */}
         <button
-          onClick={() => navigate('/projects/files')}
+          onClick={() => setShowFilesPanel(true)}
           className="flex items-center gap-2 px-3 h-9 hover:bg-gray-50 rounded-lg text-gray-500 hover:text-gray-700 transition-colors"
-          title="文件"
+          title="我的文件"
         >
-          <FolderOpen className="w-4 h-4" />
-          <span className="text-sm hidden sm:inline">文件夹</span>
+          <Folder className="w-4 h-4" />
+          <span className="text-sm hidden sm:inline">文件</span>
         </button>
 
         {/* 分享 */}
@@ -224,15 +233,18 @@ const Header: React.FC<HeaderProps> = ({ collapsed, isMobile, onMenuClick, proje
 
         {/* 历史话题 */}
         <button
-          className="flex items-center gap-2 px-3 h-9 hover:bg-gray-50 rounded-lg text-gray-500 hover:text-gray-700 transition-colors"
-          title="历史话题"
-        >
-          <History className="w-4 h-4" />
-          <span className="text-sm hidden sm:inline">历史</span>
-        </button>
-      </div>
+          className="flex items-center gap-2 px-3 h-9 hover:
+      {/* 文件管理面板 */}
+      {showFilesPanel && currentUser && (
+        <FilesPanel
+          isOpen={showFilesPanel}
+          onClose={() => setShowFilesPanel(false)}
+          userId={currentUser.id}
+        />
+      )}
     </div>
   );
 };
 
 export default Header;
+port default Header;
