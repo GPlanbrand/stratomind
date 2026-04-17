@@ -9,7 +9,7 @@ WORKDIR /app
 COPY package*.json ./
 COPY prisma ./prisma/
 
-# 安装所有依赖（包括 devDependencies 用于构建）
+# 安装所有依赖
 RUN npm install
 
 # 复制源代码
@@ -19,9 +19,10 @@ COPY src ./src/
 # 构建 TypeScript
 RUN npm run build
 
-# 删除 devDependencies 减小镜像大小
-RUN npm prune --production
+# 保留 prisma CLI 用于数据库迁移
+# 不要运行 npm prune
 
 EXPOSE 3000
 
-CMD ["node", "dist/index.js"]
+# 启动时先运行数据库迁移，然后启动服务
+CMD npx prisma db push --skip-generate && node dist/index.js
