@@ -141,7 +141,7 @@ ${creativeDirection}
     alert('Prompt已复制到剪贴板')
   }
 
-  // AI生成策略
+  // 辅助生成策略
   const handleGenerateStrategy = async () => {
     setGenerating(true)
     setError(null)
@@ -358,7 +358,7 @@ ${data.mediaStrategy || '（未填写）'}
             className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50"
           >
             <Wand2 className="w-4 h-4" />
-            {generating ? '生成中...' : 'AI生成策略'}
+            {generating ? '生成中...' : '辅助生成策略'}
           </button>
           <button 
             onClick={handleExportStrategy}

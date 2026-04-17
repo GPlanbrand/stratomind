@@ -5,7 +5,7 @@ const FloatingAssistant: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([
-    { role: 'assistant', content: '你好！我是灵思AI助手，有什么可以帮你的吗？' }
+    { role: 'assistant', content: '你好！我是灵思文案助手，有什么可以帮你的吗？' }
   ]);
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -72,7 +72,7 @@ const FloatingAssistant: React.FC = () => {
           {/* 头部 */}
           <div className="px-4 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white flex items-center gap-2">
             <Sparkles className="w-5 h-5" />
-            <span className="font-medium">灵思AI助手</span>
+            <span className="font-medium">灵思文案助手</span>
           </div>
 
           {/* 消息区域 */}

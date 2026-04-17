@@ -91,9 +91,9 @@ const DocumentPreview: React.FC<DocumentPreviewProps> = ({ projectId, content: i
     brief: Partial<Brief>,
     strategy: Partial<Strategy>
   ): string => {
-    const brandName = clientInfo.companyName || requirements.projectName || '品牌'
-    const industry = clientInfo.industry || requirements.industry || '行业'
-    const targetAudience = brief.targetAudience || requirements.targetAudience || '目标人群'
+    const brandName = clientInfo.clientName || requirements.projectName || '品牌'
+    const industry = clientInfo.industry || '行业'
+    const targetAudience = brief.targetDemographic || requirements.targetPersona || '目标人群'
 
     return `# ${brandName}品牌策划方案
 
@@ -117,7 +117,7 @@ const DocumentPreview: React.FC<DocumentPreviewProps> = ({ projectId, content: i
 
 ### 竞争分析
 ${competitors.length > 0
-  ? competitors.map((c, i) => `- **${c.name}：** ${c.advantages || '（待填写）'}（差异化：${c.differentiation || '（待填写）'}）`).join('\n')
+  ? competitors.map((c, i) => `- **${c.name}：** 定位：${c.brandPositioning || '（待填写）'}（差异化：${c.differentiation || '（待填写）'}）`).join('\n')
   : '- **（待添加竞品）**'}
 
 ## 三、策略定位

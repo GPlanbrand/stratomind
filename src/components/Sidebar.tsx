@@ -32,7 +32,7 @@ const projectSteps = [
 const independentItems = [
   { icon: FolderOpen, label: '方案资产', path: '/projects/assets' },
   { icon: Book, label: '知识库', path: '/projects/knowledge' },
-  { icon: Bot, label: 'AI助手', path: '/projects/assistant' },
+  { icon: Bot, label: '文案助手', path: '/projects/assistant' },
   { icon: MessageSquare, label: '甲方翻译器', path: '/projects/requirement-parser' },
 ];
 

@@ -78,7 +78,7 @@ const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
     setExpandedGroups(prev => ({ ...prev, [groupId]: !prev[groupId] }))
   }
 
-  // AI分析竞品
+  // 智能分析竞品
   const handleAnalyzeCompetitors = async () => {
     const validCompetitors = data.filter(c => c.name && c.name.trim())
     if (validCompetitors.length === 0) {
@@ -528,7 +528,7 @@ const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
                 <button onClick={handleAnalyzeCompetitors} disabled={analyzing}
                   className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed">
                   {analyzing ? (
-                    <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />AI分析中...</>
+                    <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />智能分析中...</>
                   ) : (
                     <><Sparkles className="w-5 h-5" />AI深度分析</>
                   )}
@@ -541,7 +541,7 @@ const CompetitorStep: React.FC<Props> = ({ data, onChange }) => {
               </div>
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
-              <span className="text-xs text-gray-500">AI分析维度：</span>
+              <span className="text-xs text-gray-500">智能分析维度：</span>
               {['基础信息', '市场表现', '品牌策略', '产品服务', '营销传播', '视觉形象', 'SWOT'].map((dim) => (
                 <span key={dim} className="text-xs px-2 py-1 bg-white rounded-full text-gray-600 border border-gray-200">{dim}</span>
               ))}

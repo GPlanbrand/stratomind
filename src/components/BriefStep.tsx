@@ -69,7 +69,7 @@ const BriefStep: React.FC<Props> = ({ data, onChange }) => {
     setExpandedSections(prev => ({ ...prev, [sectionId]: !prev[sectionId] }))
   }
 
-  // AI生成简报
+  // 辅助生成简报
   const handleGenerateBrief = async () => {
     setGenerating(true)
     setError(null)
@@ -551,7 +551,7 @@ const BriefStep: React.FC<Props> = ({ data, onChange }) => {
               {generating ? (
                 <><div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />生成中...</>
               ) : (
-                <><Wand2 className="w-4 h-4 sm:w-5 sm:h-5" />AI生成</>
+                <><Wand2 className="w-4 h-4 sm:w-5 sm:h-5" />辅助生成</>
               )}
             </button>
           </div>

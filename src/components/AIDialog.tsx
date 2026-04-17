@@ -57,7 +57,7 @@ const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction })
       setMessages([{
         id: Date.now().toString(),
         role: 'assistant',
-        content: '你好！我是灵思AI助手。你可以：\n• 描述你想生成的创意内容\n• 上传参考图片让我学习风格\n• 让我帮你修改方案中的内容\n\n有什么可以帮你的吗？',
+        content: '你好！我是灵思文案助手。你可以：\n• 描述你想生成的创意内容\n• 上传参考图片让我学习风格\n• 让我帮你修改方案中的内容\n\n有什么可以帮你的吗？',
         timestamp: Date.now()
       }]);
     }
@@ -358,7 +358,7 @@ const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction })
         <div className="w-6 h-6 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
           <Sparkles className="w-3.5 h-3.5 text-white" />
         </div>
-        <span className="font-medium">AI助手</span>
+        <span className="font-medium">文案助手</span>
         <ChevronUp className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
       </button>
 
@@ -372,7 +372,7 @@ const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction })
                 <Sparkles className="w-4 h-4 text-white" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900 text-sm">灵思AI助手</h3>
+                <h3 className="font-semibold text-gray-900 text-sm">灵思文案助手</h3>
                 <p className="text-xs text-gray-500">{projectName || '当前项目'}</p>
               </div>
             </div>

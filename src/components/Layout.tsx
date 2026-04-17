@@ -95,7 +95,7 @@ const Layout: React.FC = () => {
         </div>
       </main>
 
-      {/* 浮动AI助手 */}
+      {/* 浮动文案助手 */}
       <AIDialog />
     </div>
   );
