@@ -15,6 +15,8 @@ import EmailPage from './pages/EmailPage'
 import CalendarPage from './pages/CalendarPage'
 import KnowledgePage from './pages/KnowledgePage'
 import AssistantPage from './pages/AssistantPage'
+import RequirementParser from './components/RequirementParser'
+import ProjectReportPage from './pages/ProjectReportPage'
 import Layout from './components/Layout'
 // Admin pages
 import AdminLoginPage from './pages/admin/AdminLoginPage'
@@ -44,6 +46,8 @@ function App() {
         <Route path="calendar" element={<CalendarPage />} />
         <Route path="knowledge" element={<KnowledgePage />} />
         <Route path="assistant" element={<AssistantPage />} />
+        <Route path="requirement-parser" element={<RequirementParser />} />
+        <Route path="report/:projectId" element={<ProjectReportPage />} />
       </Route>
       
       {/* 管理后台 */}

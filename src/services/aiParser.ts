@@ -3,15 +3,16 @@
  * 用于解析甲方上传的图片/语音，提取显性指令和隐性意图
  */
 
-import { generateText } from '../lib/deepseek'
+// DeepSeek API配置
+const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions'
 
-// API配置
+// 豆包/通义千问 API配置
 const DOUBAO_API_URL = 'https://ark.cn-beijing.volces.com/api/v3/chat/completions'
 const QIANWEN_API_URL = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions'
 
 // 获取API Key
 function getApiKey(): string {
-  const apiKey = import.meta.env?.DOUBAO_API_KEY || import.meta.env?.QIANWEN_API_KEY || ''
+  const apiKey = import.meta.env?.DOUBAO_API_KEY || import.meta.env?.QIANWEN_API_KEY || import.meta.env?.DEEPSEEK_API_KEY || ''
   return apiKey
 }
 
@@ -19,6 +20,9 @@ function getApiKey(): string {
 function getApiUrl(): string {
   if (import.meta.env?.DOUBAO_API_KEY) {
     return DOUBAO_API_URL
+  }
+  if (import.meta.env?.DEEPSEEK_API_KEY) {
+    return DEEPSEEK_API_URL
   }
   return QIANWEN_API_URL
 }
@@ -28,7 +32,55 @@ function getModelName(): string {
   if (import.meta.env?.DOUBAO_API_KEY) {
     return 'doubao-pro-32k'
   }
+  if (import.meta.env?.DEEPSEEK_API_KEY) {
+    return 'deepseek-chat'
+  }
   return 'qwen-plus'
+}
+
+/**
+ * 通用文本生成函数
+ */
+async function generateText(
+  prompt: string,
+  systemPrompt: string = '你是一位专业的品牌策划专家。'
+): Promise<string> {
+  const apiUrl = getApiUrl()
+  const apiKey = getApiKey()
+
+  if (!apiKey) {
+    throw new Error('未配置 API Key，请检查环境变量 DOUBAO_API_KEY 或 QIANWEN_API_KEY')
+  }
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: getModelName(),
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: prompt }
+        ],
+        temperature: 0.3,
+        max_tokens: 2000,
+      }),
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      throw new Error(`API请求失败: ${response.status}`)
+    }
+
+    const result = await response.json()
+    return result.choices?.[0]?.message?.content || ''
+  } catch (error: any) {
+    console.error('AI生成失败:', error)
+    throw error
+  }
 }
 
 // ============ 类型定义 ============

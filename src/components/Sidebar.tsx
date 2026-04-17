@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   ChevronDown, ChevronRight, ChevronLeft, Bell, Star, Sparkles,
   Building2, Target, Users, FileText, Lightbulb, FolderOpen,
-  Book, Bot, Plus, Briefcase
+  Book, Bot, Plus, Briefcase, MessageSquare
 } from 'lucide-react';
 import { User } from '../types/user';
 import { getProjects } from '../services/api';
@@ -33,6 +33,7 @@ const independentItems = [
   { icon: FolderOpen, label: '方案资产', path: '/projects/assets' },
   { icon: Book, label: '知识库', path: '/projects/knowledge' },
   { icon: Bot, label: 'AI助手', path: '/projects/assistant' },
+  { icon: MessageSquare, label: '甲方翻译器', path: '/projects/requirement-parser' },
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({ user, collapsed, onToggleCollapse, currentProject }) => {
