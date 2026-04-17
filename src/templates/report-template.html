@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>项目阶段汇报 - {{projectName}}</title>
+  <style>
+    /* 打印友好样式 - A4纸张 */
+    @page {
+      size: A4;
+      margin: 15mm;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", "SimHei", sans-serif;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #333;
+      background: #fff;
+      max-width: 210mm;
+      margin: 0 auto;
+    }
+    
+    /* 页眉 */
+    .header {
+      text-align: center;
+      border-bottom: 2px solid #333;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+    
+    .header h1 {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+    
+    .header .date {
+      font-size: 11px;
+      color: #666;
+    }
+    
+    /* 项目信息区块 */
+    .info-section {
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      padding: 12px;
+      margin-bottom: 16px;
+      border-radius: 4px;
+    }
+    
+    .info-row {
+      display: flex;
+      margin-bottom: 6px;
+    }
+    
+    .info-row:last-child {
+      margin-bottom: 0;
+    }
+    
+    .info-label {
+      font-weight: bold;
+      min-width: 90px;
+      color: #444;
+    }
+    
+    .info-value {
+      flex: 1;
+    }
+    
+    .progress-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .progress-track {
+      flex: 1;
+      height: 14px;
+      background: #e0e0e0;
+      border-radius: 7px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4CAF50, #8BC34A);
+      border-radius: 7px;
+      transition: width 0.3s;
+    }
+    
+    .progress-text {
+      font-weight: bold;
+      min-width: 45px;
+    }
+    
+    /* 内容区块 */
+    .section {
+      margin-bottom: 16px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .section-header {
+      background: #333;
+      color: #fff;
+      padding: 8px 12px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .section-content {
+      padding: 12px;
+    }
+    
+    /* 列表样式 */
+    .item-list {
+      list-style: none;
+    }
+    
+    .item-list li {
+      padding: 4px 0;
+      padding-left: 16px;
+      position: relative;
+    }
+    
+    .item-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #333;
+    }
+    
+    /* 文件列表 */
+    .file-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+    }
+    
+    .file-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 8px;
+      background: #f9f9f9;
+      border: 1px solid #eee;
+      border-radius: 3px;
+      font-size: 11px;
+    }
+    
+    .file-icon {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #e0e0e0;
+      border-radius: 3px;
+      font-size: 9px;
+      font-weight: bold;
+      color: #666;
+    }
+    
+    /* AI洞察 */
+    .insight-box {
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      border-radius: 4px;
+      padding: 12px;
+    }
+    
+    .insight-item {
+      margin-bottom: 8px;
+      padding-left: 20px;
+      position: relative;
+    }
+    
+    .insight-item:last-child {
+      margin-bottom: 0;
+    }
+    
+    .insight-number {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 16px;
+      height: 16px;
+      background: #ff9800;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* 页脚 */
+    .footer {
+      margin-top: 20px;
+      padding-top: 12px;
+      border-top: 1px solid #ddd;
+      text-align: center;
+      font-size: 10px;
+      color: #999;
+    }
+    
+    /* 进度环 */
+    .progress-ring {
+      display: none;
+    }
+    
+    /* 图表区域 */
+    .chart-placeholder {
+      width: 100%;
+      height: 120px;
+      background: #f9f9f9;
+      border: 1px dashed #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      font-size: 11px;
+      border-radius: 4px;
+    }
+    
+    /* 多项目模式 */
+    .multi-project .project-card {
+      page-break-inside: avoid;
+      margin-bottom: 20px;
+      border: 2px solid #333;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    
+    .multi-project .project-card:last-child {
+      margin-bottom: 0;
+    }
+    
+    /* 打印优化 */
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      
+      .section {
+        page-break-inside: avoid;
+      }
+      
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 单项目模板 -->
+  <div id="report-container">
+    <!-- 页眉 -->
+    <div class="header">
+      <h1>{{headerTitle}}</h1>
+      <div class="date">{{reportDate}}</div>
+    </div>
+    
+    <!-- 项目信息 -->
+    <div class="info-section">
+      <div class="info-row">
+        <span class="info-label">项目状态：</span>
+        <span class="info-value">
+          <strong>{{projectStatus}}</strong>
+          <span class="progress-bar">
+            <span class="progress-track">
+              <span class="progress-fill" style="width: {{progressPercent}}%"></span>
+            </span>
+            <span class="progress-text">{{progressPercent}}%</span>
+          </span>
+        </span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">负责人：</span>
+        <span class="info-value">{{projectManager}}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">开始日期：</span>
+        <span class="info-value">{{startDate}}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">客户名称：</span>
+        <span class="info-value">{{clientName}}</span>
+      </div>
+    </div>
+    
+    <!-- 本周进展 -->
+    {{#if recentProgress}}
+    <div class="section">
+      <div class="section-header">
+        <span>📋 本周进展</span>
+      </div>
+      <div class="section-content">
+        <ul class="item-list">
+          {{#each recentProgress}}
+          <li>{{this}}</li>
+          {{/each}}
+        </ul>
+      </div>
+    </div>
+    {{/if}}
+    
+    <!-- 待办事项 -->
+    <div class="section">
+      <div class="section-header">
+        <span>📊 待办事项 ({{completedTasks}}/{{totalTasks}} 已完成)</span>
+      </div>
+      <div class="section-content">
+        <div class="progress-bar">
+          <span class="progress-track" style="height: 20px;">
+            <span class="progress-fill" style="width: {{taskCompletionRate}}%"></span>
+          </span>
+          <span class="progress-text">{{taskCompletionRate}}%</span>
+        </div>
+        {{#if pendingTasks}}
+        <div style="margin-top: 10px;">
+          <strong>待完成：</strong>
+          <ul class="item-list" style="margin-top: 4px;">
+            {{#each pendingTasks}}
+            <li>{{this}}</li>
+            {{/each}}
+          </ul>
+        </div>
+        {{/if}}
+      </div>
+    </div>
+    
+    <!-- 项目文件 -->
+    {{#if files}}
+    <div class="section">
+      <div class="section-header">
+        <span>📁 项目文件 ({{fileCount}}个)</span>
+      </div>
+      <div class="section-content">
+        <div class="file-list">
+          {{#each files}}
+          <div class="file-item">
+            <span class="file-icon">{{fileExtension}}</span>
+            <span>{{fileName}}</span>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+    {{/if}}
+    
+    <!-- 数据看板 -->
+    {{#if hasChart}}
+    <div class="section">
+      <div class="section-header">
+        <span>📈 数据看板</span>
+      </div>
+      <div class="section-content">
+        <div class="chart-placeholder">
+          <img src="{{chartImage}}" alt="数据图表" style="max-width: 100%; max-height: 120px;" />
+        </div>
+      </div>
+    </div>
+    {{/if}}
+    
+    <!-- AI洞察 -->
+    {{#if insights}}
+    <div class="section">
+      <div class="section-header" style="background: #ff9800;">
+        <span>🤖 AI洞察</span>
+      </div>
+      <div class="section-content">
+        <div class="insight-box">
+          {{#if summary}}
+          <p style="margin-bottom: 8px;"><strong>{{summary}}</strong></p>
+          {{/if}}
+          {{#if suggestions}}
+          <p style="margin-bottom: 6px;">建议关注：</p>
+          <div>
+            {{#each suggestions}}
+            <div class="insight-item">
+              <span class="insight-number">{{add @index 1}}</span>
+              <span>{{this}}</span>
+            </div>
+            {{/each}}
+          </div>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+    {{/if}}
+    
+    <!-- 页脚 -->
+    <div class="footer">
+      <p>本报告由 灵思AI创意工作台 自动生成 | {{generationTime}}</p>
+      <p>如有疑问请联系项目负责人</p>
+    </div>
+  </div>
+  
+  <!-- 隐藏的打印控制按钮（仅屏幕显示） -->
+  <div class="no-print" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+    <button onclick="window.print()" style="padding: 10px 20px; background: #333; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;">
+      🖨️ 打印报告
+    </button>
+  </div>
+  
+  <script>
+    // 格式化日期辅助函数
+    function formatDate(date) {
+      const d = new Date(date);
+      return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
+    }
+    
+    // 获取文件扩展名
+    function getFileExtension(filename) {
+      const ext = filename.split('.').pop().toUpperCase();
+      const map = {
+        'PDF': 'PDF',
+        'DOC': 'DOC',
+        'DOCX': 'DOC',
+        'PPT': 'PPT',
+        'PPTX': 'PPT',
+        'XLS': 'XLS',
+        'XLSX': 'XLS',
+        'JPG': 'IMG',
+        'JPEG': 'IMG',
+        'PNG': 'IMG',
+        'ZIP': 'ZIP'
+      };
+      return map[ext] || 'FILE';
+    }
+    
+    // 导出PDF函数
+    function exportToPDF() {
+      window.print();
+    }
+    
+    // 自动触发打印（可选）
+    // window.onload = function() {
+    //   // setTimeout(() => window.print(), 500);
+    // };
+  </script>
+</body>
+</html>
