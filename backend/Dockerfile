@@ -1,6 +1,9 @@
 # 使用 node:18 镜像，比 alpine 更稳定，镜像拉取更快
 FROM node:18-slim
 
+# 安装 Prisma 运行时需要的 OpenSSL 库
+RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 # 先复制 prisma 目录（npm install 的 postinstall 需要它）
