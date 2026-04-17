@@ -284,6 +284,313 @@ router.get('/stats/daily', verifyAdmin, async (req: Request, res: Response) => {
   }
 });
 
+// 获取仪表盘完整数据
+router.get('/stats/dashboard', verifyAdmin, async (req: Request, res: Response) => {
+  try {
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const weekStart = new Date(todayStart);
+    weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    // 获取本周和上月同期的数据
+    const lastWeekStart = new Date(weekStart);
+    lastWeekStart.setDate(lastWeekStart.getDate() - 7);
+    const lastMonthStart = new Date(monthStart);
+    lastMonthStart.setMonth(lastMonthStart.getMonth() - 1);
+
+    // 并行查询多个统计数据
+    const [
+      totalUsers, totalProjects, 
+      todayNewUsers, todayNewProjects,
+      weekNewUsers, weekNewProjects,
+      monthNewUsers, monthNewProjects,
+      activeProjects, 
+      todayAILogs, weekAILogs, monthAILogs, totalAILogs,
+      todayRecharges, weekRecharges, monthRecharges, totalRecharges,
+      vipUsers
+    ] = await Promise.all([
+      prisma.user.count(),
+      prisma.project.count(),
+      // 今日新增
+      prisma.user.count({ where: { createdAt: { gte: todayStart } } }),
+      prisma.project.count({ where: { createdAt: { gte: todayStart } } }),
+      // 本周新增
+      prisma.user.count({ where: { createdAt: { gte: weekStart } } }),
+      prisma.project.count({ where: { createdAt: { gte: weekStart } } }),
+      // 本月新增
+      prisma.user.count({ where: { createdAt: { gte: monthStart } } }),
+      prisma.project.count({ where: { createdAt: { gte: monthStart } } }),
+      // 活跃项目
+      prisma.project.count({ where: { status: 'active', updatedAt: { gte: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000) } } }),
+      // AI调用
+      prisma.aILog.count({ where: { createdAt: { gte: todayStart } } }),
+      prisma.aILog.count({ where: { createdAt: { gte: weekStart } } }),
+      prisma.aILog.count({ where: { createdAt: { gte: monthStart } } }),
+      prisma.aILog.count(),
+      // 充值
+      prisma.recharge.count({ where: { createdAt: { gte: todayStart }, status: 'completed' } }),
+      prisma.recharge.count({ where: { createdAt: { gte: weekStart }, status: 'completed' } }),
+      prisma.recharge.count({ where: { createdAt: { gte: monthStart }, status: 'completed' } }),
+      prisma.recharge.aggregate({ where: { status: 'completed' }, _sum: { amount: true } }),
+      // VIP用户
+      prisma.user.count({ where: { memberLevel: { in: ['gold', 'diamond'] } } })
+    ]);
+
+    res.json({
+      success: true,
+      data: {
+        totalUsers,
+        totalProjects,
+        todayNewUsers,
+        todayNewProjects,
+        weekNewUsers,
+        weekNewProjects,
+        monthNewUsers,
+        monthNewProjects,
+        activeProjects,
+        todayAILogs,
+        weekAILogs,
+        monthAILogs,
+        totalAILogs,
+        todayRecharges,
+        weekRecharges,
+        monthRecharges,
+        totalRecharges: totalRecharges._sum.amount || 0,
+        vipUsers
+      }
+    });
+  } catch (error) {
+    console.error('Get dashboard stats error:', error);
+    res.status(500).json({ success: false, error: '获取仪表盘数据失败' });
+  }
+});
+
+// 获取趋势数据
+router.get('/stats/trend', verifyAdmin, async (req: Request, res: Response) => {
+  try {
+    const range = req.query.range as string || 'week';
+    let days = 7;
+    if (range === 'month') days = 30;
+    else if (range === 'today') days = 1;
+    
+    const now = new Date();
+    const dates: string[] = [];
+    for (let i = days - 1; i >= 0; i--) {
+      const date = new Date(now);
+      date.setDate(date.getDate() - i);
+      dates.push(date.toISOString().split('T')[0]);
+    }
+    
+    const startDate = new Date(dates[0]);
+    startDate.setHours(0, 0, 0, 0);
+    const endDate = new Date(dates[dates.length - 1]);
+    endDate.setHours(23, 59, 59, 999);
+    
+    // 并行查询
+    const [dailyUsers, dailyProjects, dailyAI, levelCounts] = await Promise.all([
+      prisma.user.groupBy({
+        by: ['createdAt'],
+        _count: { createdAt: true },
+        where: { createdAt: { gte: startDate, lte: endDate } }
+      }),
+      prisma.project.groupBy({
+        by: ['createdAt'],
+        _count: { createdAt: true },
+        where: { createdAt: { gte: startDate, lte: endDate } }
+      }),
+      prisma.aILog.groupBy({
+        by: ['createdAt'],
+        _count: { id: true },
+        where: { createdAt: { gte: startDate, lte: endDate } }
+      }),
+      prisma.user.groupBy({
+        by: ['memberLevel'],
+        _count: { memberLevel: true }
+      })
+    ]);
+    
+    // 转换为日期映射
+    const userMap = new Map<string, number>();
+    const projectMap = new Map<string, number>();
+    const aiMap = new Map<string, number>();
+    
+    dailyUsers.forEach(item => {
+      const date = item.createdAt.toISOString().split('T')[0];
+      userMap.set(date, (userMap.get(date) || 0) + item._count.createdAt);
+    });
+    
+    dailyProjects.forEach(item => {
+      const date = item.createdAt.toISOString().split('T')[0];
+      projectMap.set(date, (projectMap.get(date) || 0) + item._count.createdAt);
+    });
+    
+    dailyAI.forEach(item => {
+      const date = item.createdAt.toISOString().split('T')[0];
+      aiMap.set(date, (aiMap.get(date) || 0) + item._count.id);
+    });
+    
+    // 构建趋势数据
+    const trend = dates.map(date => ({
+      date,
+      users: userMap.get(date) || 0,
+      projects: projectMap.get(date) || 0,
+      aiCalls: aiMap.get(date) || 0,
+      recharges: 0
+    }));
+    
+    // 会员等级映射
+    const levelMap: Record<string, { name: string; value: number }> = {
+      normal: { name: '普通会员', value: 0 },
+      silver: { name: '白银会员', value: 0 },
+      gold: { name: '黄金会员', value: 0 },
+      diamond: { name: '钻石会员', value: 0 }
+    };
+    
+    levelCounts.forEach(item => {
+      if (levelMap[item.memberLevel]) {
+        levelMap[item.memberLevel].value = item._count.memberLevel;
+      }
+    });
+    
+    res.json({
+      success: true,
+      data: {
+        trend,
+        levels: Object.values(levelMap)
+      }
+    });
+  } catch (error) {
+    console.error('Get trend data error:', error);
+    res.status(500).json({ success: false, error: '获取趋势数据失败' });
+  }
+});
+
+// 获取最新动态
+router.get('/activities', verifyAdmin, async (req: Request, res: Response) => {
+  try {
+    const limit = parseInt(req.query.limit as string) || 10;
+    const now = new Date();
+    
+    // 获取最近的活动
+    const [recentUsers, recentProjects, recentAI, recentRecharges] = await Promise.all([
+      // 最近注册用户
+      prisma.user.findMany({
+        select: { id: true, username: true, createdAt: true },
+        orderBy: { createdAt: 'desc' },
+        take: limit
+      }),
+      // 最近创建项目
+      prisma.project.findMany({
+        select: { id: true, name: true, createdAt: true, user: { select: { username: true } } },
+        orderBy: { createdAt: 'desc' },
+        take: limit
+      }),
+      // 最近AI使用
+      prisma.aILog.findMany({
+        select: { id: true, action: true, createdAt: true, user: { select: { username: true } } },
+        orderBy: { createdAt: 'desc' },
+        take: limit
+      }),
+      // 最近充值
+      prisma.recharge.findMany({
+        where: { status: 'completed' },
+        select: { id: true, amount: true, createdAt: true, user: { select: { username: true } } },
+        orderBy: { createdAt: 'desc' },
+        take: limit
+      })
+    ]);
+    
+    // 合并并排序所有活动
+    interface Activity {
+      id: string;
+      type: 'user' | 'project' | 'ai' | 'recharge' | 'member';
+      title: string;
+      description: string;
+      time: string;
+      timestamp: Date;
+    }
+    
+    const activities: Activity[] = [];
+    
+    recentUsers.forEach(u => {
+      activities.push({
+        id: `user-${u.id}`,
+        type: 'user',
+        title: `用户 ${u.username} 注册了账号`,
+        description: u.email || '',
+        time: formatTimeAgo(u.createdAt),
+        timestamp: u.createdAt
+      });
+    });
+    
+    recentProjects.forEach(p => {
+      activities.push({
+        id: `project-${p.id}`,
+        type: 'project',
+        title: `项目"${p.name}"已创建`,
+        description: `创建者：${p.user.username}`,
+        time: formatTimeAgo(p.createdAt),
+        timestamp: p.createdAt
+      });
+    });
+    
+    recentAI.forEach(ai => {
+      activities.push({
+        id: `ai-${ai.id}`,
+        type: 'ai',
+        title: `AI执行了${ai.action}`,
+        description: `用户：${ai.user.username}`,
+        time: formatTimeAgo(ai.createdAt),
+        timestamp: ai.createdAt
+      });
+    });
+    
+    recentRecharges.forEach(r => {
+      activities.push({
+        id: `recharge-${r.id}`,
+        type: 'recharge',
+        title: `用户充值 ${r.amount} 积分`,
+        description: `用户：${r.user.username}`,
+        time: formatTimeAgo(r.createdAt),
+        timestamp: r.createdAt
+      });
+    });
+    
+    // 按时间排序并限制数量
+    activities.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+    
+    res.json({
+      success: true,
+      data: activities.slice(0, limit).map(a => ({
+        id: a.id,
+        type: a.type,
+        title: a.title,
+        description: a.description,
+        time: a.time
+      }))
+    });
+  } catch (error) {
+    console.error('Get activities error:', error);
+    res.status(500).json({ success: false, error: '获取动态失败' });
+  }
+});
+
+// 格式化时间差
+function formatTimeAgo(date: Date): string {
+  const now = new Date();
+  const diff = now.getTime() - date.getTime();
+  const seconds = Math.floor(diff / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  
+  if (days > 0) return `${days}天前`;
+  if (hours > 0) return `${hours}小时前`;
+  if (minutes > 0) return `${minutes}分钟前`;
+  return '刚刚';
+}
+
 // 获取用户列表
 router.get('/users', verifyAdmin, async (req: Request, res: Response) => {
   try {
