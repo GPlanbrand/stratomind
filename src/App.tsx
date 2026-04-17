@@ -16,6 +16,9 @@ import CalendarPage from './pages/CalendarPage'
 import KnowledgePage from './pages/KnowledgePage'
 import AssistantPage from './pages/AssistantPage'
 import Layout from './components/Layout'
+// Admin pages
+import AdminLoginPage from './pages/admin/AdminLoginPage'
+import AdminPage from './pages/admin/AdminPage'
 
 function App() {
   return (
@@ -42,6 +45,10 @@ function App() {
         <Route path="knowledge" element={<KnowledgePage />} />
         <Route path="assistant" element={<AssistantPage />} />
       </Route>
+      
+      {/* 管理后台 */}
+      <Route path="/admin/login" element={<AdminLoginPage />} />
+      <Route path="/admin" element={<AdminPage />} />
     </Routes>
   )
 }

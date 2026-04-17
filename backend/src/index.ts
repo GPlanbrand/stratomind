@@ -13,6 +13,7 @@ import pointsRoutes from './routes/points';
 import assetRoutes from './routes/asset';
 import knowledgeRoutes from './routes/knowledge';
 import initRoutes from './routes/init';
+import adminRoutes from './routes/admin';
 
 // 加载环境变量
 dotenv.config();
@@ -42,6 +43,9 @@ app.use('/api/member', memberRoutes);
 app.use('/api/points', pointsRoutes);
 app.use('/api/assets', assetRoutes);
 app.use('/api/knowledge', knowledgeRoutes);
+
+// 管理员路由
+app.use('/api/admin', adminRoutes);
 
 // 健康检查
 app.get('/health', (req, res) => {
