@@ -8,6 +8,8 @@ export interface User {
   memberLevel: 'normal' | 'silver' | 'gold' | 'diamond';
   points: number;
   memberExpiresAt?: string;
+  province?: string;
+  city?: string;
   createdAt: string;
   lastLoginAt?: string;
   signInDays: number;

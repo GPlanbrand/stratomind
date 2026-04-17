@@ -4,7 +4,7 @@ import { refreshCurrentUser } from '../services/auth';
 import { User } from '../types/user';
 import Sidebar from './Sidebar';
 import Header from './Header';
-import FloatingAssistant from './FloatingAssistant';
+import AIDialog from './AIDialog';
 
 const Layout: React.FC = () => {
   const navigate = useNavigate();
@@ -96,7 +96,7 @@ const Layout: React.FC = () => {
       </main>
 
       {/* 浮动AI助手 */}
-      <FloatingAssistant />
+      <AIDialog />
     </div>
   );
 };

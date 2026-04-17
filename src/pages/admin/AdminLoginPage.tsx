@@ -38,9 +38,10 @@ const AdminLoginPage: React.FC = () => {
       const data = await response.json();
 
       if (data.success) {
-        // 保存token到localStorage
+        // 保存token和角色到localStorage
         localStorage.setItem('adminToken', data.data.token);
         localStorage.setItem('adminUsername', data.data.admin.username);
+        localStorage.setItem('adminRole', data.data.admin.role);
         navigate('/admin');
       } else {
         setError(data.error || '登录失败');

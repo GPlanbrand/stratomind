@@ -15,10 +15,14 @@ model User {
   username      String    @unique
   email         String    @unique
   password      String
+  role          String    @default("user") // user, admin, superadmin
   avatar        String?
   memberLevel   String    @default("normal") // normal, silver, gold, diamond
   points        Int       @default(600)
+  totalRecharge Float     @default(0) // 累计充值金额
   memberExpiresAt DateTime?
+  province      String?   // 省份
+  city          String?   // 城市
   createdAt     DateTime  @default(now())
   lastLoginAt   DateTime?
   signInDays    Int       @default(0)
@@ -31,6 +35,9 @@ model User {
   aiLogs        AILog[]
   assets        Asset[]
   knowledgeItems KnowledgeItem[]
+  pointsLogs    PointsLog[]
+  rechargeRecords RechargeRecord[]
+  adminLogs     AdminLog[]
   
   createdAt2    DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
@@ -114,4 +121,79 @@ model KnowledgeItem {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   @@map("knowledge_items")
+}
+
+// 积分流水记录
+model PointsLog {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // gain(获得), consume(消耗), recharge(充值), adjust(调整)
+  amount      Int      // 正数表示获得，负数表示消耗
+  balance     Int      // 变动后余额
+  reason      String   // 变动原因
+  orderNo     String?  // 关联订单号
+  adminId     String?  // 管理员ID（手动操作时）
+  createdAt   DateTime @default(now())
+  
+  // 关联
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("points_logs")
+}
+
+// 充值记录
+model RechargeRecord {
+  id          String   @id @default(cuid())
+  userId      String
+  amount      Float    // 充值金额
+  points      Int      // 获得积分
+  paymentMethod String // 支付方式: alipay, wxpay, offline(线下)
+  status      String   @default("pending") // pending, completed, failed, cancelled
+  orderNo     String?  // 第三方订单号
+  remark      String?  // 备注
+  operatorId  String?  // 操作员ID
+  createdAt   DateTime @default(now())
+  completedAt DateTime?
+  
+  // 关联
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("recharge_records")
+}
+
+// 管理员操作日志
+model AdminLog {
+  id          String   @id @default(cuid())
+  adminId     String   // 管理员ID
+  adminName   String   // 管理员名称
+  action      String   // 操作类型
+  targetType  String   // 操作对象类型: user, project, points, recharge, system
+  targetId    String?  // 操作对象ID
+  detail      String?  // 操作详情
+  ip          String?  // IP地址
+  userAgent   String?  // 用户代理
+  createdAt   DateTime @default(now())
+  
+  // 关联
+  user        User?    @relation(fields: [adminId], references: [id], onDelete: SetNull)
+  
+  @@map("admin_logs")
+}
+
+// 用户操作日志（历史记录）
+model UserActionLog {
+  id          String   @id @default(cuid())
+  userId      String
+  actionType  String   // view_project, create_project, use_ai, update_content, upload_file
+  targetType  String   // project, ai, file, brief, strategy
+  targetId    String?  // 操作对象ID
+  targetName  String?  // 操作对象名称
+  metadata    String?  // JSON字符串，存储额外信息
+  ip          String?  // IP地址
+  createdAt   DateTime @default(now())
+  
+  // 关联
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("user_action_logs")
 }
