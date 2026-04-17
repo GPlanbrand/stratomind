@@ -1,19 +1,16 @@
-# 使用 node:18 镜像，比 alpine 更稳定，镜像拉取更快
-FROM node:18-slim
+FROM node:18-alpine
 
-# 安装 Prisma 运行时需要的 OpenSSL 库
-RUN apt-get update && apt-get install -y --no-install-recommends openssl && rm -rf /var/lib/apt/lists/*
+# 安装 OpenSSL 和构建工具
+RUN apk add --no-cache openssl
 
 WORKDIR /app
 
-# 先复制 prisma 目录（npm install 的 postinstall 需要它）
+# 复制 package 文件和 prisma
+COPY package*.json ./
 COPY prisma ./prisma/
 
-# 复制 package 文件
-COPY package*.json ./
-
-# 安装依赖（postinstall 会自动运行 prisma generate）
-RUN npm install --prefer-offline
+# 安装所有依赖（包括 devDependencies 用于构建）
+RUN npm install
 
 # 复制源代码
 COPY tsconfig.json ./
@@ -22,9 +19,8 @@ COPY src ./src/
 # 构建 TypeScript
 RUN npm run build
 
-# 创建非 root 用户（使用已存在的 node 用户）
-RUN chown -R node:node /app
-USER node
+# 删除 devDependencies 减小镜像大小
+RUN npm prune --production
 
 EXPOSE 3000
 
