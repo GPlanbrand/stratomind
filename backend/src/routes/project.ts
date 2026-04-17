@@ -100,4 +100,12 @@ export const deleteProject = async (req: AuthRequest, res: Response) => {
   }
 };
 
+// 绑定路由
+router.get('/', authMiddleware, getProjects);
+router.get('/:id', authMiddleware, getProject);
+router.get('/:id/steps', authMiddleware, getProjectSteps);
+router.post('/', authMiddleware, createProject);
+router.put('/:id', authMiddleware, updateProject);
+router.delete('/:id', authMiddleware, deleteProject);
+
 export default router;

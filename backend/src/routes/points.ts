@@ -39,4 +39,8 @@ export const getPointsHistory = async (req: AuthRequest, res: Response) => {
   }
 };
 
+// 绑定路由
+router.get('/info', authMiddleware, getPointsInfo);
+router.get('/history', authMiddleware, getPointsHistory);
+
 export default router;

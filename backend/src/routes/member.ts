@@ -51,4 +51,9 @@ export const upgradeMember = async (req: AuthRequest, res: Response) => {
   }
 };
 
+// 绑定路由
+router.get('/info', authMiddleware, getMemberInfo);
+router.get('/plans', getMemberPlans);
+router.post('/upgrade', authMiddleware, upgradeMember);
+
 export default router;

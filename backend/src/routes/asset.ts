@@ -53,4 +53,9 @@ export const deleteAsset = async (req: AuthRequest, res: Response) => {
   }
 };
 
+// 绑定路由
+router.get('/', authMiddleware, getAssets);
+router.post('/upload', authMiddleware, uploadAsset);
+router.delete('/:id', authMiddleware, deleteAsset);
+
 export default router;

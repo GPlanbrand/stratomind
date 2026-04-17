@@ -81,4 +81,11 @@ export const deleteKnowledgeItem = async (req: AuthRequest, res: Response) => {
   }
 };
 
+// 绑定路由
+router.get('/', authMiddleware, getKnowledgeItems);
+router.get('/:id', authMiddleware, getKnowledgeItem);
+router.post('/', authMiddleware, createKnowledgeItem);
+router.put('/:id', authMiddleware, updateKnowledgeItem);
+router.delete('/:id', authMiddleware, deleteKnowledgeItem);
+
 export default router;

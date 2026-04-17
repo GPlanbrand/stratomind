@@ -73,4 +73,10 @@ export const getAILogs = async (req: AuthRequest, res: Response) => {
   }
 };
 
+// 绑定路由
+router.post('/analyze-competitors', authMiddleware, analyzeCompetitors);
+router.post('/generate-brief', authMiddleware, generateBrief);
+router.post('/generate-strategy', authMiddleware, generateStrategy);
+router.get('/logs', authMiddleware, getAILogs);
+
 export default router;

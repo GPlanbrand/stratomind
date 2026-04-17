@@ -104,4 +104,10 @@ export const getCurrentUser = async (req: AuthRequest, res: Response) => {
   }
 };
 
+// 绑定路由
+router.post('/register', register);
+router.post('/login', login);
+router.post('/signin', authMiddleware, signIn);
+router.get('/me', authMiddleware, getCurrentUser);
+
 export default router;
