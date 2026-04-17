@@ -3,15 +3,14 @@ FROM node:18-slim
 
 WORKDIR /app
 
+# 先复制 prisma 目录（npm install 的 postinstall 需要它）
+COPY prisma ./prisma/
+
 # 复制 package 文件
 COPY package*.json ./
 
-# 安装依赖
+# 安装依赖（postinstall 会自动运行 prisma generate）
 RUN npm install --prefer-offline
-
-# 复制 prisma schema 并生成客户端
-COPY prisma ./prisma/
-RUN npx prisma generate --schema=./prisma/schema.prisma
 
 # 复制源代码
 COPY tsconfig.json ./
