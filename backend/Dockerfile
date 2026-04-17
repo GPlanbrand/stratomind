@@ -2,7 +2,7 @@
 FROM node:18-slim
 
 # 安装 Prisma 运行时需要的 OpenSSL 库
-RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends openssl && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
