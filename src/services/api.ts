@@ -163,3 +163,93 @@ export async function saveStrategy(projectId: string, data: Partial<Strategy>): 
   setStoredData(STEPS_KEY, steps)
   await updateProject(projectId, {})
 }
+
+// ============ 项目文件 ============
+
+const FILES_KEY = 'brand_craft_files'
+
+export interface ProjectFile {
+  id: string
+  projectId: string
+  name: string
+  type: string
+  size: number
+  url?: string
+  createdAt: string
+  uploadedAt: string
+}
+
+export async function getProjectFiles(projectId: string): Promise<ProjectFile[]> {
+  const allFiles = getStoredData<ProjectFile[]>(FILES_KEY, [])
+  return allFiles.filter(f => f.projectId === projectId)
+}
+
+export async function saveProjectFile(file: Omit<ProjectFile, 'id' | 'createdAt'>): Promise<ProjectFile> {
+  const allFiles = getStoredData<ProjectFile[]>(FILES_KEY, [])
+  const newFile: ProjectFile = {
+    ...file,
+    id: generateId(),
+    createdAt: new Date().toISOString(),
+  }
+  allFiles.push(newFile)
+  setStoredData(FILES_KEY, allFiles)
+  return newFile
+}
+
+export async function deleteProjectFile(fileId: string): Promise<void> {
+  const allFiles = getStoredData<ProjectFile[]>(FILES_KEY, [])
+  const filtered = allFiles.filter(f => f.id !== fileId)
+  setStoredData(FILES_KEY, filtered)
+}
+
+// ============ 项目任务 ============
+
+const TASKS_KEY = 'brand_craft_tasks'
+
+export interface ProjectTask {
+  id: string
+  projectId: string
+  title: string
+  description?: string
+  status: 'pending' | 'in_progress' | 'completed'
+  priority?: 'low' | 'medium' | 'high'
+  dueDate?: string
+  createdAt: string
+  completedAt?: string
+}
+
+export async function getProjectTasks(projectId: string): Promise<ProjectTask[]> {
+  const allTasks = getStoredData<ProjectTask[]>(TASKS_KEY, [])
+  return allTasks.filter(t => t.projectId === projectId)
+}
+
+export async function createProjectTask(task: Omit<ProjectTask, 'id' | 'createdAt'>): Promise<ProjectTask> {
+  const allTasks = getStoredData<ProjectTask[]>(TASKS_KEY, [])
+  const newTask: ProjectTask = {
+    ...task,
+    id: generateId(),
+    createdAt: new Date().toISOString(),
+  }
+  allTasks.push(newTask)
+  setStoredData(TASKS_KEY, allTasks)
+  return newTask
+}
+
+export async function updateProjectTask(taskId: string, data: Partial<ProjectTask>): Promise<ProjectTask> {
+  const allTasks = getStoredData<ProjectTask[]>(TASKS_KEY, [])
+  const index = allTasks.findIndex(t => t.id === taskId)
+  if (index === -1) throw new Error('任务不存在')
+  
+  allTasks[index] = { ...allTasks[index], ...data }
+  if (data.status === 'completed') {
+    allTasks[index].completedAt = new Date().toISOString()
+  }
+  setStoredData(TASKS_KEY, allTasks)
+  return allTasks[index]
+}
+
+export async function deleteProjectTask(taskId: string): Promise<void> {
+  const allTasks = getStoredData<ProjectTask[]>(TASKS_KEY, [])
+  const filtered = allTasks.filter(t => t.id !== taskId)
+  setStoredData(TASKS_KEY, filtered)
+}
