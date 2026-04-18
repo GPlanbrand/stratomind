@@ -55,6 +55,9 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, projectId, pro
   const [isCopied, setIsCopied] = useState(false);
   const [error, setError] = useState('');
 
+  // 检测是否支持原生分享
+  const canNativeShare = typeof navigator !== 'undefined' && 'share' in navigator;
+
   useEffect(() => {
     if (isOpen && projectId) {
       generateShareLink();
@@ -88,6 +91,10 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, projectId, pro
       const data = await response.json();
       if (data.success) {
         setShareUrl(data.data.shareUrl);
+        // 如果支持原生分享，直接调用
+        if (canNativeShare) {
+          tryNativeShare(data.data.shareUrl);
+        }
       } else {
         setError(data.error || '生成分享链接失败');
       }
@@ -95,6 +102,24 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, projectId, pro
       setError('网络错误，请重试');
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  // 尝试原生分享
+  const tryNativeShare = async (url?: string) => {
+    const shareLink = url || shareUrl;
+    if (!shareLink) return;
+    
+    try {
+      await navigator.share({
+        title: projectName || '灵思AI创意工作台',
+        text: `来看看这个项目：${projectName || '创意方案'}`,
+        url: shareLink,
+      });
+      onClose(); // 分享成功后关闭弹窗
+    } catch (err) {
+      // 用户取消分享或分享失败，不做处理，让用户可以选择复制链接
+      console.log('分享取消或失败', err);
     }
   };
 
@@ -189,6 +214,17 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, projectId, pro
                   </button>
                 </div>
               </div>
+
+              {/* 原生分享按钮（移动端显示） */}
+              {canNativeShare && (
+                <button
+                  onClick={() => tryNativeShare()}
+                  className="w-full mb-4 px-4 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all flex items-center justify-center gap-2 font-medium"
+                >
+                  <Share2 className="w-5 h-5" />
+                  分享给好友
+                </button>
+              )}
 
               {/* 二维码提示 */}
               <div className="bg-gray-50 rounded-lg p-4">

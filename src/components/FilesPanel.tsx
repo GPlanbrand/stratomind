@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Folder, X, Upload, FileText, Image, File, 
-  Trash2, Download, Eye, Grid, List
+  Trash2, Download, Eye, Grid, List, Package
 } from 'lucide-react';
 
 const API_BASE = '';
@@ -32,6 +32,7 @@ const FilesPanel: React.FC<FilesPanelProps> = ({ isOpen, onClose, userId }) => {
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [previewFile, setPreviewFile] = useState<Asset | null>(null);
   const [dragOver, setDragOver] = useState(false);
+  const [downloadingAll, setDownloadingAll] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dropRef = useRef<HTMLDivElement>(null);
 
@@ -150,6 +151,51 @@ const FilesPanel: React.FC<FilesPanelProps> = ({ isOpen, onClose, userId }) => {
     handleUpload(e.dataTransfer.files);
   };
 
+  // 打包下载全部文件
+  const handleDownloadAll = async () => {
+    if (files.length === 0) return;
+    
+    setDownloadingAll(true);
+    try {
+      // 尝试调用后端打包API
+      const response = await fetch(`${API_BASE}/api/assets/download-all?userId=${userId}`, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
+      
+      if (response.ok) {
+        // 后端返回zip文件
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `灵思项目文件_${new Date().toISOString().slice(0, 10)}.zip`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      } else {
+        // 后端不支持，逐个下载
+        for (const file of files) {
+          if (file.url) {
+            const a = document.createElement('a');
+            a.href = file.url;
+            a.download = file.name;
+            a.target = '_blank';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            await new Promise(r => setTimeout(r, 500)); // 间隔500ms
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Download all failed:', err);
+      alert('下载失败，请稍后重试');
+    } finally {
+      setDownloadingAll(false);
+    }
+  };
+
   if (!isOpen) return null;
 
   const tabs = [
@@ -177,6 +223,18 @@ const FilesPanel: React.FC<FilesPanelProps> = ({ isOpen, onClose, userId }) => {
             <h3 className="font-semibold text-gray-900">我的文件</h3>
           </div>
           <div className="flex items-center gap-2">
+            {/* 打包下载按钮 */}
+            {files.length > 0 && (
+              <button
+                onClick={handleDownloadAll}
+                disabled={downloadingAll}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-violet-600 text-white text-sm rounded-lg hover:bg-violet-700 transition-colors disabled:opacity-50"
+                title="打包下载全部文件"
+              >
+                <Package className="w-4 h-4" />
+                {downloadingAll ? '打包中...' : '打包下载'}
+              </button>
+            )}
             <button
               onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
               className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
