@@ -6,7 +6,7 @@ import {
   Book, Bot, Plus, Briefcase, MessageSquare, Image, Video,
   FileCheck, BarChart3, Settings, MoreHorizontal, Palette,
   Mic, FileEdit, GraduationCap, Calculator, Globe,
-  Landmark, Building, Megaphone, Shield
+  Landmark, Building, Megaphone, Shield, ClipboardList
 } from 'lucide-react';
 import { User } from '../types/user';
 import { getProjects } from '../services/api';
@@ -56,6 +56,7 @@ const adminItems = [
   { icon: Book, label: '知识库', path: '/projects/knowledge' },
   { icon: Bot, label: '写作秘书', path: '/projects/assistant' },
   { icon: MessageSquare, label: '话术包装', path: '/projects/requirement-parser' },
+  { icon: ClipboardList, label: '需求确认单', path: '/requirements' },
   { icon: Settings, label: '个人设置', path: '/projects/member' },
 ];
 

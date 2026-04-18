@@ -22,6 +22,10 @@ import TalkWrapper from './components/TalkWrapper'
 import ProjectReportPage from './pages/ProjectReportPage'
 import DocumentPreview from './pages/DocumentPreview'
 import Layout from './components/Layout'
+// Requirements pages
+import RequirementsListPage from './pages/requirements/RequirementsListPage'
+import RequirementsNewPage from './pages/requirements/RequirementsNewPage'
+import RequirementsEditPage from './pages/requirements/RequirementsEditPage'
 // Admin pages
 import AdminLoginPage from './pages/admin/AdminLoginPage'
 import AdminPage from './pages/admin/AdminPage'
@@ -58,6 +62,13 @@ function App() {
         <Route path="talk-wrapper" element={<TalkWrapper />} />
         <Route path="report/:projectId" element={<ProjectReportPage />} />
         <Route path="preview/:projectId" element={<DocumentPreview />} />
+      </Route>
+      
+      {/* 需求确认单 - 独立路由 */}
+      <Route path="/requirements" element={<Layout />}>
+        <Route index element={<RequirementsListPage />} />
+        <Route path="new" element={<RequirementsNewPage />} />
+        <Route path=":id" element={<RequirementsEditPage />} />
       </Route>
       
       {/* 管理后台 */}

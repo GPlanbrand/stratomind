@@ -329,10 +329,10 @@ router.get('/stats/dashboard', verifyAdmin, async (req: Request, res: Response) 
       prisma.aILog.count({ where: { createdAt: { gte: monthStart } } }),
       prisma.aILog.count(),
       // 充值
-      prisma.recharge.count({ where: { createdAt: { gte: todayStart }, status: 'completed' } }),
-      prisma.recharge.count({ where: { createdAt: { gte: weekStart }, status: 'completed' } }),
-      prisma.recharge.count({ where: { createdAt: { gte: monthStart }, status: 'completed' } }),
-      prisma.recharge.aggregate({ where: { status: 'completed' }, _sum: { amount: true } }),
+      prisma.rechargeRecord.count({ where: { createdAt: { gte: todayStart }, status: 'completed' } }),
+      prisma.rechargeRecord.count({ where: { createdAt: { gte: weekStart }, status: 'completed' } }),
+      prisma.rechargeRecord.count({ where: { createdAt: { gte: monthStart }, status: 'completed' } }),
+      prisma.rechargeRecord.aggregate({ where: { status: 'completed' }, _sum: { amount: true } }),
       // VIP用户
       prisma.user.count({ where: { memberLevel: { in: ['gold', 'diamond'] } } })
     ]);
@@ -493,7 +493,7 @@ router.get('/activities', verifyAdmin, async (req: Request, res: Response) => {
         take: limit
       }),
       // 最近充值
-      prisma.recharge.findMany({
+      prisma.rechargeRecord.findMany({
         where: { status: 'completed' },
         select: { id: true, amount: true, createdAt: true, user: { select: { username: true } } },
         orderBy: { createdAt: 'desc' },

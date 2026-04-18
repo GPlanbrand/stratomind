@@ -17,6 +17,7 @@ export interface User {
   inviteCode: string;
   invitedBy?: string;
   role?: 'ad_agency' | 'enterprise' | 'government';  // 用户角色
+  phone?: string;  // 手机号
 }
 
 // 会员等级配置

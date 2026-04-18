@@ -6,6 +6,9 @@ import { PrismaClient } from '@prisma/client';
 
 // 路由
 import authRoutes from './routes/auth';
+import guestRoutes, { createGuestToken, verifyGuestToken, updateGuestData } from './routes/guest';
+import smsRoutes, { sendSmsCode, verifySmsCode } from './routes/sms';
+import requirementRoutes from './routes/requirement';
 import projectRoutes from './routes/project';
 import aiRoutes from './routes/ai';
 import memberRoutes from './routes/member';
@@ -36,12 +39,24 @@ app.use('/api/init', initRoutes);
 // 认证路由（无需登录）
 app.use('/api/auth', authRoutes);
 
+// 访客Token路由（无需登录）
+app.post('/api/auth/guest', createGuestToken);
+app.get('/api/auth/guest/:token', verifyGuestToken);
+app.put('/api/auth/guest/:token', updateGuestData);
+
+// 短信验证码路由（无需登录）
+app.post('/api/auth/sms/send', sendSmsCode);
+app.post('/api/auth/sms/verify', verifySmsCode);
+
+// 需求确认单路由（需要登录）
+app.use('/api/requirements', requirementRoutes);
+
 // 需要登录认证的路由
 app.use('/api/projects', projectRoutes);
 app.use('/api/ai', aiRoutes);
-app.use('/api/ai', aiChatRoutes);
-app.use('/api/search', searchRoutes);
-app.use('/api/share', shareRoutes);
+// app.use('/api/ai', aiChatRoutes);
+// app.use('/api/search', searchRoutes);
+// app.use('/api/share', shareRoutes);
 app.use('/api/member', memberRoutes);
 app.use('/api/points', pointsRoutes);
 app.use('/api/assets', assetRoutes);

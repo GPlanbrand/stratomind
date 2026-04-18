@@ -14,15 +14,19 @@ model User {
   id            String    @id @default(cuid())
   username      String    @unique
   email         String    @unique
+  phone         String?   @unique
   password      String
-  role          String    @default("user") // user, admin, superadmin
+  nickname      String?
+  isPaid        Boolean   @default(false)
+  paidExpireAt  DateTime?
+  role          String    @default("user")
   avatar        String?
-  memberLevel   String    @default("normal") // normal, silver, gold, diamond
+  memberLevel   String    @default("normal")
   points        Int       @default(600)
-  totalRecharge Float     @default(0) // 累计充值金额
+  totalRecharge Float     @default(0)
   memberExpiresAt DateTime?
-  province      String?   // 省份
-  city          String?   // 城市
+  province      String?
+  city          String?
   createdAt     DateTime  @default(now())
   lastLoginAt   DateTime?
   signInDays    Int       @default(0)
@@ -30,7 +34,7 @@ model User {
   inviteCode    String    @unique
   invitedBy     String?
   
-  // 关联
+  // Relations
   projects      Project[]
   aiLogs        AILog[]
   assets        Asset[]
@@ -38,6 +42,8 @@ model User {
   pointsLogs    PointsLog[]
   rechargeRecords RechargeRecord[]
   adminLogs     AdminLog[]
+  requirementSheets RequirementSheet[]
+  userActionLogs UserActionLog[]
   
   createdAt2    DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
@@ -50,20 +56,20 @@ model Project {
   id          String   @id @default(cuid())
   name        String
   clientName  String
-  status      String   @default("active") // active, completed, archived
+  status      String   @default("active")
   userId      String
   
-  // 项目步骤数据（JSON存储）
-  clientInfo   String?  // JSON string
-  requirements String?  // JSON string
-  competitors  String?  // JSON string (array)
-  brief       String?  // JSON string
-  strategy    String?  // JSON string
+  // Project step data (JSON storage)
+  clientInfo   String?
+  requirements String?
+  competitors  String?
+  brief       String?
+  strategy    String?
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   
-  // 关联
+  // Relations
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   @@map("projects")
@@ -73,15 +79,15 @@ model Project {
 model AILog {
   id          String   @id @default(cuid())
   userId      String
-  type        String   // analyze-competitors, generate-brief, generate-strategy
-  input       String   // JSON string
-  output      String?  // JSON string
+  type        String
+  input       String
+  output      String?
   pointsCost  Int      @default(0)
-  status      String   @default("success") // success, failed
+  status      String   @default("success")
   error       String?
   createdAt   DateTime @default(now())
   
-  // 关联
+  // Relations
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   @@map("ai_logs")
@@ -92,14 +98,14 @@ model Asset {
   id          String   @id @default(cuid())
   userId      String
   name        String
-  type        String   // image, document, template
+  type        String
   url         String?
   size        Int?
   mimeType    String?
-  metadata    String?  // JSON string
+  metadata    String?
   createdAt   DateTime @default(now())
   
-  // 关联
+  // Relations
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   @@map("assets")
@@ -112,12 +118,12 @@ model KnowledgeItem {
   title       String
   content     String
   category    String?
-  tags        String?  // JSON array
-  metadata    String?  // JSON string
+  tags        String?
+  metadata    String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   
-  // 关联
+  // Relations
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   @@map("knowledge_items")
@@ -127,15 +133,15 @@ model KnowledgeItem {
 model PointsLog {
   id          String   @id @default(cuid())
   userId      String
-  type        String   // gain(获得), consume(消耗), recharge(充值), adjust(调整)
-  amount      Int      // 正数表示获得，负数表示消耗
-  balance     Int      // 变动后余额
-  reason      String   // 变动原因
-  orderNo     String?  // 关联订单号
-  adminId     String?  // 管理员ID（手动操作时）
+  type        String
+  amount      Int
+  balance     Int
+  reason      String
+  orderNo     String?
+  adminId     String?
   createdAt   DateTime @default(now())
   
-  // 关联
+  // Relations
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   @@map("points_logs")
@@ -145,17 +151,17 @@ model PointsLog {
 model RechargeRecord {
   id          String   @id @default(cuid())
   userId      String
-  amount      Float    // 充值金额
-  points      Int      // 获得积分
-  paymentMethod String // 支付方式: alipay, wxpay, offline(线下)
-  status      String   @default("pending") // pending, completed, failed, cancelled
-  orderNo     String?  // 第三方订单号
-  remark      String?  // 备注
-  operatorId  String?  // 操作员ID
+  amount      Float
+  points      Int
+  paymentMethod String
+  status      String   @default("pending")
+  orderNo     String?
+  remark      String?
+  operatorId  String?
   createdAt   DateTime @default(now())
   completedAt DateTime?
   
-  // 关联
+  // Relations
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   @@map("recharge_records")
@@ -164,36 +170,77 @@ model RechargeRecord {
 // 管理员操作日志
 model AdminLog {
   id          String   @id @default(cuid())
-  adminId     String   // 管理员ID
-  adminName   String   // 管理员名称
-  action      String   // 操作类型
-  targetType  String   // 操作对象类型: user, project, points, recharge, system
-  targetId    String?  // 操作对象ID
-  detail      String?  // 操作详情
-  ip          String?  // IP地址
-  userAgent   String?  // 用户代理
+  adminId     String
+  adminName   String
+  action      String
+  targetType  String
+  targetId    String?
+  detail      String?
+  ip          String?
+  userAgent   String?
   createdAt   DateTime @default(now())
   
-  // 关联
+  // Relations
   user        User?    @relation(fields: [adminId], references: [id], onDelete: SetNull)
   
   @@map("admin_logs")
 }
 
-// 用户操作日志（历史记录）
+// 用户操作日志
 model UserActionLog {
   id          String   @id @default(cuid())
   userId      String
-  actionType  String   // view_project, create_project, use_ai, update_content, upload_file
-  targetType  String   // project, ai, file, brief, strategy
-  targetId    String?  // 操作对象ID
-  targetName  String?  // 操作对象名称
-  metadata    String?  // JSON字符串，存储额外信息
-  ip          String?  // IP地址
+  actionType  String
+  targetType  String
+  targetId    String?
+  targetName  String?
+  metadata    String?
+  ip          String?
   createdAt   DateTime @default(now())
   
-  // 关联
+  // Relations
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   @@map("user_action_logs")
+}
+
+// 访客会话表
+model GuestSession {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  data      String?
+  expireAt  DateTime
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  @@map("guest_sessions")
+}
+
+// 短信验证码记录
+model SmsCode {
+  id        String   @id @default(cuid())
+  phone     String
+  code      String
+  type      String   @default("login")
+  used      Boolean  @default(false)
+  expireAt  DateTime
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  @@map("sms_codes")
+}
+
+// 需求确认单
+model RequirementSheet {
+  id          String   @id @default(cuid())
+  userId      String
+  projectName String
+  clientName  String?
+  items       String?
+  status      String   @default("draft")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("requirement_sheets")
 }
