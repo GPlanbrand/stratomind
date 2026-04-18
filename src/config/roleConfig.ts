@@ -138,58 +138,6 @@ export const ROLE_CONFIGS: Record<RoleType, RoleConfig> = {
       { label: '管理内容库', icon: '📚', path: '/projects/files', color: 'from-orange-500 to-yellow-500' }
     ]
   },
-  government: {
-    id: 'government',
-    name: '政府品宣模式',
-    icon: '🏛️',
-    slogan: '三审三校的智能副驾驶',
-    description: '政务信息发布的合规保障系统',
-    color: 'red',
-    bgGradient: 'from-red-600 to-orange-600',
-    features: [
-      {
-        id: 'doc-format',
-        name: '公文格式刷',
-        description: '一键规范政府公文格式标准',
-        icon: '📄',
-        path: '/projects?type=document'
-      },
-      {
-        id: 'compliance-check',
-        name: '合规检测',
-        description: '自动检测内容合规性与风险点',
-        icon: '✅',
-        path: '/projects?type=compliance'
-      },
-      {
-        id: 'submission-manager',
-        name: '报送管理',
-        description: '多部门报送流程与进度跟踪',
-        icon: '📤',
-        path: '/projects?type=submission'
-      },
-      {
-        id: 'info-platform',
-        name: '信息报送台',
-        description: '政务信息统一采集与发布平台',
-        icon: '🗞️',
-        path: '/projects?type=info'
-      },
-      {
-        id: 'approval-workflow',
-        name: '审批流转',
-        description: '三审三校流程自动化管理',
-        icon: '🔄',
-        path: '/projects?type=approval'
-      }
-    ],
-    quickActions: [
-      { label: '写一篇信息', icon: '✍️', path: '/projects?type=gov-info', color: 'from-red-500 to-orange-500' },
-      { label: '格式规范化', icon: '📋', path: '/projects?type=document', color: 'from-blue-500 to-indigo-500' },
-      { label: '合规检测', icon: '🔍', path: '/projects?type=compliance', color: 'from-green-500 to-emerald-500' },
-      { label: '报送审批', icon: '📤', path: '/projects?type=submission', color: 'from-purple-500 to-pink-500' }
-    ]
-  }
 };
 
 // 获取所有角色列表

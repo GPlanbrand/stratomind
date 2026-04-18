@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-  Briefcase, Building2, Landmark, Sparkles, 
+  Briefcase, Building2, Sparkles, 
   ChevronRight, Check, ArrowRight, X
 } from 'lucide-react';
 import { RoleType, ROLE_CONFIGS, getAllRoles, getRoleConfig } from '../config/roleConfig';
