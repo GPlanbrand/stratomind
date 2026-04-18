@@ -418,3 +418,301 @@ export async function getAIPolishSuggestion(
     return issue.suggestion || '请参考上述建议'
   }
 }
+
+
+// ========== 公文格式刷功能 ==========
+
+// 公文类型
+export type DocumentType = 
+  | 'notice'        // 通知
+  | 'memo'          // 备忘录
+  | 'report'         // 报告
+  | 'decision'       // 决定
+  | 'announcement'   // 公告
+  | 'meeting'        // 会议纪要
+
+// 格式刷配置
+interface FormatBrushConfig {
+  documentType: DocumentType
+  title?: string
+  department?: string
+  date?: string
+}
+
+// 公文格式刷 - 将大白话转换为标准公文格式
+export function formatToOfficialDocument(
+  plainText: string,
+  config: FormatBrushConfig
+): string {
+  const { documentType, title, department = 'XX部门', date } = config
+  const currentDate = date || new Date().toLocaleDateString('zh-CN')
+  
+  // 提取关键信息
+  const safetyMatch = plainText.match(/安全/gi)
+  const importantMatch = plainText.match(/重要/gi)
+  
+  // 根据文档类型生成对应格式
+  switch (documentType) {
+    case 'notice':
+      return generateNotice(plainText, {
+        title: title || extractTitle(plainText) || '关于召开会议的通知',
+        department,
+        date: currentDate,
+        meetingInfo: extractMeetingInfo(plainText),
+        safetyRelated: safetyMatch !== null
+      })
+    
+    case 'meeting':
+      return generateMeetingMinutes(plainText, {
+        title: title || extractTitle(plainText) || '会议纪要',
+        department,
+        date: currentDate,
+        meetingTopic: extractMeetingTopic(plainText)
+      })
+    
+    case 'report':
+      return generateReport(plainText, {
+        title: title || extractTitle(plainText) || '工作报告',
+        department,
+        date: currentDate
+      })
+    
+    case 'memo':
+      return generateMemo(plainText, {
+        title: title || extractTitle(plainText) || '备忘录',
+        department,
+        date: currentDate
+      })
+    
+    case 'decision':
+      return generateDecision(plainText, {
+        title: title || extractTitle(plainText) || '关于XXX的决定',
+        department,
+        date: currentDate,
+        importantRelated: importantMatch !== null
+      })
+    
+    case 'announcement':
+      return generateAnnouncement(plainText, {
+        title: title || extractTitle(plainText) || '公告',
+        department,
+        date: currentDate
+      })
+    
+    default:
+      return generateNotice(plainText, {
+        title: title || '通知',
+        department,
+        date: currentDate,
+        meetingInfo: extractMeetingInfo(plainText),
+        safetyRelated: safetyMatch !== null
+      })
+  }
+}
+
+// 提取标题
+function extractTitle(text: string): string | null {
+  const titleMatch = text.match(/关于(.+?)的通知|关于(.+?)的决定|关于(.+?)的报告/)
+  if (titleMatch) {
+    return `关于${titleMatch[1] || titleMatch[2] || titleMatch[3]}的通知`
+  }
+  const topicMatch = text.match(/(?:讨论|研究|召开)(.+?)(?:的|会|会议)/i)
+  if (topicMatch) {
+    return `关于召开${topicMatch[1]}会议的通知`
+  }
+  return null
+}
+
+// 提取会议信息
+function extractMeetingInfo(text: string): { time?: string; location?: string; participants?: string } {
+  const info: { time?: string; location?: string; participants?: string } = {}
+  const timeMatch = text.match(/(?:下周[一二三四五六日天]|周[一二三四五六日]|今天|明天|后天)(?:上午|下午|晚上)?/i)
+  if (timeMatch) info.time = timeMatch[0]
+  const locationMatch = text.match(/(?:在|到)(.+?)(?:开会|讨论|举行|召开)/i)
+  if (locationMatch) info.location = locationMatch[1]
+  const participantMatch = text.match(/(?:参加|参与|出席)(?:人员|者)?(.+?)(?:的|会|会议|讨论|$)/i)
+  if (participantMatch) info.participants = participantMatch[1]
+  return info
+}
+
+// 提取会议主题
+function extractMeetingTopic(text: string): string {
+  const topicMatch = text.match(/(?:讨论|研究|商讨)(.+?)(?:的|问题|事项|工作)/i)
+  if (topicMatch) return topicMatch[1]
+  if (/安全(?!生产)/i.test(text)) return '安全工作'
+  return '相关工作'
+}
+
+// 生成通知格式
+function generateNotice(text: string, options: any): string {
+  const { title, department, date, meetingInfo, safetyRelated } = options
+  
+  if (safetyRelated) {
+    return `${title}
+
+${department}
+${date}
+
+各科室、下属单位：
+
+为进一步加强安全生产工作，经研究决定，定于${meetingInfo?.time || '近期'}召开安全生产专题会议，现将有关事项通知如下：
+
+一、会议时间
+${meetingInfo?.time || '另行通知'}
+
+二、会议地点
+${meetingInfo?.location || '另行通知'}
+
+三、参会人员
+${meetingInfo?.participants || '各科室负责人、安全生产管理人员'}
+
+四、会议内容
+（一）传达上级安全生产工作会议精神；
+（二）通报近期安全生产工作情况；
+（三）研究部署下一阶段安全生产重点工作。
+
+五、有关要求
+（一）请参会人员提前10分钟入场就座；
+（二）因故无法参会的，请提前向会务组请假并安排人员代开；
+（三）请携带相关材料，做好发言准备。
+
+${department}
+${date}`
+  }
+  
+  return `${title}
+
+${department}
+${date}
+
+各部门、全体员工：
+
+${meetingInfo?.time ? `经研究，定于${meetingInfo.time}` : '经研究，定于近期'}召开会议，现将有关事项通知如下：
+
+一、会议时间
+${meetingInfo?.time || '另行通知'}
+
+二、会议地点
+${meetingInfo?.location || '另行通知'}
+
+三、参会人员
+${meetingInfo?.participants || '相关人员'}
+
+四、会议内容
+（一）${extractMeetingTopic(text) || '研究相关工作'}；
+（二）其他事项。
+
+五、有关要求
+（一）请提前安排好工作，准时参会；
+（二）如有特殊情况无法参会，请提前向会议组织部门报告。
+
+${department}
+${date}`
+}
+
+// 生成会议纪要格式
+function generateMeetingMinutes(text: string, options: any): string {
+  const { title, department, date, meetingTopic } = options
+  return `${title}
+
+会议时间：${date}
+会议地点：待定
+主 持 人：待定
+记 录 人：待定
+参会人员：待定
+
+一、会议议题
+${meetingTopic || '相关工作研究'}
+
+二、会议内容
+（一）
+（二）
+（三）
+
+三、会议决定
+（一）
+（二）
+
+四、下一步工作安排
+（一）
+（二）
+
+五、备注
+${department}
+${date}`
+}
+
+// 生成报告格式
+function generateReport(text: string, options: any): string {
+  const { title, department, date } = options
+  return `${title}
+
+${department}
+${date}
+
+领导：
+
+${text}
+
+${department}
+${date}`
+}
+
+// 生成备忘录格式
+function generateMemo(text: string, options: any): string {
+  const { title, department, date } = options
+  return `备 忘 录
+
+致：相关人员
+自：${department}
+日期：${date}
+主题：${title}
+
+${text}`
+}
+
+// 生成决定格式
+function generateDecision(text: string, options: any): string {
+  const { title, department, date, importantRelated } = options
+  return `${title}
+
+${department}
+${date}
+
+${importantRelated ? '为进一步加强XX工作，确保XX目标的实现，经研究决定：' : '经研究，决定如下：'}
+
+一、
+二、
+三、
+
+${department}
+${date}`
+}
+
+// 生成公告格式
+function generateAnnouncement(text: string, options: any): string {
+  const { title, department, date } = options
+  return `${title}
+
+${department}
+${date}
+
+${text}
+
+${department}
+${date}`
+}
+
+// 快速格式转换 - 智能识别内容类型
+export function quickFormat(plainText: string): string {
+  if (/安全(?!生产)/i.test(plainText) || /生产安全/i.test(plainText)) {
+    return formatToOfficialDocument(plainText, { documentType: 'notice', title: '安全生产专题会议通知' })
+  }
+  if (/开会|讨论|会议|周[一二三四五六日天]/i.test(plainText)) {
+    return formatToOfficialDocument(plainText, { documentType: 'notice' })
+  }
+  if (/报告|汇报/i.test(plainText)) {
+    return formatToOfficialDocument(plainText, { documentType: 'report' })
+  }
+  return formatToOfficialDocument(plainText, { documentType: 'notice' })
+}

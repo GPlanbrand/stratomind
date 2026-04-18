@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { login } from '../services/auth';
+import { login, hasSelectedRole } from '../services/auth';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -34,7 +34,12 @@ const LoginPage: React.FC = () => {
     setLoading(false);
 
     if (result.success) {
-      navigate('/projects');
+      // 检查用户是否已选择角色
+      if (hasSelectedRole()) {
+        navigate('/projects');
+      } else {
+        navigate('/role-select');
+      }
     } else {
       setError(result.message);
     }

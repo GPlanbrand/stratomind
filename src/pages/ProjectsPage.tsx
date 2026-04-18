@@ -4,10 +4,13 @@ import {
   Plus, ChevronRight, Layers, Building2, Target, BarChart3,
   TrendingUp, Sparkles, FolderOpen, Clock, FileCheck,
   Zap, Users, Briefcase, Eye, Pause, Play, FileText,
-  Megaphone, Search, Edit3, ClipboardList, Star
+  Megaphone, Search, Edit3, ClipboardList, Star,
+  Calendar, Shield, FileEdit, Send, BriefcaseBusiness, Building, Landmark
 } from 'lucide-react'
 import { getProjects, getProjectSteps } from '../services/api'
 import { Project, ProjectSteps } from '../types'
+import { getUserRole } from '../services/auth'
+import { RoleType, getRoleConfig, ROLE_CONFIGS } from '../config/roleConfig'
 
 // 场景类型
 interface Scenario {
@@ -27,38 +30,85 @@ const ProjectsPage: React.FC = () => {
   const [projectsSteps, setProjectsSteps] = useState<Record<string, ProjectSteps>>({})
   const [loading, setLoading] = useState(true)
   const [activeScenario, setActiveScenario] = useState<string | null>(null)
+  
+  // 获取用户角色
+  const userRole = getUserRole() as RoleType | null
+  const roleConfig = userRole ? getRoleConfig(userRole) : null
 
-  // 场景大厅数据
+  // 根据角色配置场景大厅数据
+  const getScenariosForRole = (): Scenario[] => {
+    if (!roleConfig) return scenarios;
+    return roleConfig.quickActions.map((action, idx) => ({
+      id: `role-action-${idx}`,
+      icon: getIconForAction(action.icon),
+      title: action.label,
+      subtitle: roleConfig.features[idx]?.name || '',
+      description: '',
+      tag: roleConfig.name,
+      gradient: action.color,
+      path: action.path
+    }));
+  };
+  
+  // 获取场景图标
+  const getIconForAction = (emoji: string): React.ReactNode => {
+    const iconMap: Record<string, any> = {
+      '📥': <FolderOpen className="w-8 h-8" />,
+      '📝': <FileEdit className="w-8 h-8" />,
+      '🔍': <Search className="w-8 h-8" />,
+      '💰': <BarChart3 className="w-8 h-8" />,
+      '✍️': <Edit3 className="w-8 h-8" />,
+      '🎯': <Target className="w-8 h-8" />,
+      '📈': <TrendingUp className="w-8 h-8" />,
+      '📚': <FolderOpen className="w-8 h-8" />,
+      '📋': <ClipboardList className="w-8 h-8" />,
+      '📄': <FileText className="w-8 h-8" />,
+      '📤': <Send className="w-8 h-8" />,
+    };
+    return iconMap[emoji] || <Sparkles className="w-8 h-8" />;
+  };
+
+  // 场景大厅数据 - 全案策划导向
   const scenarios: Scenario[] = [
     {
-      id: 'news',
-      icon: <Edit3 className="w-8 h-8" />,
-      title: '写一篇新闻稿',
-      subtitle: '新闻通稿 · 产品发布 · 人物专访',
-      description: '帮您快速产出规范的新闻稿件',
-      tag: '一键生成',
-      gradient: 'from-purple-500 to-indigo-500',
-      path: '/projects/workspace/new?type=news'
+      id: 'brand',
+      icon: <Sparkles className="w-8 h-8" />,
+      title: '做一个品牌全案',
+      subtitle: '品牌定位 · 视觉策略 · 传播规划',
+      description: '从品牌诊断到传播策略，完整输出',
+      tag: '全案策划',
+      gradient: 'from-purple-500 to-pink-500',
+      path: '/projects/workspace/new?type=brand'
     },
     {
       id: 'campaign',
       icon: <Megaphone className="w-8 h-8" />,
-      title: '做一套活动方案',
-      subtitle: '品牌活动 · 节日营销 · 展会策划',
-      description: '完整的活动策划文档和执行清单',
-      tag: '快速产出',
+      title: '做一个活动全案',
+      subtitle: '活动策划 · 执行方案 · 物料清单',
+      description: '从创意发想到落地执行，一站搞定',
+      tag: '活动策划',
       gradient: 'from-blue-500 to-cyan-500',
       path: '/projects/workspace/new?type=campaign'
     },
     {
-      id: 'review',
-      icon: <Search className="w-8 h-8" />,
-      title: '审一篇公众号',
-      subtitle: '合规检查 · 格式校对 · 优化建议',
-      description: '检查文章合规性和格式规范',
-      tag: '格式检查',
+      id: 'launch',
+      icon: <Target className="w-8 h-8" />,
+      title: '做一个新品上市',
+      subtitle: '产品定位 · 传播策略 · 推广计划',
+      description: '新品从0到1的完整营销方案',
+      tag: '新品上市',
+      gradient: 'from-orange-500 to-red-500',
+      path: '/projects/workspace/new?type=launch'
+    },
+    {
+      id: 'content',
+      icon: <FileText className="w-8 h-8" />,
+      title: '做一个内容全案',
+      subtitle: '内容策略 · 素材产出 · 分发计划',
+      description: '从内容规划到物料输出，闭环交付',
+      tag: '内容营销',
       gradient: 'from-green-500 to-emerald-500',
-      path: '/projects/workspace/new?type=review'
+      path: '/projects/workspace/new?type=content'
     }
   ]
 
@@ -237,20 +287,100 @@ const ProjectsPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <main className="px-4 sm:px-6 py-6 sm:py-8 max-w-6xl mx-auto">
+        {/* 角色欢迎横幅 */}
+        {roleConfig && (
+          <div className={`mb-8 p-6 rounded-2xl bg-gradient-to-r ${roleConfig.bgGradient} text-white`}>
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-2xl">{roleConfig.icon}</span>
+                  <span className="text-lg font-semibold opacity-90">{roleConfig.name}</span>
+                </div>
+                <p className="text-white/80 text-base">"{roleConfig.slogan}"</p>
+              </div>
+              <button
+                onClick={() => navigate('/projects/member')}
+                className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition-colors"
+              >
+                切换角色
+              </button>
+            </div>
+          </div>
+        )}
+        
         {/* 页面标题 */}
-        <div className="mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{getGreeting()}！</h1>
-          <p className="text-gray-500 mt-1.5 text-base">您的全能文案库 · 格式校对秘书</p>
+        <div className="mb-8 flex items-start justify-between">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{getGreeting()}！</h1>
+            <p className="text-gray-500 mt-1.5 text-base">
+              {roleConfig ? roleConfig.description : '您的全能文案库 · 格式校对秘书'}
+            </p>
+          </div>
+          {/* 下载到本地备份按钮 - 醒目入口 */}
+          <button
+            onClick={() => {
+              // 导出所有项目数据为JSON
+              const exportData = {
+                projects: projects,
+                exportTime: new Date().toISOString(),
+                version: '1.1.0'
+              };
+              const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `灵思项目备份_${new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')}.json`;
+              a.click();
+              URL.revokeObjectURL(url);
+            }}
+            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-purple-300 transition-all shadow-sm"
+          >
+            <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            <span className="text-sm font-medium text-gray-700">下载本地备份</span>
+          </button>
         </div>
+
+        {/* ========== 角色专属功能入口 ========== */}
+        {roleConfig && (
+          <div className="mb-10">
+            <h2 className="text-xl font-bold text-gray-900 mb-5 flex items-center gap-2">
+              <Star className="w-5 h-5 text-purple-500" />
+              {roleConfig.name} - 快捷入口
+            </h2>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {roleConfig.features.slice(0, 4).map((feature) => (
+                <button
+                  key={feature.id}
+                  onClick={() => navigate(feature.path)}
+                  className="bg-white rounded-2xl border border-gray-100 p-5 text-left hover:shadow-xl hover:border-purple-200 hover:-translate-y-1 transition-all duration-300 group"
+                >
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 text-2xl ${
+                    userRole === 'ad_agency' ? 'bg-purple-100' :
+                    userRole === 'enterprise' ? 'bg-blue-100' :
+                    userRole === 'government' ? 'bg-red-100' : 'bg-gray-100'
+                  }`}>
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-base font-bold text-gray-900 mb-1 group-hover:text-purple-600 transition-colors">
+                    {feature.name}
+                  </h3>
+                  <p className="text-sm text-gray-500">{feature.description}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* ========== 场景大厅 ========== */}
         <div className="mb-10">
           <h2 className="text-xl font-bold text-gray-900 mb-5 flex items-center gap-2">
             <Star className="w-5 h-5 text-purple-500" />
-            您今天想做什么？
+            {roleConfig ? '更多功能' : '您今天想做什么？'}
           </h2>
           <div className="grid gap-6 sm:grid-cols-3">
-            {scenarios.map((scenario) => (
+            {(roleConfig ? getScenariosForRole() : scenarios).map((scenario) => (
               <button
                 key={scenario.id}
                 onClick={() => handleScenarioClick(scenario)}

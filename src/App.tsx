@@ -16,12 +16,17 @@ import CalendarPage from './pages/CalendarPage'
 import KnowledgePage from './pages/KnowledgePage'
 import AssistantPage from './pages/AssistantPage'
 import RequirementParser from './components/RequirementParser'
+import ClientRequirementParser from './components/ClientRequirementParser'
+import Settings from './components/Settings'
+import TalkWrapper from './components/TalkWrapper'
 import ProjectReportPage from './pages/ProjectReportPage'
 import DocumentPreview from './pages/DocumentPreview'
 import Layout from './components/Layout'
 // Admin pages
 import AdminLoginPage from './pages/admin/AdminLoginPage'
 import AdminPage from './pages/admin/AdminPage'
+// Role select
+import RoleSelectPage from './pages/RoleSelectPage'
 
 function App() {
   return (
@@ -48,6 +53,9 @@ function App() {
         <Route path="knowledge" element={<KnowledgePage />} />
         <Route path="assistant" element={<AssistantPage />} />
         <Route path="requirement-parser" element={<RequirementParser />} />
+        <Route path="client-requirement-parser" element={<ClientRequirementParser />} />
+        <Route path="settings" element={<Settings />} />
+        <Route path="talk-wrapper" element={<TalkWrapper />} />
         <Route path="report/:projectId" element={<ProjectReportPage />} />
         <Route path="preview/:projectId" element={<DocumentPreview />} />
       </Route>
@@ -55,6 +63,9 @@ function App() {
       {/* 管理后台 */}
       <Route path="/admin/login" element={<AdminLoginPage />} />
       <Route path="/admin" element={<AdminPage />} />
+      
+      {/* 角色选择页面 */}
+      <Route path="/role-select" element={<RoleSelectPage />} />
     </Routes>
   )
 }

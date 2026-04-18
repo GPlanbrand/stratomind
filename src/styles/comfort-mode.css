@@ -1,0 +1,131 @@
+/* 舒适模式样式 */
+
+/* 基础变量 */
+:root {
+  --base-font-size: 16px;
+  --button-height: 40px;
+  --icon-gap: 8px;
+}
+
+/* 舒适模式激活时 */
+:root.comfort-mode {
+  --base-font-size: 18px;
+  --button-height: 48px;
+  --icon-gap: 12px;
+}
+
+/* 全局字体大小 */
+:root.comfort-mode body {
+  font-size: 18px;
+}
+
+:root.comfort-mode h1 {
+  font-size: 2rem;
+}
+
+:root.comfort-mode h2 {
+  font-size: 1.75rem;
+}
+
+:root.comfort-mode h3 {
+  font-size: 1.5rem;
+}
+
+:root.comfort-mode h4 {
+  font-size: 1.25rem;
+}
+
+:root.comfort-mode p {
+  font-size: 1.125rem;
+}
+
+:root.comfort-mode .text-sm {
+  font-size: 1rem;
+}
+
+:root.comfort-mode .text-xs {
+  font-size: 0.875rem;
+}
+
+/* 按钮尺寸 */
+:root.comfort-mode button:not(.icon-only) {
+  min-height: var(--button-height);
+  padding: 0.75rem 1.5rem;
+}
+
+/* 输入框尺寸 */
+:root.comfort-mode input,
+:root.comfort-mode textarea,
+:root.comfort-mode select {
+  font-size: 1.125rem;
+  padding: 0.75rem 1rem;
+}
+
+/* 图标间距 */
+:root.comfort-mode .icon-with-label {
+  gap: var(--icon-gap);
+}
+
+/* 卡片间距 */
+:root.comfort-mode .card {
+  padding: 1.5rem;
+}
+
+/* 列表项高度 */
+:root.comfort-mode li,
+:root.comfort-mode .list-item {
+  min-height: 48px;
+  padding: 0.75rem 1rem;
+}
+
+/* 模态框优化 */
+:root.comfort-mode .modal-content {
+  padding: 2rem;
+}
+
+/* 下拉菜单项 */
+:root.comfort-mode .dropdown-item {
+  padding: 0.875rem 1.25rem;
+  font-size: 1.0625rem;
+}
+
+/* 标签页 */
+:root.comfort-mode .tab-item {
+  padding: 0.875rem 1.5rem;
+  font-size: 1.0625rem;
+}
+
+/* 进度条 */
+:root.comfort-mode .progress-bar {
+  height: 12px;
+}
+
+/* 头像尺寸 */
+:root.comfort-mode .avatar {
+  width: 48px;
+  height: 48px;
+}
+
+/* 分页 */
+:root.comfort-mode .pagination-item {
+  min-width: 44px;
+  height: 44px;
+}
+
+/* 导航菜单项 */
+:root.comfort-mode .nav-item {
+  padding: 0.875rem 1.25rem;
+}
+
+/* 表格 */
+:root.comfort-mode th,
+:root.comfort-mode td {
+  padding: 1rem;
+  font-size: 1.0625rem;
+}
+
+/* 工具提示 */
+:root.comfort-mode .tooltip {
+  font-size: 0.9375rem;
+  padding: 0.5rem 0.75rem;
+}

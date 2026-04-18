@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../services/auth';
+import { login, hasSelectedRole } from '../services/auth';
 
 const HomeLoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -42,7 +42,12 @@ const HomeLoginPage: React.FC = () => {
       const result = login('demo', 'demo123');
       setLoading(false);
       if (result.success) {
-        navigate('/projects');
+        // 检查用户是否已选择角色
+        if (hasSelectedRole()) {
+          navigate('/projects');
+        } else {
+          navigate('/role-select');
+        }
       } else {
         setError(result.message);
       }
@@ -64,11 +69,12 @@ const HomeLoginPage: React.FC = () => {
       const result = login(account, password);
       setLoading(false);
       if (result.success) {
-        // 如果勾选了"免登录"，延长token有效期
-        if (rememberMe) {
-          localStorage.setItem('tokenExpiry', (Date.now() + 30 * 24 * 60 * 60 * 1000).toString());
+        // 检查用户是否已选择角色
+        if (hasSelectedRole()) {
+          navigate('/projects');
+        } else {
+          navigate('/role-select');
         }
-        navigate('/projects');
       } else {
         setError(result.message);
       }

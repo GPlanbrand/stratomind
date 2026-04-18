@@ -197,3 +197,44 @@ export const dailySignIn = (): { success: boolean; message: string } => {
   
   return { success: true, message: `签到成功！获得${POINTS_RULES.dailySignIn}积分` };
 };
+
+
+import { RoleType } from '../config/roleConfig';
+
+// 获取用户角色
+export const getUserRole = (): RoleType | null => {
+  const user = getCurrentUser();
+  return user?.role || null;
+};
+
+// 更新用户角色
+export const updateUserRole = (role: RoleType): boolean => {
+  const user = getCurrentUser();
+  if (!user) return false;
+  
+  const users = getUsers();
+  const userIndex = users.findIndex(u => u.id === user.id);
+  
+  if (userIndex === -1) return false;
+  
+  users[userIndex].role = role;
+  saveUsers(users);
+  setCurrentUser(users[userIndex]);
+  
+  return true;
+};
+
+// 检查用户是否已选择角色
+export const hasSelectedRole = (): boolean => {
+  const user = getCurrentUser();
+  return !!user?.role;
+};
+
+// 获取用户角色配置
+export const getUserRoleConfig = () => {
+  const role = getUserRole();
+  if (!role) return null;
+  
+  const { getRoleConfig } = require('../config/roleConfig');
+  return getRoleConfig(role);
+};

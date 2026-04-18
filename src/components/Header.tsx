@@ -314,7 +314,7 @@ const pageBreadcrumbs: Record<string, BreadcrumbItem[]> = {
   '/projects/email': [{ label: '项目', path: '/projects' }, { label: '邮箱' }],
   '/projects/calendar': [{ label: '项目', path: '/projects' }, { label: '日程' }],
   '/projects/knowledge': [{ label: '项目', path: '/projects' }, { label: '知识库' }],
-  '/projects/assistant': [{ label: '项目', path: '/projects' }, { label: '文案助手' }],
+  '/projects/assistant': [{ label: '项目', path: '/projects' }, { label: '写作秘书' }],
   '/projects/member': [{ label: '项目', path: '/projects' }, { label: '会员中心' }],
 };
 

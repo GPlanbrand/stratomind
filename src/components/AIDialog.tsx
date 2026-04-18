@@ -57,7 +57,7 @@ const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction })
       setMessages([{
         id: Date.now().toString(),
         role: 'assistant',
-        content: '你好！我是灵思文案助手。你可以：\n• 描述你想生成的创意内容\n• 上传参考图片让我学习风格\n• 让我帮你修改方案中的内容\n\n有什么可以帮你的吗？',
+        content: '你好！我是你的写作秘书📝。我可以帮你：\n• 写文案、想标题、润色内容\n• 检查格式规范、排除敏感词\n• 把大白话转成正式公文\n\n有什么需要帮忙的？',
         timestamp: Date.now()
       }]);
     }
