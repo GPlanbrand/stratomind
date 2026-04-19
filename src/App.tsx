@@ -31,6 +31,8 @@ import AdminLoginPage from './pages/admin/AdminLoginPage'
 import AdminPage from './pages/admin/AdminPage'
 // Role select
 import RoleSelectPage from './pages/RoleSelectPage'
+// Simple create page (语音驱动简化表单)
+import SimpleCreatePage from './pages/SimpleCreatePage'
 
 function App() {
   return (
@@ -77,6 +79,9 @@ function App() {
       
       {/* 角色选择页面 */}
       <Route path="/role-select" element={<RoleSelectPage />} />
+      
+      {/* 简化版新建项目 - 语音驱动 */}
+      <Route path="/simple/create" element={<SimpleCreatePage />} />
     </Routes>
   )
 }

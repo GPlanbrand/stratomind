@@ -11,6 +11,7 @@ import smsRoutes, { sendSmsCode, verifySmsCode } from './routes/sms';
 import requirementRoutes from './routes/requirement';
 import projectRoutes from './routes/project';
 import aiRoutes from './routes/ai';
+import aiParserRoutes from './routes/aiParser';
 import memberRoutes from './routes/member';
 import pointsRoutes from './routes/points';
 import assetRoutes from './routes/asset';
@@ -54,6 +55,7 @@ app.use('/api/requirements', requirementRoutes);
 // 需要登录认证的路由
 app.use('/api/projects', projectRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/ai/simple', aiParserRoutes); // 简化版AI解析
 // app.use('/api/ai', aiChatRoutes);
 // app.use('/api/search', searchRoutes);
 // app.use('/api/share', shareRoutes);
