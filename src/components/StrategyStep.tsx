@@ -316,13 +316,13 @@ ${data.mediaStrategy || '（未填写）'}
                 <button
                   key={type.key}
                   onClick={() => setSelectedPromptType(type.key)}
-                  className={`flex-1 flex items-center gap-1.5 px-2 py-2 rounded-lg text-xs sm:text-sm transition-colors ${
+                  className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg text-xs sm:text-sm transition-colors ${
                     isActive 
                       ? 'bg-purple-100 text-purple-700 border border-purple-200' 
                       : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
                   }`}
                 >
-                  <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
                   <span className="hidden sm:inline">{type.label}</span>
                   <span className="sm:hidden">{type.label.replace('Prompt', '')}</span>
                 </button>
