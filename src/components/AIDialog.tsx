@@ -61,10 +61,16 @@ interface Message {
   timestamp: number;
 }
 
+// AI操作数据类型
+interface AIActionData {
+  action: string;
+  data?: Record<string, unknown>;
+}
+
 interface AIDialogProps {
   projectId?: string;
   projectName?: string;
-  onAction?: (action: string, data?: any) => void;
+  onAction?: (action: string, data?: Record<string, unknown>) => void;
 }
 
 const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction }) => {

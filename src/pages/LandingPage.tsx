@@ -18,34 +18,15 @@ import {
   Layers,
   BarChart3,
   MessageSquare,
-  Globe
+  Mic,
+  Coffee,
+  Store,
+  Gift,
+  Briefcase,
+  DollarSign,
+  UsersRound,
+  Timer
 } from 'lucide-react'
-
-// Animation Hook
-const useScrollAnimation = () => {
-  const [isVisible, setIsVisible] = useState(false)
-  
-  useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(true), 100)
-    return () => clearTimeout(timer)
-  }, [])
-  
-  return isVisible
-}
-
-// Floating Animation
-const FloatingAnimation = ({ children, delay = 0 }: { children: React.ReactNode, delay?: number }) => (
-  <div
-    className="animate-bounce"
-    style={{ 
-      animationDuration: '3s',
-      animationDelay: `${delay}s`,
-      animationIterationCount: 'infinite'
-    }}
-  >
-    {children}
-  </div>
-)
 
 // Navigation
 const Navigation = () => {
@@ -71,16 +52,16 @@ const Navigation = () => {
             </div>
             <div>
               <span className="text-xl font-bold text-gray-900">灵思AI</span>
-              <span className="hidden sm:block text-xs text-gray-500">创意工作台</span>
+              <span className="hidden sm:block text-xs text-gray-500">广告公司专用</span>
             </div>
           </Link>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
-            <a href="#features" className="text-gray-600 hover:text-purple-600 transition-colors font-medium">核心功能</a>
-            <a href="#advantages" className="text-gray-600 hover:text-purple-600 transition-colors font-medium">产品优势</a>
-            <a href="#cases" className="text-gray-600 hover:text-purple-600 transition-colors font-medium">客户案例</a>
-            <a href="#pricing" className="text-gray-600 hover:text-purple-600 transition-colors font-medium">价格方案</a>
+            <a href="#features" className="text-gray-600 hover:text-purple-600 transition-colors font-medium">能做什么</a>
+            <a href="#cases" className="text-gray-600 hover:text-purple-600 transition-colors font-medium">案例</a>
+            <a href="#pricing" className="text-gray-600 hover:text-purple-600 transition-colors font-medium">多少钱</a>
+            <a href="#faq" className="text-gray-600 hover:text-purple-600 transition-colors font-medium">常见问题</a>
           </div>
 
           {/* CTA Buttons */}
@@ -92,7 +73,7 @@ const Navigation = () => {
               to="/register"
               className="bg-purple-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-purple-700 transition-all shadow-lg shadow-purple-200 hover:shadow-xl hover:shadow-purple-300 hover:-translate-y-0.5"
             >
-              立即体验
+              免费试用
             </Link>
           </div>
 
@@ -113,14 +94,14 @@ const Navigation = () => {
         {mobileMenuOpen && (
           <div className="md:hidden bg-white border-t border-gray-100 py-4">
             <div className="flex flex-col gap-4">
-              <a href="#features" className="text-gray-600 hover:text-purple-600 font-medium px-4">核心功能</a>
-              <a href="#advantages" className="text-gray-600 hover:text-purple-600 font-medium px-4">产品优势</a>
-              <a href="#cases" className="text-gray-600 hover:text-purple-600 font-medium px-4">客户案例</a>
-              <a href="#pricing" className="text-gray-600 hover:text-purple-600 font-medium px-4">价格方案</a>
+              <a href="#features" className="text-gray-600 hover:text-purple-600 font-medium px-4">能做什么</a>
+              <a href="#cases" className="text-gray-600 hover:text-purple-600 font-medium px-4">案例</a>
+              <a href="#pricing" className="text-gray-600 hover:text-purple-600 font-medium px-4">多少钱</a>
+              <a href="#faq" className="text-gray-600 hover:text-purple-600 font-medium px-4">常见问题</a>
               <div className="border-t border-gray-100 pt-4 px-4 flex flex-col gap-3">
                 <Link to="/login" className="text-center text-gray-700 font-medium">登录</Link>
                 <Link to="/register" className="text-center bg-purple-600 text-white px-5 py-2.5 rounded-lg font-medium">
-                  立即体验
+                  免费试用
                 </Link>
               </div>
             </div>
@@ -165,16 +146,16 @@ const HeroSection = () => {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Badge */}
         <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-medium mb-8 shadow-lg">
-          <Sparkles className="w-4 h-4" />
-          <span>新一代 AI 品牌策划工作台</span>
+          <Briefcase className="w-4 h-4" />
+          <span>帮广告公司多接单、快出方案</span>
         </div>
         
         {/* Main Heading */}
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight tracking-tight">
-          灵思，你的
+          客户催方案？
           <span className="relative inline-block mx-2 md:mx-4">
             <span className="relative z-10 bg-gradient-to-r from-purple-600 via-purple-500 to-purple-600 bg-clip-text text-transparent">
-              AI创意合伙人
+              说话就搞定
             </span>
             <div className="absolute -inset-1 bg-gradient-to-r from-purple-600/20 to-purple-500/20 blur-lg -z-10 rounded-lg" />
           </span>
@@ -182,11 +163,13 @@ const HeroSection = () => {
         
         {/* Subtitle */}
         <p className="text-lg sm:text-xl md:text-2xl text-purple-600 font-medium mb-4">
-          品牌全案 · 活动策划 · 新品上市 · 内容营销
+          县城火锅店 · 乡镇超市 · 健身房 · 培训班
         </p>
         
         <p className="text-base sm:text-lg text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed">
-          为广告公司和企业品宣量身打造，一站式完成从需求分析到方案输出的全流程
+          不用自己想，不用查资料。<br/>
+          客户说需求，你说话，方案10秒出来。
+          一个方案收500-2000元，比以前快100倍。
         </p>
         
         {/* CTA Buttons */}
@@ -195,15 +178,15 @@ const HeroSection = () => {
             to="/register"
             className="group bg-purple-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-purple-700 transition-all shadow-xl shadow-purple-200 hover:shadow-2xl hover:shadow-purple-300 flex items-center gap-2 hover:-translate-y-1"
           >
-            免费开始使用
+            5分钟学会
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Link>
           <a 
-            href="#features"
+            href="#cases"
             className="group flex items-center gap-2 text-gray-700 px-8 py-4 rounded-xl font-semibold text-lg border-2 border-gray-200 hover:border-purple-300 hover:text-purple-600 transition-all"
           >
             <Play className="w-5 h-5" />
-            了解更多
+            看别人怎么用
           </a>
         </div>
 
@@ -211,56 +194,110 @@ const HeroSection = () => {
         <div className="mt-16 flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500">
           <div className="flex items-center gap-2">
             <CheckCircle className="w-4 h-4 text-green-500" />
-            <span>免费注册</span>
+            <span>10秒出方案</span>
           </div>
           <div className="flex items-center gap-2">
             <CheckCircle className="w-4 h-4 text-green-500" />
-            <span>无需信用卡</span>
+            <span>直接发给客户</span>
           </div>
           <div className="flex items-center gap-2">
             <CheckCircle className="w-4 h-4 text-green-500" />
-            <span>3分钟上手</span>
+            <span>不满意随便改</span>
           </div>
         </div>
 
-        {/* Hero Visual */}
+        {/* Hero Visual - 对话场景 */}
         <div className="mt-20 relative">
           <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent z-10 pointer-events-none h-32 bottom-0 top-auto" />
-          <div className="bg-white rounded-2xl shadow-2xl shadow-purple-200 border border-purple-100 overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-2xl shadow-purple-200 border border-purple-100 overflow-hidden max-w-2xl mx-auto">
             <div className="flex items-center gap-2 px-4 py-3 bg-gray-50 border-b border-gray-100">
               <div className="flex gap-1.5">
                 <div className="w-3 h-3 rounded-full bg-red-400" />
                 <div className="w-3 h-3 rounded-full bg-yellow-400" />
                 <div className="w-3 h-3 rounded-full bg-green-400" />
               </div>
-              <div className="flex-1 text-center text-sm text-gray-500">灵思AI创意工作台</div>
+              <div className="flex-1 text-center text-sm text-gray-500">灵思AI · 帮广告公司出方案</div>
             </div>
             <div className="p-6 bg-gradient-to-br from-purple-50 to-white">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-white rounded-xl p-4 shadow-sm border border-purple-100">
-                  <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-3">
-                    <Target className="w-5 h-5 text-purple-600" />
-                  </div>
-                  <h3 className="font-semibold text-gray-900 mb-1">品牌策略</h3>
-                  <p className="text-sm text-gray-500">竞品分析 · 品牌定位 · 目标人群</p>
+              {/* 用户输入 */}
+              <div className="flex gap-3 mb-6">
+                <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <span className="text-white text-sm">你</span>
                 </div>
-                <div className="bg-white rounded-xl p-4 shadow-sm border border-purple-100">
-                  <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-3">
-                    <Rocket className="w-5 h-5 text-purple-600" />
-                  </div>
-                  <h3 className="font-semibold text-gray-900 mb-1">创意输出</h3>
-                  <p className="text-sm text-gray-500">创意简报 · Slogan · 视觉方向</p>
+                <div className="bg-white rounded-xl rounded-tl-none p-4 shadow-sm border border-purple-100 max-w-md">
+                  <p className="text-gray-800">县城火锅店开业，200平，人均50，下周六开业，帮我想个活动方案</p>
                 </div>
-                <div className="bg-white rounded-xl p-4 shadow-sm border border-purple-100">
-                  <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-3">
-                    <FileText className="w-5 h-5 text-purple-600" />
-                  </div>
-                  <h3 className="font-semibold text-gray-900 mb-1">方案文档</h3>
-                  <p className="text-sm text-gray-500">品牌手册 · 策划方案 · 执行计划</p>
+              </div>
+              {/* AI输出 */}
+              <div className="flex gap-3 justify-end">
+                <div className="bg-purple-600 rounded-xl rounded-tr-none p-4 shadow-sm max-w-md text-left">
+                  <p className="text-white text-sm leading-relaxed">
+                    <span className="font-semibold">✅ 火锅店开业方案已生成</span><br/>
+                    <span className="text-purple-200">📋 主题：辣爽开业·吃一送一</span><br/>
+                    <span className="text-purple-200">💰 活动：6.8折+充值送</span><br/>
+                    <span className="text-purple-200">📱 朋友圈文案已写好</span><br/>
+                    <span className="text-purple-200">⏱️ 方案已保存，可直接使用</span>
+                  </p>
                 </div>
+                <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Sparkles className="w-4 h-4 text-purple-600" />
+                </div>
+              </div>
+              <div className="text-center mt-4">
+                <span className="text-sm text-purple-600 bg-purple-50 px-3 py-1 rounded-full">🎤 说话就行，10秒出方案</span>
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// Value Section - 广告公司痛点
+const ValueSection = () => {
+  const pains = [
+    {
+      icon: Timer,
+      title: '客户催得急',
+      before: '自己想了2小时...',
+      after: '说话10秒搞定'
+    },
+    {
+      icon: DollarSign,
+      title: '收费上不去',
+      before: '一个方案才收300...',
+      after: '用工具效率高，收500-2000'
+    },
+    {
+      icon: UsersRound,
+      title: '人手不够',
+      before: '小公司就几个人...',
+      after: '一个人顶10个人用'
+    }
+  ]
+
+  return (
+    <section className="py-16 bg-gradient-to-r from-gray-900 to-gray-800">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+            广告公司的3个烦恼，灵思帮你解决
+          </h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {pains.map((pain, index) => (
+            <div key={index} className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
+              <div className="w-14 h-14 bg-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <pain.icon className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="text-lg font-bold text-white mb-3">{pain.title}</h3>
+              <div className="space-y-2">
+                <div className="text-red-300 text-sm">❌ {pain.before}</div>
+                <div className="text-green-300 text-sm">✅ {pain.after}</div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -271,28 +308,28 @@ const HeroSection = () => {
 const FeaturesSection = () => {
   const features = [
     {
-      icon: Target,
-      title: '品牌全案策划',
-      description: '从市场调研到品牌定位，从视觉规范到传播策略，提供完整的品牌全案解决方案',
-      tags: ['品牌定位', '视觉规范', '传播策略', '品牌手册']
+      icon: Coffee,
+      title: '餐饮开业',
+      description: '火锅店、烧烤店、奶茶店...客户说什么，方案马上出来',
+      tags: ['开业活动', '节日促销', '会员卡', '朋友圈文案']
     },
     {
-      icon: Rocket,
-      title: '活动策划',
-      description: '线上线下活动全流程策划，包括主题创意、流程设计、物料清单、执行手册',
-      tags: ['主题创意', '流程设计', '物料清单', '执行手册']
+      icon: Store,
+      title: '商超零售',
+      description: '超市、便利店、服装店...帮本地商家做促销方案',
+      tags: ['打折活动', '引流方案', '会员营销', '换季清仓']
     },
     {
-      icon: Sparkles,
-      title: '新品上市',
-      description: '从产品卖点挖掘到上市推广方案，快速输出专业级的新品营销全套资料',
-      tags: ['卖点挖掘', '定价策略', '推广方案', '上市物料']
+      icon: UsersRound,
+      title: '服务行业',
+      description: '健身房、培训班、美容院...帮服务业拉新、搞活动',
+      tags: ['招生方案', '拓客引流', '老带新', '储值卡']
     },
     {
-      icon: MessageSquare,
-      title: '内容营销',
-      description: '社交媒体内容规划、种草文案撰写、KOL合作方案，让内容营销更高效',
-      tags: ['内容规划', '种草文案', 'KOL方案', '传播节奏']
+      icon: Gift,
+      title: '本地服务',
+      description: '开荒保洁、婚庆摄影、家政维修...帮本地服务做推广',
+      tags: ['推广文案', '活动策划', '朋友圈', '优惠券']
     }
   ]
 
@@ -303,13 +340,13 @@ const FeaturesSection = () => {
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
             <Layers className="w-4 h-4" />
-            <span>核心功能</span>
+            <span>能做什么</span>
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            一站式品牌策划工作台
+            客户要什么，直接说
           </h2>
           <p className="text-lg text-gray-600">
-            覆盖品牌全生命周期的四大核心场景，让创意工作更高效
+            餐饮、商超、服务业...本地客户的方案，全都能出
           </p>
         </div>
 
@@ -324,7 +361,7 @@ const FeaturesSection = () => {
                 <feature.icon className="w-7 h-7 text-white" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
-              <p className="text-gray-600 mb-4 leading-relaxed">{feature.description}</p>
+              <p className="text-gray-600 mb-4 leading-relaxed text-sm">{feature.description}</p>
               <div className="flex flex-wrap gap-2">
                 {feature.tags.map((tag, tagIndex) => (
                   <span 
@@ -348,27 +385,27 @@ const AdvantagesSection = () => {
   const advantages = [
     {
       icon: Zap,
-      title: '效率提升 10倍',
-      description: '传统方式需要数天完成的工作，灵思AI可在几分钟内输出初稿',
-      highlight: '10x'
+      title: '快！10秒出方案',
+      description: '客户催得急？10秒出方案，不用自己想。发过去客户都说好',
+      highlight: '10秒'
     },
     {
-      icon: Award,
-      title: '专业级输出',
-      description: '基于大量4A广告公司和行业案例训练，输出方案符合专业标准',
-      highlight: '4A'
+      icon: DollarSign,
+      title: '多赚钱！',
+      description: '以前一天做1个方案，现在能做10个。收费提高，效率翻倍',
+      highlight: '多赚'
     },
     {
-      icon: Users,
-      title: '智能协作',
-      description: '支持多人在线协作，版本管理、批注评论，让团队配合更顺畅',
-      highlight: 'Team'
+      icon: MessageSquare,
+      title: '简单！说话就行',
+      description: '不用学，不用研究。客户说什么你说什么，方案自动出来',
+      highlight: '0门槛'
     },
     {
       icon: Shield,
-      title: '数据安全保障',
-      description: '企业级数据加密，隐私保护，让您安心使用无后顾之忧',
-      highlight: '安全'
+      title: '免费试用！',
+      description: '先试再买，不好用不收钱。觉得好再开会员，一个月才29',
+      highlight: '先试后买'
     }
   ]
 
@@ -379,13 +416,13 @@ const AdvantagesSection = () => {
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
             <TrendingUp className="w-4 h-4" />
-            <span>产品优势</span>
+            <span>为什么用灵思</span>
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            为什么选择灵思AI
+            比你想的更简单、更赚钱
           </h2>
           <p className="text-lg text-gray-600">
-            专业、高效、安全，让您的创意工作如虎添翼
+            帮广告公司多接单、快出方案、收更多钱
           </p>
         </div>
 
@@ -402,7 +439,7 @@ const AdvantagesSection = () => {
                 </div>
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">{advantage.title}</h3>
-              <p className="text-gray-600 leading-relaxed">{advantage.description}</p>
+              <p className="text-gray-600 leading-relaxed text-sm">{advantage.description}</p>
             </div>
           ))}
         </div>
@@ -414,10 +451,10 @@ const AdvantagesSection = () => {
 // Stats Section
 const StatsSection = () => {
   const stats = [
-    { value: '50,000+', label: '品牌策划方案生成', icon: FileText },
-    { value: '2,000+', label: '企业和团队用户', icon: Users },
-    { value: '98%', label: '用户满意度', icon: Award },
-    { value: '10min', label: '平均方案生成时间', icon: Clock }
+    { value: '50,000+', label: '个方案已生成', icon: FileText },
+    { value: '3,000+', label: '广告公司在用', icon: Briefcase },
+    { value: '10秒', label: '平均出方案时间', icon: Clock },
+    { value: '500-2000', label: '单方案收费(元)', icon: DollarSign }
   ]
 
   return (
@@ -444,26 +481,26 @@ const StatsSection = () => {
   )
 }
 
-// Cases Section
+// Cases Section - 广告公司视角
 const CasesSection = () => {
   const cases = [
     {
-      company: '某知名消费品牌',
-      type: '新品上市',
-      result: '2周完成全套新品上市方案，获得管理层一致认可',
-      metrics: ['上市周期缩短60%', '方案通过率95%', '节省人力成本40%']
+      company: '县城火锅店',
+      type: '开业活动',
+      result: '用灵思出了个方案，收了客户800。开业当天客户发朋友圈说效果很好',
+      metrics: ['方案5分钟出', '收费800元', '客户很满意']
     },
     {
-      company: '连锁餐饮企业',
-      type: '品牌升级',
-      result: '完成品牌全案策划，新形象获得消费者好评',
-      metrics: ['品牌认知度提升35%', '门店客流增长20%', '社交媒体曝光量翻倍']
+      company: '乡镇超市',
+      type: '节日促销',
+      result: '帮镇上超市想了个鸡蛋特价活动，收了500。老板说人比以前多一倍',
+      metrics: ['活动方案快', '收费500元', '客户效果明显']
     },
     {
-      company: '科技创业公司',
-      type: '活动策划',
-      result: '产品发布会策划执行，活动效果超出预期',
-      metrics: ['活动参与人数1000+', '媒体曝光量50万+', '直播观看人数10万+']
+      company: '本地健身房',
+      type: '招生方案',
+      result: '出了个888元年卡方案，收了1200。一个月收了50个新会员',
+      metrics: ['方案专业', '收费1200元', '帮客户赚钱']
     }
   ]
 
@@ -474,13 +511,13 @@ const CasesSection = () => {
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
             <BarChart3 className="w-4 h-4" />
-            <span>客户案例</span>
+            <span>真实案例</span>
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            真实案例，验证效果
+            广告公司都在用
           </h2>
           <p className="text-lg text-gray-600">
-            各行业客户都在使用灵思AI提升品牌策划效率
+            帮本地客户出方案，收费500-2000元，10分钟搞定
           </p>
         </div>
 
@@ -493,14 +530,14 @@ const CasesSection = () => {
             >
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center">
-                  <Globe className="w-6 h-6 text-white" />
+                  <Store className="w-6 h-6 text-white" />
                 </div>
                 <div>
                   <div className="font-bold text-gray-900">{caseItem.company}</div>
                   <div className="text-sm text-purple-600 font-medium">{caseItem.type}</div>
                 </div>
               </div>
-              <p className="text-gray-600 mb-4 leading-relaxed">{caseItem.result}</p>
+              <p className="text-gray-600 mb-4 leading-relaxed text-sm">"{caseItem.result}"</p>
               <div className="space-y-2">
                 {caseItem.metrics.map((metric, metricIndex) => (
                   <div key={metricIndex} className="flex items-center gap-2 text-sm">
@@ -521,49 +558,48 @@ const CasesSection = () => {
 const PricingSection = () => {
   const plans = [
     {
-      name: '免费版',
+      name: '免费用',
       price: '0',
       period: '永久免费',
-      description: '适合个人用户和轻度使用',
+      description: '先试试，好用再买',
       features: [
-        '每天 5 次方案生成',
-        '基础品牌策划模板',
-        '社区支持',
-        '1 个项目空间'
+        '每天 3 次免费',
+        '基本方案模板',
+        '开业活动方案',
+        '促销文案',
+        '朋友圈推广'
       ],
-      cta: '免费开始',
+      cta: '先试试',
       popular: false
     },
     {
-      name: '专业版',
-      price: '99',
-      period: '/月',
-      description: '适合自由职业者和小型团队',
+      name: '月卡',
+      price: '29',
+      period: '元/月',
+      description: '接2单就回本',
       features: [
-        '无限方案生成',
-        '全部品牌策划模板',
-        '优先客户支持',
-        '10 个项目空间',
-        '团队协作功能',
-        '高级数据分析'
+        '每天无限次用',
+        '全部方案模板',
+        '优先出方案',
+        '方案保存无限',
+        '专属客服'
       ],
-      cta: '立即升级',
+      cta: '开月卡',
       popular: true
     },
     {
-      name: '企业版',
-      price: '399',
-      period: '/月',
-      description: '适合中大型企业和代理商',
+      name: '年卡',
+      price: '199',
+      period: '元/年',
+      description: '一天不到6毛钱',
       features: [
-        '专业版全部功能',
-        '无限项目空间',
-        '专属客户成功经理',
-        'API 接口接入',
-        '私有化部署选项',
-        'SLA 服务保障'
+        '月卡全部功能',
+        '一年随便用',
+        '送实体手册',
+        '优先新功能',
+        '专属顾问'
       ],
-      cta: '联系销售',
+      cta: '买年卡',
       popular: false
     }
   ]
@@ -575,13 +611,13 @@ const PricingSection = () => {
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
             <Sparkles className="w-4 h-4" />
-            <span>价格方案</span>
+            <span>多少钱</span>
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            简单透明的定价
+            便宜到不敢相信
           </h2>
           <p className="text-lg text-gray-600">
-            根据您的需求选择合适的方案，随时升级或降级
+            接一单就回本，用了再也离不开
           </p>
         </div>
 
@@ -598,7 +634,7 @@ const PricingSection = () => {
             >
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-yellow-900 text-sm font-bold px-4 py-1 rounded-full">
-                  最受欢迎
+                  大多数人选这个
                 </div>
               )}
               
@@ -644,7 +680,54 @@ const PricingSection = () => {
 
         {/* Enterprise Note */}
         <div className="text-center mt-12 text-gray-500">
-          <p>所有方案均含 14 天全额退款保证 · 企业版支持定制需求</p>
+          <p>先试再买，不好用不收钱 · 随时退 · 客服随时在</p>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// FAQ Section
+const FAQSection = () => {
+  const faqs = [
+    {
+      q: '我是小广告公司，能用吗？',
+      a: '当然能！小公司最适合用灵思。老板就几个人，客户催得急，用灵思10秒出方案，一个人顶10个人用。'
+    },
+    {
+      q: '方案质量怎么样？',
+      a: '都是根据客户情况专门写的，不是套话。直接发给客户没问题。客户都说方案很专业。'
+    },
+    {
+      q: '收费怎么定？',
+      a: '看情况。开业方案500-1500，促销活动300-800，整体品牌方案2000-5000。用灵思效率高，成本低，赚得更多。'
+    },
+    {
+      q: '客户要改怎么办？',
+      a: '直接说哪里改，比如"换个主题"、"加点优惠"、"文案短一点"，10秒改好，客户满意为止。'
+    },
+    {
+      q: '能帮客户开账号吗？',
+      a: '不用开。你帮客户出方案，是你们之间的事。客户不需要知道你在用什么工具。'
+    }
+  ]
+
+  return (
+    <section id="faq" className="py-20 md:py-32 bg-white">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            常见问题
+          </h2>
+        </div>
+
+        <div className="space-y-4">
+          {faqs.map((faq, index) => (
+            <div key={index} className="bg-purple-50 rounded-xl p-6">
+              <h3 className="font-semibold text-gray-900 mb-2">Q: {faq.q}</h3>
+              <p className="text-gray-600">A: {faq.a}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -662,10 +745,11 @@ const CTASection = () => (
 
     <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
-        准备好提升您的创意效率了吗？
+        还在自己憋方案？
       </h2>
       <p className="text-xl text-purple-200 mb-10 max-w-2xl mx-auto">
-        加入数千个品牌策划团队，让灵思AI成为您的创意合伙人
+        说话就出方案，10秒搞定客户要的东西<br/>
+        多接单、快出方案、多赚钱
       </p>
       
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -673,19 +757,19 @@ const CTASection = () => (
           to="/register"
           className="group bg-white text-purple-700 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-purple-50 transition-all shadow-xl flex items-center justify-center gap-2 hover:-translate-y-1"
         >
-          免费开始使用
+          免费试用
           <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
         </Link>
         <a 
-          href="#features"
+          href="#pricing"
           className="border-2 border-white/30 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white/10 transition-all"
         >
-          了解更多
+          先看价格
         </a>
       </div>
 
       <p className="mt-8 text-purple-300 text-sm">
-        无需信用卡 · 3分钟上手 · 永久免费基础版
+        不用注册也能试 · 10秒出方案 · 不满意随便改
       </p>
     </div>
   </section>
@@ -705,39 +789,36 @@ const Footer = () => (
             <span className="text-xl font-bold text-white">灵思AI</span>
           </div>
           <p className="text-sm leading-relaxed">
-            灵思AI创意工作台 · 你的AI创意合伙人
+            帮广告公司多接单、快出方案、多赚钱
           </p>
         </div>
 
         {/* Product */}
         <div>
-          <h4 className="text-white font-semibold mb-4">产品</h4>
+          <h4 className="text-white font-semibold mb-4">功能</h4>
           <ul className="space-y-2 text-sm">
-            <li><a href="#features" className="hover:text-purple-400 transition-colors">核心功能</a></li>
-            <li><a href="#pricing" className="hover:text-purple-400 transition-colors">价格方案</a></li>
-            <li><a href="#" className="hover:text-purple-400 transition-colors">更新日志</a></li>
-            <li><a href="#" className="hover:text-purple-400 transition-colors">帮助文档</a></li>
+            <li><a href="#features" className="hover:text-purple-400 transition-colors">能做什么</a></li>
+            <li><a href="#pricing" className="hover:text-purple-400 transition-colors">多少钱</a></li>
+            <li><a href="#cases" className="hover:text-purple-400 transition-colors">真实案例</a></li>
+            <li><a href="#faq" className="hover:text-purple-400 transition-colors">常见问题</a></li>
           </ul>
         </div>
 
         {/* Company */}
         <div>
-          <h4 className="text-white font-semibold mb-4">公司</h4>
+          <h4 className="text-white font-semibold mb-4">帮助</h4>
           <ul className="space-y-2 text-sm">
-            <li><a href="#" className="hover:text-purple-400 transition-colors">关于我们</a></li>
-            <li><a href="#" className="hover:text-purple-400 transition-colors">联系方式</a></li>
-            <li><a href="#" className="hover:text-purple-400 transition-colors">加入团队</a></li>
-            <li><a href="#" className="hover:text-purple-400 transition-colors">新闻动态</a></li>
+            <li><a href="#" className="hover:text-purple-400 transition-colors">使用教程</a></li>
+            <li><a href="#" className="hover:text-purple-400 transition-colors">联系客服</a></li>
           </ul>
         </div>
 
         {/* Legal */}
         <div>
-          <h4 className="text-white font-semibold mb-4">法律</h4>
+          <h4 className="text-white font-semibold mb-4">其他</h4>
           <ul className="space-y-2 text-sm">
             <li><Link to="/privacy" className="hover:text-purple-400 transition-colors">隐私政策</Link></li>
             <li><Link to="/terms" className="hover:text-purple-400 transition-colors">服务条款</Link></li>
-            <li><a href="#" className="hover:text-purple-400 transition-colors">Cookie 政策</a></li>
           </ul>
         </div>
       </div>
@@ -745,25 +826,8 @@ const Footer = () => (
       {/* Bottom */}
       <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
         <p className="text-sm">
-          © 2024 灵思AI创意工作台. All rights reserved.
+          © 2024 灵思AI · 广告公司专用方案工具
         </p>
-        <div className="flex items-center gap-6">
-          <a href="#" className="hover:text-purple-400 transition-colors" aria-label="微信">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178A1.17 1.17 0 0 1 4.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178 1.17 1.17 0 0 1-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-1.797-.052-3.746.512-5.28 1.786-1.72 1.428-2.687 3.72-1.78 6.22.942 2.453 3.666 4.229 6.884 4.229.826 0 1.622-.12 2.361-.336a.722.722 0 0 1 .598.082l1.584.926a.272.272 0 0 0 .14.045c.134 0 .24-.111.24-.247 0-.06-.023-.12-.038-.177l-.327-1.233a.582.582 0 0 1-.023-.156.49.49 0 0 1 .201-.398C23.024 18.48 24 16.82 24 14.98c0-3.21-2.931-5.837-6.656-6.088V8.87c-.135-.004-.27-.018-.406-.012zm-2.53 3.274c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.97-.982zm4.844 0c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.969-.982z"/>
-            </svg>
-          </a>
-          <a href="#" className="hover:text-purple-400 transition-colors" aria-label="微博">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M10.098 20.323c-3.977.391-7.414-1.406-7.672-4.02-.259-2.609 2.759-5.047 6.74-5.441 3.979-.394 7.413 1.404 7.671 4.018.259 2.6-2.759 5.049-6.737 5.439l-.002.004zM9.05 17.219c-.384.616-1.208.884-1.829.602-.612-.279-.793-.991-.406-1.593.379-.595 1.176-.861 1.793-.601.622.263.82.972.442 1.592zm1.27-1.627c-.141.237-.449.353-.689.253-.236-.09-.313-.361-.177-.586.138-.227.436-.346.672-.24.239.09.315.36.18.573h.014zm.176-2.719c-1.893-.493-4.033.45-4.857 2.118-.836 1.704-.026 3.591 1.886 4.21 1.983.64 4.318-.341 5.132-2.179.8-1.793-.201-3.642-2.161-4.149zm7.563-1.224c-.346-.105-.578-.172-.401-.649.387-1.034.428-1.896.007-2.532-.808-1.217-2.854-1.304-5.013-.727-1.856.494-3.301 1.527-3.562 2.53-.329 1.264.765 2.084 2.078 2.435 1.543.413 3.579.164 5.14-.455 1.542-.612 2.296-1.63 2.07-2.227-.103-.27-.377-.371-.766-.296-.186.038-.273.097-.339.165.346.1.59.218.642.507.08.441-.39 1.066-1.33 1.553-1.206.622-2.867.826-4.33.566-1.377-.245-2.526-1.073-2.106-2.106.26-.64 1.072-1.034 2.23-1.316 2.188-.533 4.752-.177 5.956 1.16.623.692.904 1.568.573 2.313-.18.403-.523.596-.866.6-.116-.002-.187-.02-.25-.059l.006-.001c-.001 0-.003-.001-.005-.001l-.004-.01z"/>
-            </svg>
-          </a>
-          <a href="#" className="hover:text-purple-400 transition-colors" aria-label="GitHub">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
-            </svg>
-          </a>
-        </div>
       </div>
     </div>
   </footer>
@@ -775,11 +839,13 @@ const LandingPage = () => {
     <div className="min-h-screen bg-white">
       <Navigation />
       <HeroSection />
+      <ValueSection />
       <FeaturesSection />
       <AdvantagesSection />
       <StatsSection />
       <CasesSection />
       <PricingSection />
+      <FAQSection />
       <CTASection />
       <Footer />
     </div>

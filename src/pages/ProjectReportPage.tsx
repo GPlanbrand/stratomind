@@ -101,29 +101,29 @@ const ProjectReportPage: React.FC = () => {
       // 加载文件列表
       try {
         const filesData = await getProjectFiles(projectId);
-        setFiles(filesData.map((f: any) => ({
+        setFiles((filesData || []).map((f) => ({
           id: f.id,
           name: f.name,
-          type: f.type || 'other',
+          type: (f.type || 'other') as string,
           size: f.size || 0,
           uploadedAt: f.uploadedAt || f.createdAt,
           url: f.url,
         })));
       } catch (e) {
-        console.log('加载文件列表失败:', e);
+        console.warn('加载文件列表失败:', e);
       }
       
       // 加载任务列表
       try {
         const tasksData = await getProjectTasks(projectId);
-        setTasks(tasksData.map((t: any) => ({
+        setTasks((tasksData || []).map((t) => ({
           id: t.id,
           title: t.title,
-          status: t.status,
+          status: (t.status || 'pending') as string,
           completedAt: t.completedAt,
         })));
       } catch (e) {
-        console.log('加载任务列表失败:', e);
+        console.warn('加载任务列表失败:', e);
       }
       
     } catch (error) {
