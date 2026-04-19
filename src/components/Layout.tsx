@@ -4,7 +4,6 @@ import { refreshCurrentUser, isGuest } from '../services/auth';
 import { User } from '../types/user';
 import Sidebar from './Sidebar';
 import Header from './Header';
-import AIDialog from './AIDialog';
 import VisitorBanner from './VisitorBanner';
 import LoginModal from './LoginModal';
 import VisitorLimitModal from './VisitorLimitModal';
@@ -159,9 +158,6 @@ const Layout: React.FC = () => {
           }} />
         </div>
       </main>
-
-      {/* 浮动文案助手 */}
-      <AIDialog />
 
       {/* 登录弹窗 */}
       <LoginModal

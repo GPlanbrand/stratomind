@@ -1,10 +1,57 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Send, Paperclip, Mic, X, Sparkles, ChevronUp, 
-  Copy, Check, MicOff, RotateCcw, FileImage, MessageSquare
+  Copy, Check, MicOff, RotateCcw, FileImage, MessageSquare,
+  FileText, BarChart3, Target, ClipboardCheck, Search,
+  At, ChevronDown
 } from 'lucide-react';
 
 const STORAGE_KEY = 'stratomind_ai_messages';
+
+// 快捷指令类型
+interface QuickCommand {
+  id: string;
+  trigger: string;
+  label: string;
+  icon: React.ReactNode;
+  prompt: string;
+  description: string;
+}
+
+const QUICK_COMMANDS: QuickCommand[] = [
+  {
+    id: 'requirement',
+    trigger: '@需求确认单',
+    label: '需求确认单',
+    icon: <ClipboardCheck className="w-4 h-4" />,
+    prompt: '请帮我生成一份项目需求确认单，包含以下内容：\n1. 项目基本信息（项目名称、客户名称、行业）\n2. 项目目标与KPI\n3. 目标受众描述\n4. 核心信息/价值主张\n5. 预算与时间要求\n6. 交付物清单',
+    description: '生成标准化的需求确认文档'
+  },
+  {
+    id: 'competitor',
+    trigger: '@竞品分析',
+    label: '竞品分析',
+    icon: <Search className="w-4 h-4" />,
+    prompt: '请对以下竞品进行深度分析：\n1. 品牌定位与核心价值主张\n2. 目标受众分析\n3. 产品/服务差异化亮点\n4. 传播策略与渠道布局\n5. 可借鉴之处与差异化机会\n\n请给出结构化的分析报告。',
+    description: '分析竞品数据，输出结构化报告'
+  },
+  {
+    id: 'strategy',
+    trigger: '@策略方案',
+    label: '策略方案',
+    icon: <Target className="w-4 h-4" />,
+    prompt: '请基于项目背景，生成完整的营销策略方案：\n1. 市场洞察与机会分析\n2. 品牌定位与核心策略主张\n3. 目标人群画像\n4. 传播主轴与创意方向\n5. 媒介渠道策略\n6. 执行节奏与预算分配建议',
+    description: '生成完整的营销策略方案'
+  },
+  {
+    id: 'brief',
+    trigger: '@创意简报',
+    label: '创意简报',
+    icon: <FileText className="w-4 h-4" />,
+    prompt: '请撰写一份创意简报，包含：\n1. 创意背景与挑战\n2. 核心创意概念\n3. 创意表现形式建议\n4. 视觉风格参考\n5. 传播渠道适配\n6. 效果预期与评估指标',
+    description: '撰写专业的创意简报文档'
+  }
+];
 
 interface Message {
   id: string;
@@ -21,7 +68,7 @@ interface AIDialogProps {
 }
 
 const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [images, setImages] = useState<string[]>([]);
@@ -30,10 +77,17 @@ const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction })
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [streamingContent, setStreamingContent] = useState('');
+  
+  // @指令相关状态
+  const [showCommandMenu, setShowCommandMenu] = useState(false);
+  const [filteredCommands, setFilteredCommands] = useState<QuickCommand[]>(QUICK_COMMANDS);
+  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const commandMenuRef = useRef<HTMLDivElement>(null);
 
   // 检测移动端
   useEffect(() => {
@@ -57,7 +111,7 @@ const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction })
       setMessages([{
         id: Date.now().toString(),
         role: 'assistant',
-        content: '你好！我是你的写作秘书📝。我可以帮你：\n• 写文案、想标题、润色内容\n• 检查格式规范、排除敏感词\n• 把大白话转成正式公文\n\n有什么需要帮忙的？',
+        content: '你好！我是灵思AI创意助手 ✨\n\n我可以帮你：\n• 生成需求确认单、竞品分析\n• 撰写策略方案、创意简报\n• 分析数据、撰写文案\n\n输入 @ 可以快速触发快捷指令，或直接描述你的需求~',
         timestamp: Date.now()
       }]);
     }
@@ -75,6 +129,17 @@ const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction })
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, streamingContent]);
 
+  // 点击外部关闭命令菜单
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (commandMenuRef.current && !commandMenuRef.current.contains(e.target as Node)) {
+        setShowCommandMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   // 调整输入框高度
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
@@ -84,9 +149,61 @@ const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction })
     }
   };
 
+  // 处理输入变化 - 检测@触发
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setInput(e.target.value);
+    const value = e.target.value;
+    setInput(value);
     adjustTextareaHeight();
+    
+    // 检测@触发
+    const cursorPos = e.target.selectionStart || 0;
+    const textBeforeCursor = value.slice(0, cursorPos);
+    const atIndex = textBeforeCursor.lastIndexOf('@');
+    
+    if (atIndex !== -1) {
+      const textAfterAt = textBeforeCursor.slice(atIndex + 1);
+      // 检查@后面是否为空或只包含字母数字
+      if (!textAfterAt.includes(' ') && !textAfterAt.includes('\n')) {
+        // 过滤匹配的指令
+        const filtered = QUICK_COMMANDS.filter(cmd => 
+          cmd.trigger.toLowerCase().includes(textAfterAt.toLowerCase()) ||
+          cmd.label.includes(textAfterAt)
+        );
+        setFilteredCommands(filtered);
+        setShowCommandMenu(true);
+        
+        // 计算菜单位置
+        if (textareaRef.current) {
+          const rect = textareaRef.current.getBoundingClientRect();
+          setMenuPosition({
+            top: rect.top - 10,
+            left: rect.left + 20
+          });
+        }
+        return;
+      }
+    }
+    
+    setShowCommandMenu(false);
+  };
+
+  // 选择快捷指令
+  const selectCommand = (command: QuickCommand) => {
+    const cursorPos = textareaRef.current?.selectionStart || 0;
+    const textBeforeCursor = input.slice(0, cursorPos);
+    const atIndex = textBeforeCursor.lastIndexOf('@');
+    
+    // 替换@及其后面的文字为指令提示
+    const newInput = input.slice(0, atIndex) + command.prompt;
+    setInput(newInput);
+    setShowCommandMenu(false);
+    
+    setTimeout(() => {
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+        textareaRef.current.selectionStart = textareaRef.current.selectionEnd = newInput.length;
+      }
+    }, 0);
   };
 
   // 处理图片上传
@@ -143,6 +260,7 @@ const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction })
     if (textareaRef.current) textareaRef.current.style.height = 'auto';
     setIsLoading(true);
     setStreamingContent('');
+    setShowCommandMenu(false);
 
     // 创建AI消息占位符
     const assistantMessageId = (Date.now() + 1).toString();
@@ -309,6 +427,30 @@ const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction })
       e.preventDefault();
       handleSend();
     }
+    
+    // 命令菜单导航
+    if (showCommandMenu) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const currentIndex = filteredCommands.findIndex(c => c.id === filteredCommands[0]?.id);
+        if (currentIndex < filteredCommands.length - 1) {
+          setFilteredCommands([filteredCommands[currentIndex + 1]]);
+        }
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const currentIndex = filteredCommands.findIndex(c => c.id === filteredCommands[0]?.id);
+        if (currentIndex > 0) {
+          setFilteredCommands([filteredCommands[currentIndex - 1]]);
+        }
+      } else if (e.key === 'Escape') {
+        setShowCommandMenu(false);
+      } else if (e.key === 'Tab' || e.key === 'Enter') {
+        if (filteredCommands.length > 0) {
+          e.preventDefault();
+          selectCommand(filteredCommands[0]);
+        }
+      }
+    }
   };
 
   // 粘贴图片
@@ -342,7 +484,7 @@ const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction })
       setMessages([{
         id: Date.now().toString(),
         role: 'assistant',
-        content: '对话已清空。有什么可以帮你的吗？',
+        content: '对话已清空。有什么可以帮你的吗？\n\n输入 @ 可以快速触发快捷指令~',
         timestamp: Date.now()
       }]);
     }
@@ -372,7 +514,7 @@ const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction })
                 <Sparkles className="w-4 h-4 text-white" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900 text-sm">灵思文案助手</h3>
+                <h3 className="font-semibold text-gray-900 text-sm">灵思AI创意助手</h3>
                 <p className="text-xs text-gray-500">{projectName || '当前项目'}</p>
               </div>
             </div>
@@ -388,7 +530,7 @@ const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction })
                 onClick={() => setIsExpanded(false)}
                 className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
               >
-                <ChevronUp className="w-4 h-4" />
+                <ChevronDown className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -519,16 +661,48 @@ const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction })
             />
 
             {/* 输入框 */}
-            <div className="flex-1">
+            <div className="flex-1 relative">
               <textarea
                 ref={textareaRef}
                 value={input}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
-                placeholder="输入你的问题，或描述你想要生成的内容..."
+                placeholder="输入你的问题，或使用 @ 触发快捷指令..."
                 rows={1}
                 className="w-full bg-transparent resize-none outline-none text-gray-700 placeholder-gray-400 min-h-[24px] max-h-[120px] leading-relaxed"
               />
+              
+              {/* @快捷指令菜单 */}
+              {showCommandMenu && filteredCommands.length > 0 && (
+                <div 
+                  ref={commandMenuRef}
+                  className="absolute bottom-full left-0 mb-2 w-72 bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden z-50"
+                  style={{ 
+                    maxHeight: '280px',
+                    overflowY: 'auto'
+                  }}
+                >
+                  <div className="px-3 py-2 bg-gray-50 border-b border-gray-100">
+                    <p className="text-xs text-gray-500 font-medium">快捷指令</p>
+                  </div>
+                  {filteredCommands.map((cmd) => (
+                    <button
+                      key={cmd.id}
+                      onClick={() => selectCommand(cmd)}
+                      className="w-full px-3 py-2.5 flex items-start gap-3 hover:bg-violet-50 transition-colors text-left"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-violet-100 text-violet-600 flex items-center justify-center flex-shrink-0">
+                        {cmd.icon}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900">{cmd.label}</p>
+                        <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{cmd.description}</p>
+                      </div>
+                      <span className="text-xs text-violet-600 font-medium flex-shrink-0">{cmd.trigger}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* 语音输入按钮 */}
@@ -574,10 +748,13 @@ const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction })
           {isExpanded && !input.trim() && images.length === 0 && !isLoading && (
             <div className="mt-3 flex items-center gap-2 flex-wrap">
               <span className="text-xs text-gray-400">试试：</span>
-              {['帮我写一段品牌slogan', '分析竞品数据', '生成创意简报'].map((tip) => (
+              {['@需求确认单', '@竞品分析', '@策略方案', '@创意简报'].map((tip) => (
                 <button
                   key={tip}
-                  onClick={() => setInput(tip)}
+                  onClick={() => {
+                    const cmd = QUICK_COMMANDS.find(c => c.trigger === tip);
+                    if (cmd) selectCommand(cmd);
+                  }}
                   className="text-xs px-3 py-1.5 bg-gray-100 hover:bg-violet-50 hover:text-violet-600 text-gray-600 rounded-full transition-colors"
                 >
                   {tip}
