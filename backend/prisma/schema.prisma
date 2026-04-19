@@ -44,6 +44,7 @@ model User {
   adminLogs     AdminLog[]
   requirementSheets RequirementSheet[]
   userActionLogs UserActionLog[]
+  messages      Message[]
   
   createdAt2    DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
@@ -204,43 +205,85 @@ model UserActionLog {
   @@map("user_action_logs")
 }
 
-// 访客会话表
-model GuestSession {
-  id        String   @id @default(cuid())
-  token     String   @unique
-  data      String?
-  expireAt  DateTime
-  createdAt DateTime @default(now()) @map("created_at")
-  
-  @@map("guest_sessions")
-}
-
-// 短信验证码记录
-model SmsCode {
-  id        String   @id @default(cuid())
-  phone     String
-  code      String
-  type      String   @default("login")
-  used      Boolean  @default(false)
-  expireAt  DateTime
-  createdAt DateTime @default(now()) @map("created_at")
-  
-  @@map("sms_codes")
-}
-
 // 需求确认单
 model RequirementSheet {
   id          String   @id @default(cuid())
   userId      String
-  projectName String
-  clientName  String?
-  items       String?
+  projectId   String?
+  title       String
+  content     String
   status      String   @default("draft")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   
   // Relations
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   @@map("requirement_sheets")
+}
+
+// =============================================
+// 灵思智能体 - 消息系统
+// =============================================
+
+// 消息模型
+model Message {
+  id          String   @id @default(cuid())
+  userId      String   // 接收用户
+  title       String   // 消息标题
+  content     String   // 消息内容
+  type        String   // system/project/reminder/news/tip
+  link        String?  // 跳转链接
+  isRead      Boolean  @default(false)
+  priority    String   @default("normal") // low/normal/high
+  metadata    String?  // 额外数据(JSON)
+  senderId    String?  // 发送者ID(系统为null或'system')
+  createdAt   DateTime @default(now())
+  readAt      DateTime?
+  
+  // Relations
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, isRead])
+  @@index([userId, createdAt])
+  @@index([type])
+  @@map("messages")
+}
+
+// 定时任务配置
+model ScheduledTask {
+  id          String   @id @default(cuid())
+  name        String   // 任务名称
+  type        String   // news_digest/reminder/weekly_report/custom
+  cron        String   // Cron表达式
+  config      String   // 任务配置(JSON)
+  isActive    Boolean  @default(true)
+  lastRunAt   DateTime?
+  nextRunAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([isActive])
+  @@map("scheduled_tasks")
+}
+
+// 灵思Profile配置
+model LingsiProfile {
+  id          String   @id @default(cuid())
+  name        String   @default("灵思")
+  avatar      String?  // 头像URL
+  title       String   @default("您的智能创意伙伴")
+  description String?  // 简介
+  greeting    String?  // 欢迎语
+  systemPrompt String? // 系统提示词
+  settings    String?  // 个性化设置(JSON)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("lingsi_profiles")
+}
+
+model TempModel {
+  id String @id @default("temp")
 }

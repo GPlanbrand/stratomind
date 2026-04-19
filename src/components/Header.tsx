@@ -18,8 +18,10 @@ import {
   ExternalLink
 } from 'lucide-react';
 import FilesPanel from './FilesPanel';
+import MessageCenter from './MessageCenter';
 import { getCurrentUser } from '../services/auth';
 import { search, SearchResult, copyToClipboard } from '../services/search';
+import { getUnreadCount } from '../services/message';
 
 interface HeaderProps {
   collapsed: boolean;
@@ -365,11 +367,30 @@ const Header: React.FC<HeaderProps> = ({ collapsed, isMobile, onMenuClick, proje
   const [searchResults, setSearchResults] = useState<SearchResult>({ projects: [], knowledge: [], history: [] });
   const [isSearching, setIsSearching] = useState(false);
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const [showMessageCenter, setShowMessageCenter] = useState(false);
+  const [messageUnreadCount, setMessageUnreadCount] = useState(0);
   const searchRef = useRef<HTMLDivElement>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
     setCurrentUser(getCurrentUser());
+    
+    // 加载未读消息数量
+    const loadUnreadCount = async () => {
+      try {
+        const count = await getUnreadCount();
+        setMessageUnreadCount(count);
+      } catch (error) {
+        console.error('获取未读消息数失败:', error);
+      }
+    };
+    
+    if (getCurrentUser()) {
+      loadUnreadCount();
+      // 每30秒刷新一次
+      const interval = setInterval(loadUnreadCount, 30000);
+      return () => clearInterval(interval);
+    }
   }, []);
 
   // 点击外部关闭搜索下拉
@@ -641,6 +662,20 @@ const Header: React.FC<HeaderProps> = ({ collapsed, isMobile, onMenuClick, proje
             <span className="text-sm hidden sm:inline">文件</span>
           </button>
 
+          {/* 消息中心 */}
+          <button
+            onClick={() => setShowMessageCenter(true)}
+            className="relative flex items-center gap-2 px-3 h-9 hover:bg-gray-50 rounded-lg text-gray-500 hover:text-gray-700 transition-colors"
+            title="消息中心"
+          >
+            <Bell className="w-4 h-4" />
+            {messageUnreadCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center px-1 text-xs font-medium bg-red-500 text-white rounded-full">
+                {messageUnreadCount > 99 ? '99+' : messageUnreadCount}
+              </span>
+            )}
+          </button>
+
           {/* 分享 */}
           <button
             onClick={() => setShowShareModal(true)}
@@ -668,6 +703,16 @@ const Header: React.FC<HeaderProps> = ({ collapsed, isMobile, onMenuClick, proje
         onClose={() => setShowShareModal(false)}
         projectId={projectId}
         projectName={projectName}
+      />
+
+      {/* 消息中心 */}
+      <MessageCenter
+        isOpen={showMessageCenter}
+        onClose={() => {
+          setShowMessageCenter(false);
+          // 刷新未读数
+          getUnreadCount().then(setMessageUnreadCount).catch(console.error);
+        }}
       />
     </>
   );
