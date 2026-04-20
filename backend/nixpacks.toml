@@ -1,16 +1,11 @@
-# 使用 Railway Nixpacks 构建（非 Dockerfile 方式备选）
-# 如果使用 Dockerfile 构建方式，此文件可忽略
-
-providers = ["node"]
-
 [phases.setup]
-nixPkgs = ["nodejs_18"]
+nixPkgs = ['nodejs-18_x', 'openssl']
 
 [phases.install]
-cmds = ["npm install"]
+cmds = ['npm install']
 
 [phases.build]
-cmds = ["npm run build"]
+cmds = ['npm run build']
 
 [start]
-cmd = "node dist/index.js"
+cmd = 'npx prisma db push --skip-generate && node dist/index.js'
