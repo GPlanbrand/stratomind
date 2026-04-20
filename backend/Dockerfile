@@ -1,8 +1,7 @@
-FROM node:18-alpine
+FROM node:18-slim
 
-# 安装 OpenSSL 和构建工具
-RUN apk update && apk add --no-cache openssl || \
-    (sleep 5 && apk add --no-cache openssl)
+# 安装 OpenSSL
+RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
