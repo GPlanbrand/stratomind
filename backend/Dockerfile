@@ -1,7 +1,8 @@
 FROM node:18-alpine
 
-# 安装 OpenSSL 和构建工具
-RUN apk add --no-cache openssl
+# 使用国内镜像源，安装 OpenSSL 和构建工具
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \
+    apk add --no-cache openssl
 
 WORKDIR /app
 
