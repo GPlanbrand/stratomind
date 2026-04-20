@@ -328,17 +328,12 @@ async function runScheduledTasks() {
   }
 }
 
-// 如果直接运行此脚本
-if (require.main === module) {
-  runScheduledTasks();
-}
-
 // 导出任务函数供外部调用
 export {
-  runScheduledTasks,
   sendDailyNewsDigest,
   sendProjectReminders,
   sendWeeklyReportReminder,
   sendPointsLowReminder,
   sendUsageTips,
+  runScheduledTasks,
 };
