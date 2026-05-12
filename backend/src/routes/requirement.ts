@@ -151,7 +151,7 @@ export const createRequirementSheet = async (req: AuthRequest, res: Response) =>
           clientName: clientName || null,
           items: JSON.stringify(items),
           status: 'draft',
-        },
+        } as any,
       });
       
       res.status(201).json({

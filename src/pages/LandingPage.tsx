@@ -51,7 +51,7 @@ const Navigation = () => {
               <Sparkles className="w-5 h-5 text-white" />
             </div>
             <div>
-              <span className="text-xl font-bold text-gray-900">灵思AI</span>
+              <span className="text-xl font-bold text-gray-900">灵思</span>
               <span className="hidden sm:block text-xs text-gray-500">广告公司专用</span>
             </div>
           </Link>
@@ -216,7 +216,7 @@ const HeroSection = () => {
                 <div className="w-3 h-3 rounded-full bg-yellow-400" />
                 <div className="w-3 h-3 rounded-full bg-green-400" />
               </div>
-              <div className="flex-1 text-center text-sm text-gray-500">灵思AI · 帮广告公司出方案</div>
+              <div className="flex-1 text-center text-sm text-gray-500">灵思 · 帮广告公司出方案</div>
             </div>
             <div className="p-6 bg-gradient-to-br from-purple-50 to-white">
               {/* 用户输入 */}
@@ -786,7 +786,7 @@ const Footer = () => (
             <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-white">灵思AI</span>
+            <span className="text-xl font-bold text-white">灵思</span>
           </div>
           <p className="text-sm leading-relaxed">
             帮广告公司多接单、快出方案、多赚钱

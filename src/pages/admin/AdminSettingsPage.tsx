@@ -3,7 +3,7 @@ import { Settings, Save, RefreshCw } from 'lucide-react';
 
 const AdminSettingsPage: React.FC = () => {
   const [settings, setSettings] = useState({
-    siteName: '灵思AI创意工作台',
+    siteName: '灵思创意工作台',
     siteUrl: 'https://lingsi.ai',
     aiModel: 'gpt-4',
     aiApiKey: '',
@@ -30,7 +30,7 @@ const AdminSettingsPage: React.FC = () => {
   const handleReset = () => {
     if (confirm('确定要恢复默认设置吗？')) {
       setSettings({
-        siteName: '灵思AI创意工作台',
+        siteName: '灵思创意工作台',
         siteUrl: 'https://lingsi.ai',
         aiModel: 'gpt-4',
         aiApiKey: '',

@@ -591,8 +591,8 @@ const ProjectReportPage: React.FC = () => {
               <Sparkles className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold text-gray-900 mb-1">需要AI帮助优化报告？</h3>
-              <p className="text-sm text-gray-600 mb-3">点击右上角的"AI助手"按钮，可以通过对话方式调整报告内容、补充项目亮点、生成执行摘要等。</p>
+              <h3 className="font-semibold text-gray-900 mb-1">需要辅助优化报告？</h3>
+              <p className="text-sm text-gray-600 mb-3">点击右上角的"写作秘书"按钮，可以通过对话方式调整报告内容、补充项目亮点、生成执行摘要等。</p>
               <button
                 onClick={() => setShowAIDialog(true)}
                 className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors"
@@ -605,7 +605,7 @@ const ProjectReportPage: React.FC = () => {
         </div>
       </div>
 
-      {/* AI对话框 */}
+      {/* 写作秘书对话框 */}
       {showAIDialog && (
         <AIDialog 
           projectId={projectId} 

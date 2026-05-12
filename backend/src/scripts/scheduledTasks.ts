@@ -179,8 +179,10 @@ export async function sendPointsLowReminder() {
     // 获取积分低于100的用户
     const lowPointsUsers = await prisma.user.findMany({
       where: {
-        points: { lt: 100 },
-        points: { gt: 0 },
+        AND: [
+          { points: { lt: 100 } },
+          { points: { gt: 0 } },
+        ],
         role: 'user',
       },
       select: { id: true, points: true },
@@ -328,12 +330,4 @@ async function runScheduledTasks() {
   }
 }
 
-// 导出任务函数供外部调用
-export {
-  sendDailyNewsDigest,
-  sendProjectReminders,
-  sendWeeklyReportReminder,
-  sendPointsLowReminder,
-  sendUsageTips,
-  runScheduledTasks,
-};
+// 注意: 所有任务函数已在定义时使用 export, 无需重复导出

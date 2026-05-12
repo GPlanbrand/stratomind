@@ -31,6 +31,17 @@ export default {
       fontFamily: {
         sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
       },
+      // 字号提升 - 基础字号15px，次要信息13px
+      fontSize: {
+        'xs': ['13px', { lineHeight: '1.5' }],
+        'sm': ['14px', { lineHeight: '1.5' }],
+        'base': ['15px', { lineHeight: '1.6' }],
+        'lg': ['16px', { lineHeight: '1.6' }],
+        'xl': ['17px', { lineHeight: '1.6' }],
+        '2xl': ['18px', { lineHeight: '1.5' }],
+        '3xl': ['20px', { lineHeight: '1.4' }],
+        '4xl': ['22px', { lineHeight: '1.3' }],
+      },
       animation: {
         'slide-in-left': 'slideInLeft 0.3s ease-out',
         'slide-out-left': 'slideOutLeft 0.3s ease-in',

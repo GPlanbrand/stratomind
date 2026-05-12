@@ -606,7 +606,7 @@ export function generateReportHTML(
   
   <!-- 页脚 -->
   <div class="footer">
-    <p>本报告由 灵思AI创意工作台 自动生成 | ${new Date().toLocaleString('zh-CN')}</p>
+    <p>本报告由 灵思创意工作台 自动生成 | ${new Date().toLocaleString('zh-CN')}</p>
     <p>如有疑问请联系项目负责人</p>
   </div>
   

@@ -181,7 +181,7 @@ export const chat = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    const result = await response.json();
+    const result = await response.json() as { choices?: Array<{ message?: { content?: string } }> };
     const content = result.choices?.[0]?.message?.content || '';
 
     res.json({

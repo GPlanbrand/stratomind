@@ -476,7 +476,7 @@ router.get('/activities', verifyAdmin, async (req: Request, res: Response) => {
     const [recentUsers, recentProjects, recentAI, recentRecharges] = await Promise.all([
       // 最近注册用户
       prisma.user.findMany({
-        select: { id: true, username: true, createdAt: true },
+        select: { id: true, username: true, email: true, createdAt: true },
         orderBy: { createdAt: 'desc' },
         take: limit
       }),
@@ -488,7 +488,7 @@ router.get('/activities', verifyAdmin, async (req: Request, res: Response) => {
       }),
       // 最近AI使用
       prisma.aILog.findMany({
-        select: { id: true, action: true, createdAt: true, user: { select: { username: true } } },
+        select: { id: true, type: true, input: true, createdAt: true, user: { select: { username: true } } },
         orderBy: { createdAt: 'desc' },
         take: limit
       }),
@@ -539,8 +539,8 @@ router.get('/activities', verifyAdmin, async (req: Request, res: Response) => {
       activities.push({
         id: `ai-${ai.id}`,
         type: 'ai',
-        title: `AI执行了${ai.action}`,
-        description: `用户：${ai.user.username}`,
+        title: `AI使用了${ai.type}`,
+        description: `${ai.input.substring(0, 50)}${ai.input.length > 50 ? '...' : ''} - 用户：${ai.user.username}`,
         time: formatTimeAgo(ai.createdAt),
         timestamp: ai.createdAt
       });
@@ -821,7 +821,7 @@ router.get('/members/stats', verifyAdmin, async (req: Request, res: Response) =>
     stats.forEach(item => {
       if (levelMap[item.memberLevel]) {
         levelMap[item.memberLevel].count = item._count.memberLevel;
-        levelMap[item.memberLevel].percentage = total > 0 ? (item._count.memberLevel / total * 100).toFixed(1) : 0;
+        levelMap[item.memberLevel].percentage = total > 0 ? parseFloat((item._count.memberLevel / total * 100).toFixed(1)) : 0;
       }
     });
     
@@ -1339,6 +1339,9 @@ router.post('/admins', verifySuperAdmin, async (req: Request, res: Response) => 
     // 加密密码
     const hashedPassword = await bcrypt.hash(password, 10);
     
+    // 生成邀请码
+    const inviteCode = `ADMIN_${Date.now().toString(36)}${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+    
     // 创建管理员
     const newAdmin = await prisma.user.create({
       data: {
@@ -1347,7 +1350,8 @@ router.post('/admins', verifySuperAdmin, async (req: Request, res: Response) => 
         password: hashedPassword,
         role,
         memberLevel: 'diamond', // 管理员默认钻石会员
-        points: 999999
+        points: 999999,
+        inviteCode // 必填字段
       },
       select: {
         id: true,

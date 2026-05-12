@@ -137,7 +137,7 @@ const HomeLoginPage: React.FC = () => {
                 </svg>
               </div>
               <div>
-                <p className="text-white font-medium">AI创意</p>
+                <p className="text-white font-medium">创意助手</p>
                 <p className="text-purple-200 text-sm">智能生成方案</p>
               </div>
             </div>
@@ -172,8 +172,8 @@ const HomeLoginPage: React.FC = () => {
         <div className="w-full max-w-md">
           {/* Logo */}
           <div className="flex items-center gap-3 mb-8">
-            <img src="/logo.svg" alt="灵思AI" className="h-10 w-10" />
-            <span className="text-2xl font-bold text-gray-900">灵思AI</span>
+            <img src="/logo.svg" alt="灵思" className="h-10 w-10" />
+            <span className="text-2xl font-bold text-gray-900">灵思</span>
           </div>
 
           {/* 标题 */}

@@ -118,7 +118,7 @@ async function callAI(text: string): Promise<string> {
     throw new Error('AI请求失败');
   }
 
-  const result = await response.json();
+  const result = await response.json() as { choices?: Array<{ message?: { content?: string } }> };
   return result.choices?.[0]?.message?.content || '';
 }
 

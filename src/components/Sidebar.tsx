@@ -24,30 +24,30 @@ interface SidebarProps {
   };
 }
 
-// 高频功能入口 - 全案策划导向
+// 高频功能入口 - 简化版
 const quickActions = [
-  { icon: Sparkles, label: '创建品牌全案', path: '/projects/workspace/new?type=brand', emoji: '✨', color: 'from-purple-500 to-pink-500' },
-  { icon: Megaphone, label: '创建活动全案', path: '/projects/workspace/new?type=campaign', emoji: '📢', color: 'from-blue-500 to-cyan-500' },
-  { icon: Target, label: '创建新品方案', path: '/projects/workspace/new?type=launch', emoji: '🎯', color: 'from-orange-500 to-red-500' },
-  { icon: FileText, label: '创建内容全案', path: '/projects/workspace/new?type=content', emoji: '📝', color: 'from-green-500 to-emerald-500' },
+  { icon: Sparkles, label: '创建方案', path: '/simple/create', emoji: '✨', color: 'from-purple-500 to-pink-500' },
+  { icon: Mic, label: '语音输入', path: '/simple/create', emoji: '🎤', color: 'from-blue-500 to-cyan-500' },
+  { icon: FileEdit, label: '审核文案', path: '/projects/assistant', emoji: '📝', color: 'from-green-500 to-emerald-500' },
+  { icon: BarChart3, label: '查看报告', path: '/projects/analysis-charts', emoji: '📊', color: 'from-orange-500 to-red-500' },
 ];
 
 // 更多工具
 const moreTools = [
-  { icon: Mic, label: '语音转文字', path: '/projects?type=voice', emoji: '🎙️' },
+  { icon: Target, label: '4A标准流程', path: '/projects/workspace/new?type=brand', emoji: '🎯' },
   { icon: GraduationCap, label: '学习助手', path: '/projects/assistant', emoji: '📚' },
   { icon: Calculator, label: '数据计算', path: '/projects?type=calc', emoji: '🔢' },
   { icon: Globe, label: '多语言翻译', path: '/projects?type=translate', emoji: '🌐' },
   { icon: Palette, label: '配色方案', path: '/projects?type=color', emoji: '🎨' },
 ];
 
-// 当前项目的五个步骤
+// 当前项目的五个步骤 - 动词+名词命名
 const projectSteps = [
-  { icon: Building2, label: '客户背景', step: 0 },
-  { icon: Target, label: '项目需求', step: 1 },
-  { icon: Users, label: '竞品分析', step: 2 },
-  { icon: FileText, label: '创意简报', step: 3 },
-  { icon: Lightbulb, label: '创意策略', step: 4 },
+  { icon: Building2, label: '了解客户', step: 0 },
+  { icon: Target, label: '明确需求', step: 1 },
+  { icon: Users, label: '看看对手', step: 2 },
+  { icon: FileText, label: '生成简报', step: 3 },
+  { icon: Lightbulb, label: '出策略', step: 4 },
 ];
 
 // 后台管理功能

@@ -83,7 +83,7 @@ const RoleSelectPage: React.FC<RoleSelectPageProps> = ({ onComplete, isModal = f
             <span className="text-white/90 text-sm font-medium">选择您的角色模式</span>
           </div>
           <h1 className="text-4xl font-bold text-white mb-4">
-            欢迎使用 灵思AI创意工作台
+            欢迎使用 灵思创意工作台
           </h1>
           <p className="text-xl text-white/70 max-w-2xl mx-auto">
             根据您的工作场景，选择最适合的角色模式，我们将为您定制专属的功能界面

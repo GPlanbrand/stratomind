@@ -210,8 +210,11 @@ model RequirementSheet {
   id          String   @id @default(cuid())
   userId      String
   projectId   String?
+  projectName String?  // 项目名称
+  clientName  String?  // 客户名称
   title       String
   content     String
+  items       String?  // 需求项列表(JSON数组存储)
   status      String   @default("draft")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -284,6 +287,33 @@ model LingsiProfile {
   @@map("lingsi_profiles")
 }
 
-model TempModel {
-  id String @id @default("temp")
+
+// =============================================
+// 访客会话模型
+// =============================================
+model GuestSession {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  data      String?  // 访客数据(JSON存储)
+  expireAt  DateTime
+  createdAt DateTime @default(now())
+  
+  @@index([token])
+  @@map("guest_sessions")
+}
+
+// =============================================
+// 短信验证码模型
+// =============================================
+model SmsCode {
+  id        String   @id @default(cuid())
+  phone     String
+  code      String
+  type      String   @default("login") // login/register/reset
+  used      Boolean  @default(false)
+  expireAt  DateTime
+  createdAt DateTime @default(now())
+  
+  @@index([phone, createdAt])
+  @@map("sms_codes")
 }

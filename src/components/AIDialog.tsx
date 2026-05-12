@@ -117,7 +117,7 @@ const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction })
       setMessages([{
         id: Date.now().toString(),
         role: 'assistant',
-        content: '你好！我是灵思AI创意助手 ✨\n\n我可以帮你：\n• 生成需求确认单、竞品分析\n• 撰写策略方案、创意简报\n• 分析数据、撰写文案\n\n输入 @ 可以快速触发快捷指令，或直接描述你的需求~',
+        content: '你好！我是灵思创意助手 ✨\n\n我可以帮你：\n• 生成需求确认单、竞品分析\n• 撰写策略方案、创意简报\n• 分析数据、撰写文案\n\n输入 @ 可以快速触发快捷指令，或直接描述你的需求~',
         timestamp: Date.now()
       }]);
     }
@@ -520,7 +520,7 @@ const AIDialog: React.FC<AIDialogProps> = ({ projectId, projectName, onAction })
                 <Sparkles className="w-4 h-4 text-white" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900 text-sm">灵思AI创意助手</h3>
+                <h3 className="font-semibold text-gray-900 text-sm">灵思创意助手</h3>
                 <p className="text-xs text-gray-500">{projectName || '当前项目'}</p>
               </div>
             </div>

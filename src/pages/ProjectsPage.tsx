@@ -224,7 +224,7 @@ const ProjectsPage: React.FC = () => {
 
   // 快捷操作
   const quickActions: QuickCommand[] = [
-    { id: 'new', icon: <Plus className="w-5 h-5" />, title: '新建项目', description: '创建新策划项目', path: '/projects/workspace/new', color: 'purple' },
+    { id: 'new', icon: <Plus className="w-5 h-5" />, title: '创建方案', description: '语音输入快速创建', path: '/simple/create', color: 'purple' },
     { id: 'requirement', icon: <ClipboardCheck className="w-5 h-5" />, title: '需求确认单', description: '快速发起需求确认', path: '/projects/requirements', color: 'blue' },
     { id: 'docs', icon: <BookOpen className="w-5 h-5" />, title: '文档中心', description: '查看使用指南', path: '/projects/docs', color: 'amber' },
     { id: 'assets', icon: <Image className="w-5 h-5" />, title: '素材库', description: '管理品牌素材', path: '/projects/assets', color: 'green' },
@@ -384,7 +384,7 @@ const ProjectsPage: React.FC = () => {
             <p className="text-gray-500 mt-1.5 text-base">
               {stats.activeProjects > 0 
                 ? `您有 ${stats.activeProjects} 个项目正在进行中，继续加油！` 
-                : '欢迎使用灵思AI创意工作台'}
+                : '欢迎使用灵思创意工作台'}
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -400,7 +400,7 @@ const ProjectsPage: React.FC = () => {
               className="flex items-center gap-2 px-5 py-2.5 bg-purple-600 text-white rounded-xl text-sm font-semibold hover:bg-purple-700 hover:shadow-lg transition-all shadow-purple-500/30"
             >
               <Plus className="w-5 h-5" />
-              <span>新建项目</span>
+              <span>创建方案</span>
             </button>
           </div>
         </div>
@@ -569,7 +569,7 @@ const ProjectsPage: React.FC = () => {
               <p className="text-sm text-gray-500 mb-6">
                 {searchQuery || statusFilter !== 'all' 
                   ? '尝试调整筛选条件' 
-                  : '点击下方按钮创建您的第一个项目'}
+                  : '点击下方按钮创建您的第一个方案'}
               </p>
               {!searchQuery && statusFilter === 'all' && (
                 <button

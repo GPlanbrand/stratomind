@@ -234,7 +234,7 @@ const SimpleCreatePage: React.FC = () => {
       {parsing && (
         <div className="flex items-center gap-3 text-purple-600 bg-purple-50 px-6 py-3 rounded-full">
           <Loader2 className="w-5 h-5 animate-spin" />
-          <span className="text-lg">AI正在分析...</span>
+          <span className="text-lg">智能分析中...</span>
         </div>
       )}
       
@@ -483,6 +483,16 @@ const SimpleCreatePage: React.FC = () => {
             <h1 className="text-lg font-bold text-gray-800">新建方案</h1>
             
             <div className="w-10" />
+          </div>
+          
+          {/* 专业模式切换入口 */}
+          <div className="max-w-lg mx-auto px-4 pb-2 text-center">
+            <button
+              onClick={() => navigate('/projects/workspace/new')}
+              className="text-sm text-gray-400 hover:text-purple-600 transition-colors"
+            >
+              需要专业模式？切换到4A标准流程 →
+            </button>
           </div>
         </div>
       )}

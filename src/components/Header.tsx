@@ -114,7 +114,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, projectId, pro
     
     try {
       await navigator.share({
-        title: projectName || '灵思AI创意工作台',
+        title: projectName || '灵思创意工作台',
         text: `来看看这个项目：${projectName || '创意方案'}`,
         url: shareLink,
       });
